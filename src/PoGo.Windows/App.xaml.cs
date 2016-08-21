@@ -45,7 +45,7 @@ namespace PoGo.Windows
 
             #region App settings
 
-            var _settings = SettingsService.Instance;
+            var _settings = Services.SettingsServices.SettingsService.Instance;
             RequestedTheme = _settings.AppTheme;
             CacheMaxDuration = _settings.CacheMaxDuration;
             ShowShellBackButton = _settings.UseShellBackButton;
