@@ -1,5 +1,6 @@
 ﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Inventory.Item;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace PoGo.GameServices
@@ -14,6 +15,22 @@ namespace PoGo.GameServices
         #region Private Members
 
         ObservableCollectionPlus<ItemData> _usableItems;
+
+        /// <summary>
+        ///     List of items that can be used when trying to catch a Pokemon
+        /// </summary>
+        private static readonly List<ItemId> UsableItemIds = new List<ItemId>
+        {
+            ItemId.ItemPokeBall,
+            ItemId.ItemGreatBall,
+            ItemId.ItemBlukBerry,
+            ItemId.ItemMasterBall,
+            ItemId.ItemNanabBerry,
+            ItemId.ItemPinapBerry,
+            ItemId.ItemRazzBerry,
+            ItemId.ItemUltraBall,
+            ItemId.ItemWeparBerry
+        };
 
         #endregion
 
@@ -40,6 +57,12 @@ namespace PoGo.GameServices
         {
             _usableItems = new ObservableCollectionPlus<ItemData>();
         }
+
+        #endregion
+
+        #region Public Members
+
+
 
         #endregion
 

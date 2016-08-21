@@ -6,6 +6,7 @@ using PoGo.ApiClient.Helpers;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using POGOProtos.Networking.Responses;
+using PoGo.ApiClient.ResponseContainers;
 
 namespace PoGo.ApiClient.Rpc
 {
@@ -15,12 +16,7 @@ namespace PoGo.ApiClient.Rpc
         {
         }
 
-        public async
-            Task
-                <
-                    Tuple
-                        <GetMapObjectsResponse, GetHatchedEggsResponse, GetInventoryResponse, CheckAwardedBadgesResponse,
-                            DownloadSettingsResponse>> GetMapObjects()
+        public async Task <MapResponseContainer> GetMapObjects()
         {
             #region Messages
 
@@ -67,11 +63,10 @@ namespace PoGo.ApiClient.Rpc
                     RequestType = RequestType.DownloadSettings,
                     RequestMessage = downloadSettingsMessage.ToByteString()
                 });
-            return
-                await
-                    PostProtoPayload
-                        <Request, GetMapObjectsResponse, GetHatchedEggsResponse, GetInventoryResponse,
-                            CheckAwardedBadgesResponse, DownloadSettingsResponse>(request);
+
+            var response =  await PostProtoPayload<Request, GetMapObjectsResponse, GetHatchedEggsResponse, 
+                GetInventoryResponse, CheckAwardedBadgesResponse, DownloadSettingsResponse>(request);
+            return new MapResponseContainer(response.Item1, response.Item2, response.Item3, response.Item4, response.Item5);
         }
 
         public async Task<GetIncensePokemonResponse> GetIncensePokemons()

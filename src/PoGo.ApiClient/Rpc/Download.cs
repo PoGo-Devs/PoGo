@@ -25,10 +25,9 @@ namespace PoGo.ApiClient.Rpc
 
         public async Task<DownloadItemTemplatesResponse> GetItemTemplates()
         {
-            return
-                await
-                    PostProtoPayload<Request, DownloadItemTemplatesResponse>(RequestType.DownloadItemTemplates,
-                        new DownloadItemTemplatesMessage());
+            return await PostProtoPayload<Request, DownloadItemTemplatesResponse>(
+                RequestType.DownloadItemTemplates,
+                new DownloadItemTemplatesMessage());
         }
 
         public async Task<DownloadRemoteConfigVersionResponse> GetRemoteConfigVersion(uint appVersion,
