@@ -1,4 +1,4 @@
-#Fixes:
+#Fixes: (e.g: #3)
 
 - Fix 1
 - Fix 2
