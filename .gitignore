@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+.vs
+project.lock.json
+packages
+bin/
+obj/
+/src/PokemonGo/RocketAPI/Proto/google/protobuf
+/Google Protobuf
+/.vs/config/applicationhost.config
+/src/PoGo.Windows/AppPackages
+/src/PoGo.Windows/BundleArtifacts
+*.suo
+*.user
+*.tss
