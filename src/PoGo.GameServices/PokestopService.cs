@@ -1,13 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template10.Mvvm;
+﻿using PoGo.ApiClient.Interfaces;
+using POGOProtos.Data;
+using System.Collections.ObjectModel;
 
 namespace PoGo.GameServices
 {
-    public class PokestopService : BindableBase
+
+    /// <summary>
+    /// Manages the game logic for Pokestops, including Lure Modules and claiming rewards.
+    /// </summary>
+    public class PokestopService : GameServiceBase
     {
+
+        #region Private Members
+
+        ObservableCollectionPlus<PokemonData> _luredPokemon = default(ObservableCollectionPlus<PokemonData>);
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollectionPlus<PokemonData> LuredPokemon
+        {
+            get { return _luredPokemon; }
+            set { Set(ref _luredPokemon, value); }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="PokedexService"/>. 
+        /// </summary>
+        /// <param name="apiClient">The <see cref="IPokemonGoApiClient"/> instance to use for any Pokemon Go API requests.</param>
+
+        public PokestopService(IPokemonGoApiClient apiClient) : base(apiClient)
+        {
+            LuredPokemon = new ObservableCollectionPlus<PokemonData>();
+        }
+
+        #endregion
+
     }
+
 }

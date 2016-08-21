@@ -2,11 +2,14 @@
 using PoGo.ApiClient.Wrappers;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Template10.Mvvm;
 
 namespace PoGo.GameServices
 {
-    public class PokedexService : BindableBase
+
+    /// <summary>
+    /// Manages the game logic for dealing with Pokemon inventory and previous Pokemon encounters.
+    /// </summary>
+    public class PokedexService : GameServiceBase
     {
 
         #region Private Members 
@@ -40,15 +43,6 @@ namespace PoGo.GameServices
 
         #endregion
 
-        #region Internal Properties
-
-        /// <summary>
-        /// The <see cref="IPokemonGoApiClient"/> instance to use to use to get the player's data.
-        /// </summary>
-        internal IPokemonGoApiClient ApiClient { get; }
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
@@ -56,9 +50,8 @@ namespace PoGo.GameServices
         /// </summary>
         /// <param name="apiClient">The <see cref="IPokemonGoApiClient"/> instance to use for any Pokemon Go API requests.</param>
 
-        public PokedexService(IPokemonGoApiClient apiClient)
+        public PokedexService(IPokemonGoApiClient apiClient) : base(apiClient)
         {
-            ApiClient = apiClient;
             PokedexInventory = new ObservableCollectionPlus<PokemonData>();
             PokemonInventory = new ObservableCollectionPlus<PokemonData>();
         }

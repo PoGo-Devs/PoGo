@@ -1,13 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Template10.Mvvm;
+﻿using PoGo.ApiClient.Interfaces;
 
 namespace PoGo.GameServices
 {
-    public class AuthenticationService : BindableBase
+
+    /// <summary>
+    /// Manages the game logic for managing your credentials
+    /// </summary>
+    public class AuthenticationService : GameServiceBase
     {
+
+        #region Constructors
+
+        public AuthenticationService(IPokemonGoApiClient apiClient) : base(apiClient)
+        {
+        }
+
+        #endregion
+
     }
+
 }

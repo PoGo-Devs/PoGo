@@ -110,6 +110,7 @@
     <Compile Include="AuthenticationService.cs" />
     <Compile Include="EncounterService.cs" />
     <Compile Include="EvolutionService.cs" />
+    <Compile Include="GameServiceBase.cs" />
     <Compile Include="HatcheryService.cs" />
     <Compile Include="LocationService.cs" />
     <Compile Include="Extensions\ObservableCollectionPlus.cs" />
