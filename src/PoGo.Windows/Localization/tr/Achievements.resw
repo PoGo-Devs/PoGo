@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BadgeBattleAttackWon" xml:space="preserve">
+    <value>Savaşçı Kız</value>
+  </data>
+  <data name="BadgeBattleTrainingWon" xml:space="preserve">
+    <value>En İyi Eğitmen</value>
+  </data>
+  <data name="BadgeBigMagikarp" xml:space="preserve">
+    <value>Balıkçı</value>
+  </data>
+  <data name="BadgeCaptureTotal" xml:space="preserve">
+    <value>Koleksiyoncu</value>
+  </data>
+  <data name="BadgeEvolvedTotal" xml:space="preserve">
+    <value>Bilim Adamı</value>
+  </data>
+  <data name="BadgeHatchedTotal" xml:space="preserve">
+    <value>Yetiştirici</value>
+  </data>
+  <data name="BadgePikachu" xml:space="preserve">
+    <value>Pikachu</value>
+  </data>
+  <data name="BadgePokedexEntries" xml:space="preserve">
+    <value>Kanto</value>
+  </data>
+  <data name="BadgePokestopsVisited" xml:space="preserve">
+    <value>Çantacı</value>
+  </data>
+  <data name="BadgeSmallRattata" xml:space="preserve">
+    <value>Genç</value>
+  </data>
+  <data name="BadgeTravelKm" xml:space="preserve">
+    <value>Koşucu</value>
+  </data>
+  <data name="Bug" xml:space="preserve">
+    <value>Böcek Yakalayıcı</value>
+  </data>
+  <data name="Dragon" xml:space="preserve">
+    <value>Ejderha Terbiyecisi</value>
+  </data>
+  <data name="Electric" xml:space="preserve">
+    <value>Taşçı</value>
+  </data>
+  <data name="Fairy" xml:space="preserve">
+    <value>Peri Hikayesi Kızı</value>
+  </data>
+  <data name="Fighting" xml:space="preserve">
+    <value>Siyah Kuşak</value>
+  </data>
+  <data name="Fire" xml:space="preserve">
+    <value>Ateşçi</value>
+  </data>
+  <data name="Flying" xml:space="preserve">
+    <value>Kuş Tutucu</value>
+  </data>
+  <data name="Ghost" xml:space="preserve">
+    <value>Büyü Manyağı</value>
+  </data>
+  <data name="Grass" xml:space="preserve">
+    <value>Bahçeci</value>
+  </data>
+  <data name="Ground" xml:space="preserve">
+    <value>Harabe Manyağı</value>
+  </data>
+  <data name="Ice" xml:space="preserve">
+    <value>Kayakçı</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Okul Çocuğu</value>
+  </data>
+  <data name="Poison" xml:space="preserve">
+    <value>Punkçı Kız</value>
+  </data>
+  <data name="Psychic" xml:space="preserve">
+    <value>Psişik</value>
+  </data>
+  <data name="Rock" xml:space="preserve">
+    <value>Tırmanıcı</value>
+  </data>
+  <data name="Steel" xml:space="preserve">
+    <value>Depo Ajanı</value>
+  </data>
+  <data name="Water" xml:space="preserve">
+    <value>Yüzücü</value>
+  </data>
+  <data name="BadgeBattleAttackWonDescription" xml:space="preserve">
+    <value>{0} Gym Savaşı kazanıldı</value>
+  </data>
+  <data name="BadgeBattleTrainingWonDescription" xml:space="preserve">
+    <value>{0} antrenman savaşı kazanıldı</value>
+  </data>
+  <data name="BadgeBigMagikarpDescription" xml:space="preserve">
+    <value>{0} Magikarp yakalandı</value>
+  </data>
+  <data name="BadgeCaptureTotalDescription" xml:space="preserve">
+    <value>{0} Pokémon yakalandı</value>
+  </data>
+  <data name="BadgeEvolvedTotalDescription" xml:space="preserve">
+    <value>{0} Pokémon geliştirildi</value>
+  </data>
+  <data name="BadgeHatchedTotalDescription" xml:space="preserve">
+    <value>{0} Pokémon yumurtadan çıkarıldı</value>
+  </data>
+  <data name="BadgePikachuDescription" xml:space="preserve">
+    <value>{0} Pikachu yakalandı</value>
+  </data>
+  <data name="BadgePokedexEntriesDescription" xml:space="preserve">
+    <value>{0} Pokémon Pokédex'e kaydedildi</value>
+  </data>
+  <data name="BadgePokestopsVisitedDescription" xml:space="preserve">
+    <value>{0} Pokéstops ziyaret edildi</value>
+  </data>
+  <data name="BadgeSmallRattataDescription" xml:space="preserve">
+    <value>{0} Rattata yakalandı</value>
+  </data>
+  <data name="BadgeTravelKmDescription" xml:space="preserve">
+    <value>{0} km yüründü</value>
+  </data>
+  <data name="BugDescription" xml:space="preserve">
+    <value>{0} Böcek Pokémon'u yakalandı</value>
+  </data>
+  <data name="DragonDescription" xml:space="preserve">
+    <value>{0} Ejder Pokémon yakalandı</value>
+  </data>
+  <data name="ElectricDescription" xml:space="preserve">
+    <value>{0} Electrik Pokémon'u yakalandı</value>
+  </data>
+  <data name="FairyDescription" xml:space="preserve">
+    <value>{0} Peri Pokémon yakalandı</value>
+  </data>
+  <data name="FightingDescription" xml:space="preserve">
+    <value>{0} Savaşçı Pokémon yakalandı</value>
+  </data>
+  <data name="FireDescription" xml:space="preserve">
+    <value>{0} Ateş Pokémon'u yakalandı</value>
+  </data>
+  <data name="FlyingDescription" xml:space="preserve">
+    <value>{0} Uçuş Pokémon'u yakalandı</value>
+  </data>
+  <data name="GhostDescription" xml:space="preserve">
+    <value>{0} Hayalet Pokémon yakalandı</value>
+  </data>
+  <data name="GrassDescription" xml:space="preserve">
+    <value>{0} Yaprak Pokémon'u yakalandı</value>
+  </data>
+  <data name="GroundDescription" xml:space="preserve">
+    <value>{0} Yer Pokémon'u yakalandı</value>
+  </data>
+  <data name="IceDescription" xml:space="preserve">
+    <value>{0} Buz Pokémon'u yakalandı</value>
+  </data>
+  <data name="NormalDescription" xml:space="preserve">
+    <value>{0} Normal Pokémon yakalandı</value>
+  </data>
+  <data name="PoisonDescription" xml:space="preserve">
+    <value>{0} Zehir Pokémon'u yakalandı</value>
+  </data>
+  <data name="PsychicDescription" xml:space="preserve">
+    <value>{0} Psişik Pokémon yakalandı</value>
+  </data>
+  <data name="RockDescription" xml:space="preserve">
+    <value>{0} Taş Pokémon'u yakalandı</value>
+  </data>
+  <data name="SteelDescription" xml:space="preserve">
+    <value>{0} Çelik Pokemon'u yakalandı</value>
+  </data>
+  <data name="WaterDescription" xml:space="preserve">
+    <value>{0} Su Pokémon'u yakalandı</value>
+  </data>
+</root>
