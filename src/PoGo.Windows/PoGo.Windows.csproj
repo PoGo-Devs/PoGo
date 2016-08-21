@@ -144,10 +144,6 @@
     <Compile Include="Infrastructure\AsyncSynchronisationContext.cs" />
     <Compile Include="Infrastructure\AutofacDataProvider.cs" />
     <Compile Include="Interfaces\IUpdatable.cs" />
-    <Compile Include="Models\Achievements\AchievementValueAttribute.cs" />
-    <Compile Include="Models\Achievements\BronzeAttribute.cs" />
-    <Compile Include="Models\Achievements\GoldAttribute.cs" />
-    <Compile Include="Models\Achievements\SilverAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
@@ -629,6 +625,7 @@
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Localization\" />
+    <Folder Include="Models\Achievements\" />
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
