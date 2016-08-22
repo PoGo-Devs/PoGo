@@ -7,17 +7,20 @@ using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using System;
 using System.Threading.Tasks;
+using PoGo.ApiClient.Interfaces;
+using PoGo.ApiClient.Proto;
+using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
     public delegate void GoogleDeviceCodeDelegate(string code, string uri);
 
-    public class Login : BaseRpc
+    public class LoginClient : BaseRpc
     {
         //public event GoogleDeviceCodeDelegate GoogleDeviceCodeEvent;
         private readonly ILoginType login;
 
-        public Login(Client client) : base(client)
+        public LoginClient(PokemonGoApiClient client) : base(client)
         {
             login = SetLoginType(client.Settings);
         }
@@ -42,7 +45,7 @@ namespace PoGo.ApiClient.Rpc
             await SetServer().ConfigureAwait(false);                        
         }
 
-        private async Task SetServer()
+        private async Task<ResponseContainer<GetPlayerResponse>> SetServer()
         {
             #region Standard intial request messages in right Order
 
@@ -86,6 +89,10 @@ namespace PoGo.ApiClient.Rpc
 
             var serverResponse = await PostProto<Request>(Resources.RpcUrl, serverRequest);
 
+            //LastRpcRequest = DateTime.Now;
+            //var response = await PostProtoPayload<Request, GetPlayerResponse, GetHatchedEggsResponse,
+            //GetInventoryResponse, CheckAwardedBadgesResponse, DownloadSettingsResponse>(serverRequest);
+
             if (serverResponse.AuthTicket == null)
             {
                 Client.AccessToken = null;
@@ -94,6 +101,9 @@ namespace PoGo.ApiClient.Rpc
 
             Client.AccessToken.AuthTicket = serverResponse.AuthTicket;
             Client.ApiUrl = serverResponse.ApiUrl;
+
+            //return new ResponseContainer<GetPlayerResponse>(response.Item1, response.Item2, response.Item3, response.Item4, response.Item5);
+            return null;
         }
     }
 }

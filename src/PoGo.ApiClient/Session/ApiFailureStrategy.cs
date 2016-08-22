@@ -10,7 +10,7 @@ namespace PoGo.ApiClient.Session
     public class ApiFailureStrategy : IApiFailureStrategy
     {
 
-        private Client _client;
+        private PokemonGoApiClient _client;
 
         private const int MaxRetries = 50;
 
@@ -18,7 +18,7 @@ namespace PoGo.ApiClient.Session
 
         public event EventHandler OnAccessTokenUpdated;
         
-        public ApiFailureStrategy(Client client)
+        public ApiFailureStrategy(PokemonGoApiClient client)
         {
             _client = client;
         }

@@ -3,16 +3,17 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Helpers;
+using PoGo.ApiClient.Interfaces;
+using PoGo.ApiClient.Proto;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using POGOProtos.Networking.Responses;
-using PoGo.ApiClient.ResponseContainers;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class Map : BaseRpc
+    public class MapClient : BaseRpc, IMap
     {
-        public Map(Client client) : base(client)
+        public MapClient(PokemonGoApiClient client) : base(client)
         {
         }
 

@@ -13,7 +13,7 @@ namespace PoGo.ApiClient.Rpc
 
         #region Private Members
         
-        protected Client Client;
+        protected PokemonGoApiClient Client;
 
         private string ApiUrl => $"https://{Client.ApiUrl}/rpc";
 
@@ -24,11 +24,11 @@ namespace PoGo.ApiClient.Rpc
         /// <summary>
         /// 
         /// </summary>
-        public static DateTime LastRpcRequest { get; private set; }
+        public static DateTime LastRpcRequest { get; internal set; }
 
         #endregion
 
-        protected BaseRpc(Client client)
+        protected BaseRpc(PokemonGoApiClient client)
         {
             Client = client;
         }

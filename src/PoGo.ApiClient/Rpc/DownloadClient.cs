@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoGo.ApiClient.Interfaces;
 using POGOProtos.Enums;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
@@ -7,9 +8,9 @@ using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class Download : BaseRpc
+    public class DownloadClient : BaseRpc, IDownload
     {
-        public Download(Client client) : base(client)
+        public DownloadClient(PokemonGoApiClient client) : base(client)
         {
         }
 

@@ -53,7 +53,7 @@ namespace PoGo.Windows.ViewModels
                 Value = "Designtime value";
                 if (PokedexService == null)
                 {
-                    PokedexService = new PokedexService(new PokemonGoApiClient());
+                    PokedexService = new PokedexService(new PokemonGoApiClient(null, null, null));
                 }
                 PokedexService.PokedexInventory.Add(new PokemonData("Abra"));
                 PokedexService.PokedexInventory.Add(new PokemonData("Pikachu"));

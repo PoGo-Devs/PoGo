@@ -66,8 +66,8 @@ namespace PoGo.GameServices
         /// <returns>A <see cref="Task"/> containing the results of the awaitable call.</returns>
         public async Task GetPokedexInventory()
         {
-            var results = await ApiClient.GetPokedexInventoryAsync();
-            PokedexInventory.AddRange(results);
+            //var results = await ApiClient.GetPokedexInventoryAsync();
+            //PokedexInventory.AddRange(results);
         }
 
         /// <summary>
@@ -76,8 +76,8 @@ namespace PoGo.GameServices
         /// <returns>A <see cref="Task"/> containing the results of the awaitable call.</returns>
         public async Task GetPokemonInventory()
         {
-            var results = await ApiClient.GetPokemonInventoryAsync();
-            PokemonInventory.AddRange(results);
+            //var results = await ApiClient.GetPokemonInventoryAsync();
+            //PokemonInventory.AddRange(results);
         }
 
         #endregion

@@ -7,7 +7,7 @@ namespace PoGo.ApiClient.Rpc
 {
     public class Misc : BaseRpc
     {
-        public Misc(Client client) : base(client)
+        public Misc(PokemonGoApiClient client) : base(client)
         {
         }
 
