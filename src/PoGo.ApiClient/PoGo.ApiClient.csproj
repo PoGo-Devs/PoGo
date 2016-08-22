@@ -108,7 +108,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiClient.cs" />
+    <Compile Include="PokemonGoApiClient.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Enums\AuthType.cs" />
@@ -281,6 +281,7 @@
     <Compile Include="Proto\Networking\Requests\Messages\UseItemXpBoostMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Request.cs" />
     <Compile Include="Proto\Networking\Requests\RequestType.cs" />
+    <Compile Include="Proto\ResponseContainer.cs" />
     <Compile Include="Proto\Networking\Responses\AddFortModifierResponse.cs" />
     <Compile Include="Proto\Networking\Responses\AttackGymResponse.cs" />
     <Compile Include="Proto\Networking\Responses\CatchPokemonResponse.cs" />

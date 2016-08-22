@@ -39,14 +39,12 @@ namespace PoGo.ApiClient.Extensions
             }
             var urlArray = new[] { url };
             ResponseEnvelope response;
-            while ((response = await PostProto<TRequest>(client, urlArray[0], requestEnvelope)).Returns.Count !=
-                   responseTypes.Length)
+            while ((response = await PostProto<TRequest>(client, urlArray[0], requestEnvelope)).Returns.Count != responseTypes.Length)
             {
                 var operation = await strategy.HandleApiFailure(urlArray, requestEnvelope, response);
                 if (operation == ApiOperation.Abort)
                 {
-                    throw new InvalidResponseException(
-                        $"Expected {responseTypes.Length} responses, but got {response.Returns.Count} responses");
+                    throw new InvalidResponseException($"Expected {responseTypes.Length} responses, but got {response.Returns.Count} responses.");
                 }
             }
 

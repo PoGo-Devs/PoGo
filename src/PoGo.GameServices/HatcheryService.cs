@@ -67,7 +67,6 @@ namespace PoGo.GameServices
 
         #endregion
 
-
     }
 
 }
