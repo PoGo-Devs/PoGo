@@ -16,7 +16,7 @@ namespace PoGo.ApiClient.Rpc
         {
         }
 
-        public async Task <MapResponseContainer> GetMapObjects()
+        public async Task<ResponseContainer<GetMapObjectsResponse>> GetMapObjects()
         {
             #region Messages
 
@@ -66,7 +66,7 @@ namespace PoGo.ApiClient.Rpc
 
             var response =  await PostProtoPayload<Request, GetMapObjectsResponse, GetHatchedEggsResponse, 
                 GetInventoryResponse, CheckAwardedBadgesResponse, DownloadSettingsResponse>(request);
-            return new MapResponseContainer(response.Item1, response.Item2, response.Item3, response.Item4, response.Item5);
+            return new ResponseContainer<GetMapObjectsResponse>(response.Item1, response.Item2, response.Item3, response.Item4, response.Item5);
         }
 
         public async Task<GetIncensePokemonResponse> GetIncensePokemons()

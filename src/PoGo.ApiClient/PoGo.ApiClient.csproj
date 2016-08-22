@@ -281,7 +281,7 @@
     <Compile Include="Proto\Networking\Requests\Messages\UseItemXpBoostMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Request.cs" />
     <Compile Include="Proto\Networking\Requests\RequestType.cs" />
-    <Compile Include="ResponseContainers\MapResponseContainer.cs" />
+    <Compile Include="Proto\ResponseContainer.cs" />
     <Compile Include="Proto\Networking\Responses\AddFortModifierResponse.cs" />
     <Compile Include="Proto\Networking\Responses\AttackGymResponse.cs" />
     <Compile Include="Proto\Networking\Responses\CatchPokemonResponse.cs" />

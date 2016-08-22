@@ -1,4 +1,5 @@
-﻿using POGOProtos.Networking.Responses;
+﻿using Google.Protobuf;
+using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.ResponseContainers
 {
@@ -6,7 +7,7 @@ namespace PoGo.ApiClient.ResponseContainers
     /// <summary>
     /// Holds the batch responses for Map requests.
     /// </summary>
-    public class MapResponseContainer
+    public class ResponseContainer<TPrimaryResponse> where TPrimaryResponse : IMessage<TPrimaryResponse>
     {
 
         #region Properties
@@ -14,7 +15,7 @@ namespace PoGo.ApiClient.ResponseContainers
         /// <summary>
         /// 
         /// </summary>
-        public GetMapObjectsResponse MapObjectsResponse { get; set; }
+        public TPrimaryResponse PrimaryResponse { get; set; }
 
         /// <summary>
         /// 
@@ -48,11 +49,11 @@ namespace PoGo.ApiClient.ResponseContainers
         /// <param name="inventoryResponse"></param>
         /// <param name="awardedBadgesResponse"></param>
         /// <param name="downloadSettingsResponse"></param>
-        public MapResponseContainer(GetMapObjectsResponse mapObjectsResponse, GetHatchedEggsResponse hatchedEggsResponse, 
+        public ResponseContainer(TPrimaryResponse primaryResponse, GetHatchedEggsResponse hatchedEggsResponse, 
             GetInventoryResponse inventoryResponse, CheckAwardedBadgesResponse awardedBadgesResponse, 
             DownloadSettingsResponse downloadSettingsResponse)
         {
-            MapObjectsResponse = mapObjectsResponse;
+            PrimaryResponse = primaryResponse;
             HatchedEggsResponse = hatchedEggsResponse;
             InventoryResponse = inventoryResponse;
             AwardedBadgesResponse = awardedBadgesResponse;
