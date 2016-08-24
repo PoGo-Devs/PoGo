@@ -1,4 +1,4 @@
-﻿using PoGo.ApiClient.Extensions;
+﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Networking.Envelopes;
 using System;
 using System.Text.RegularExpressions;

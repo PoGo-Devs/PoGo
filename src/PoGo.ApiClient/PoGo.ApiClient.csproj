@@ -108,6 +108,8 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\ApiOperation.cs" />
+    <Compile Include="Interfaces\IApiFailureStrategy.cs" />
     <Compile Include="Interfaces\IPokemonGoApiClient.cs" />
     <Compile Include="PokemonGoApiClient.cs" />
     <Compile Include="Constants.cs" />
@@ -120,7 +122,6 @@
     <Compile Include="Exceptions\LoginFailedException.cs" />
     <Compile Include="Exceptions\PTCOfflineException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
-    <Compile Include="Extensions\HttpClientExtensions.cs" />
     <Compile Include="Helpers\Crypt.cs" />
     <Compile Include="Helpers\HttpClientHelper.cs" />
     <Compile Include="Helpers\IDeviceInfos.cs" />
