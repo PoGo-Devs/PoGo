@@ -1,0 +1,12 @@
+{
+ "minimum_version": "1.0.26",
+ "unknown25": 7363665268261374000,
+ "version_number": 3500,
+ "latest_release": {
+   "version_number": "1.0.25",
+   "setup_file": "http://pogo{arch}.appx",
+   "dependencies": [
+     "http://dep{arch}.appx"
+   ]
+ }
+}
