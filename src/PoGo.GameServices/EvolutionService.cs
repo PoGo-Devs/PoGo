@@ -13,7 +13,7 @@ namespace PoGo.GameServices
 
         #region Private Members
 
-        ObservableCollectionPlus<Candy> _pokemonCandies;
+        private ObservableCollectionPlus<Candy> _pokemonCandies;
 
         #endregion
 
@@ -41,6 +41,18 @@ namespace PoGo.GameServices
         public EvolutionService(IPokemonGoApiClient apiClient) : base(apiClient)
         {
             PokemonCandies = new ObservableCollectionPlus<Candy>();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void ResetState()
+        {
+            PokemonCandies.Clear();
         }
 
         #endregion

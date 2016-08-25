@@ -13,9 +13,9 @@ namespace PoGo.GameServices
 
         #region Private Members
 
-        InventoryDelta _levelUpRewards;
-        PlayerService _profile;
-        PlayerStats _stats;
+        private InventoryDelta _levelUpRewards;
+        private PlayerService _profile;
+        private PlayerStats _stats;
 
         #endregion
 
@@ -68,6 +68,15 @@ namespace PoGo.GameServices
 
         #region Public Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void ResetState()
+        {
+            LevelUpRewards = null;
+            Profile = null;
+            Stats = null;
+        }
 
         #endregion
 

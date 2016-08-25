@@ -80,6 +80,15 @@ namespace PoGo.GameServices
             //PokemonInventory.AddRange(results);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void ResetState()
+        {
+            PokedexInventory.Clear();
+            PokemonInventory.Clear();
+        }
+
         #endregion
 
         #region Private Methods

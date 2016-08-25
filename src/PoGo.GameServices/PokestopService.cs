@@ -13,7 +13,7 @@ namespace PoGo.GameServices
 
         #region Private Members
 
-        ObservableCollectionPlus<PokemonData> _luredPokemon = default(ObservableCollectionPlus<PokemonData>);
+        private ObservableCollectionPlus<PokemonData> _luredPokemon = default(ObservableCollectionPlus<PokemonData>);
 
         #endregion
 
@@ -40,6 +40,18 @@ namespace PoGo.GameServices
         public PokestopService(IPokemonGoApiClient apiClient) : base(apiClient)
         {
             LuredPokemon = new ObservableCollectionPlus<PokemonData>();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void ResetState()
+        {
+            LuredPokemon.Clear();
         }
 
         #endregion
