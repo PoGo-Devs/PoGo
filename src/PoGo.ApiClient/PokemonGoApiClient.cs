@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using POGOProtos.Inventory;
 
 namespace PoGo.ApiClient
 {
@@ -156,6 +157,23 @@ namespace PoGo.ApiClient
 
         #endregion
 
+        #region Events
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>These might not stay here, we'll see how the pattern plays out.</remarks>
+        public event EventHandler<InventoryDelta> InventoryReceived;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <remarks>These might not stay here, we'll see how the pattern plays out.</remarks>
+        void RaiseInventoryReceived(InventoryDelta value) => InventoryReceived?.Invoke(this, value);  
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -171,7 +189,7 @@ namespace PoGo.ApiClient
             ApiFailure = apiFailureStrategy;
             AccessToken = accessToken;
 
-            CancellationToken = new CancellationToken();
+            CancellationTokenSource = new CancellationTokenSource();
             RequestQueue = new BlockingCollection<RequestEnvelope>();
 
             Login = new Rpc.LoginClient(this);
@@ -192,7 +210,7 @@ namespace PoGo.ApiClient
         #region Public Methods
 
         /// <summary>
-        /// Triggeres any currently-executing requests to cancel ASAP. This will also have the effect of clearing the <see cref="RequestQueue"/>.
+        /// Triggers any currently-executing requests to cancel ASAP. This will also have the effect of clearing the <see cref="RequestQueue"/>.
         /// </summary>
         public void CancelCurrentRequests()
         {
