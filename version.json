@@ -1,12 +1,11 @@
 {
- "minimum_version": "1.0.26",
+ "minimum_version": "1.0.27",
  "unknown25": 7363665268261374000,
  "version_number": 3500,
  "latest_release": {
-   "version_number": "1.0.25",
-   "setup_file": "http://pogo{arch}.appx",
+   "version": "1.0.27",
+   "setup_file": "https://github.com/WallyCZ/PoGo-UWP/releases/download/v1.0.26-test/PokemonGo-UWP_1.0.26.0_{arch}.appxbundle",
    "dependencies": [
-     "http://dep{arch}.appx"
    ]
  }
 }
