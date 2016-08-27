@@ -1,11 +1,10 @@
 ﻿using Google.Protobuf;
 using PoGo.ApiClient.Enums;
-using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Helpers;
-using PoGo.ApiClient.HttpClient;
 using PoGo.ApiClient.Interfaces;
 using PoGo.ApiClient.Rpc;
 using PoGo.ApiClient.Session;
+using POGOProtos.Inventory;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
@@ -14,7 +13,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using POGOProtos.Inventory;
 
 namespace PoGo.ApiClient
 {
@@ -40,8 +38,7 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthToken, AuthType, CurrentLatitude, CurrentLongitude,
-            CurrentAltitude, DeviceInfo, AuthTicket);
+        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthToken, AuthType, CurrentLatitude, CurrentLongitude, CurrentAccuracy, DeviceInfo, AuthTicket);
 
         /// <summary>
         /// 
@@ -103,6 +100,12 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
+        public double CurrentAccuracy { get; internal set; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         public IDeviceInfo DeviceInfo { get; }
 
         /// <summary>
@@ -158,7 +161,7 @@ namespace PoGo.ApiClient
         #endregion
 
         #region Events
-        
+
         /// <summary>
         /// 
         /// </summary>

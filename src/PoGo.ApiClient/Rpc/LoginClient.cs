@@ -1,15 +1,12 @@
 ﻿using Google.Protobuf;
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Exceptions;
-using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Login;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using System;
 using System.Threading.Tasks;
 using PoGo.ApiClient.Interfaces;
-using PoGo.ApiClient.Proto;
-using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
@@ -41,57 +38,30 @@ namespace PoGo.ApiClient.Rpc
         public async Task DoLogin()
         {
             if (Client.AccessToken == null || Client.AccessToken.IsExpired)
-                Client.AccessToken = await login.GetAccessToken().ConfigureAwait(false);            
+            {
+                Client.AccessToken = await login.GetAccessToken().ConfigureAwait(false);
+            }
+            ///robertmclaws: Is it really necessary to put this in a separate function?
             await SetServer().ConfigureAwait(false);                        
         }
 
-        private async Task<ResponseContainer<GetPlayerResponse>> SetServer()
+        private async Task SetServer()
         {
-            #region Standard intial request messages in right Order
-
-            var getPlayerMessage = new GetPlayerMessage();
-            var getHatchedEggsMessage = new GetHatchedEggsMessage();
-            var getInventoryMessage = new GetInventoryMessage
-            {
-                LastTimestampMs = DateTime.UtcNow.ToUnixTime()
-            };
-            var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
-            var downloadSettingsMessage = new DownloadSettingsMessage
-            {
-                Hash = "05daf51635c82611d1aac95c0b051d3ec088a930"
-            };
-
-            #endregion
 
             var serverRequest = RequestBuilder.GetInitialRequestEnvelope(
                 new Request
                 {
                     RequestType = RequestType.GetPlayer,
-                    RequestMessage = getPlayerMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.GetHatchedEggs,
-                    RequestMessage = getHatchedEggsMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.GetInventory,
-                    RequestMessage = getInventoryMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.CheckAwardedBadges,
-                    RequestMessage = checkAwardedBadgesMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.DownloadSettings,
-                    RequestMessage = downloadSettingsMessage.ToByteString()
-                });
-
+                    RequestMessage = new GetPlayerMessage().ToByteString()
+                }
+            );
 
             var serverResponse = await PostProto<Request>(Resources.RpcUrl, serverRequest);
 
-            //LastRpcRequest = DateTime.Now;
-            //var response = await PostProtoPayload<Request, GetPlayerResponse, GetHatchedEggsResponse,
-            //GetInventoryResponse, CheckAwardedBadgesResponse, DownloadSettingsResponse>(serverRequest);
+            if(serverRequest.StatusCode == (int) StatusCode.AccessDenied)
+            {
+                throw new AccountLockedException();
+            }
 
             if (serverResponse.AuthTicket == null)
             {
@@ -100,10 +70,11 @@ namespace PoGo.ApiClient.Rpc
             }
 
             Client.AccessToken.AuthTicket = serverResponse.AuthTicket;
-            Client.ApiUrl = serverResponse.ApiUrl;
 
-            //return new ResponseContainer<GetPlayerResponse>(response.Item1, response.Item2, response.Item3, response.Item4, response.Item5);
-            return null;
+            if (serverResponse.StatusCode == (int)StatusCode.Redirect)
+            {
+                Client.ApiUrl = serverResponse.ApiUrl;
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using PoGo.ApiClient.Interfaces;
-using PoGo.ApiClient.Wrappers;
+using POGOProtos.Data;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 

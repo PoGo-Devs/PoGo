@@ -1,5 +1,4 @@
 ﻿using Google.Protobuf;
-using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Helpers;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
@@ -34,7 +33,7 @@ namespace PoGo.ApiClient.Rpc
         }
 
         protected RequestBuilder RequestBuilder => new RequestBuilder(Client.AuthToken, Client.AuthType, 
-            Client.CurrentLatitude, Client.CurrentLongitude, Client.CurrentAltitude, Client.DeviceInfo, Client.AuthTicket);
+            Client.CurrentLatitude, Client.CurrentLongitude, Client.CurrentAccuracy, Client.DeviceInfo, Client.AuthTicket);
 
 
         protected async Task<TResponsePayload> PostProtoPayload<TRequest, TResponsePayload>(RequestType type, IMessage message)

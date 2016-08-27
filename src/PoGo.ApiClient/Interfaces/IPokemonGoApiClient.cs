@@ -1,5 +1,4 @@
 ﻿using PoGo.ApiClient.Enums;
-using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Helpers;
 using PoGo.ApiClient.Rpc;
 using PoGo.ApiClient.Session;

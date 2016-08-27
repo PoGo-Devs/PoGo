@@ -1,4 +1,4 @@
-﻿namespace PoGo.ApiClient
+﻿namespace PoGo.ApiClient.Enums
 {
     public enum ApiOperation
     {

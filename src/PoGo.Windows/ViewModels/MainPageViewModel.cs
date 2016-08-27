@@ -1,6 +1,7 @@
 using PoGo.ApiClient;
-using PoGo.ApiClient.Wrappers;
 using PoGo.GameServices;
+using POGOProtos.Data;
+using POGOProtos.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,9 +56,9 @@ namespace PoGo.Windows.ViewModels
                 {
                     PokedexService = new PokedexService(new PokemonGoApiClient(null, null, null));
                 }
-                PokedexService.PokedexInventory.Add(new PokemonData("Abra"));
-                PokedexService.PokedexInventory.Add(new PokemonData("Pikachu"));
-                PokedexService.PokemonInventory.Add(new PokemonData("Abra"));
+                PokedexService.PokedexInventory.Add(new PokemonData { PokemonId = PokemonId.Abra });
+                PokedexService.PokedexInventory.Add(new PokemonData { PokemonId = PokemonId.Charmander });
+                PokedexService.PokedexInventory.Add(new PokemonData { PokemonId = PokemonId.Pikachu });
             }
         }
 

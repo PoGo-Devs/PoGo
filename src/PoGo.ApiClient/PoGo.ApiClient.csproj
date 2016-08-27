@@ -109,8 +109,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\ApiOperation.cs" />
+    <Compile Include="Enums\StatusCode.cs" />
+    <Compile Include="Exceptions\AccountLockedException.cs" />
+    <Compile Include="Exceptions\ApiNonRecoverableException.cs" />
     <Compile Include="Interfaces\IApiFailureStrategy.cs" />
     <Compile Include="Interfaces\IPokemonGoApiClient.cs" />
+    <Compile Include="Login\PtcAuthenticationTicketResponse.cs" />
+    <Compile Include="Login\PtcLoginParameters.cs" />
     <Compile Include="PokemonGoApiClient.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Enums\AuthType.cs" />
@@ -123,7 +128,6 @@
     <Compile Include="Exceptions\PTCOfflineException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Helpers\Crypt.cs" />
-    <Compile Include="Helpers\HttpClientHelper.cs" />
     <Compile Include="Helpers\IDeviceInfos.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
@@ -154,12 +158,14 @@
     <Compile Include="Proto\Data\Battle\BattleResults.cs" />
     <Compile Include="Proto\Data\Battle\BattleState.cs" />
     <Compile Include="Proto\Data\Battle\BattleType.cs" />
+    <Compile Include="Proto\Data\BuddyPokemon.cs" />
     <Compile Include="Proto\Data\Capture\CaptureAward.cs" />
     <Compile Include="Proto\Data\Capture\CaptureProbability.cs" />
     <Compile Include="Proto\Data\DownloadUrlEntry.cs" />
     <Compile Include="Proto\Data\Gym\GymMembership.cs" />
     <Compile Include="Proto\Data\Gym\GymState.cs" />
     <Compile Include="Proto\Data\Logs\ActionLogEntry.cs" />
+    <Compile Include="Proto\Data\Logs\BuddyPokemonLogEntry.cs" />
     <Compile Include="Proto\Data\Logs\CatchPokemonLogEntry.cs" />
     <Compile Include="Proto\Data\Logs\FortSearchLogEntry.cs" />
     <Compile Include="Proto\Data\PlayerBadge.cs" />
@@ -231,6 +237,7 @@
     <Compile Include="Proto\Networking\Requests\Messages\AttackGymMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CatchPokemonMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CheckAwardedBadgesMessage.cs" />
+    <Compile Include="Proto\Networking\Requests\Messages\CheckChallenge.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CheckCodenameAvailableMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\ClaimCodenameMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CollectDailyBonusMessage.cs" />
@@ -249,6 +256,7 @@
     <Compile Include="Proto\Networking\Requests\Messages\FortRecallPokemonMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\FortSearchMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\GetAssetDigestMessage.cs" />
+    <Compile Include="Proto\Networking\Requests\Messages\GetBuddyWalked.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\GetDownloadUrlsMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\GetGymDetailsMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\GetHatchedEggsMessage.cs" />
@@ -262,10 +270,12 @@
     <Compile Include="Proto\Networking\Requests\Messages\LevelUpRewardsMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\MarkTutorialCompleteMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\NicknamePokemonMessage.cs" />
+    <Compile Include="Proto\Networking\Requests\Messages\PlayerLocaleMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\PlayerUpdateMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\RecycleInventoryItemMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\ReleasePokemonMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\SetAvatarMessage.cs" />
+    <Compile Include="Proto\Networking\Requests\Messages\SetBuddyPokemon.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\SetContactSettingsMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\SetFavoritePokemonMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\SetPlayerTeamMessage.cs" />
@@ -279,8 +289,13 @@
     <Compile Include="Proto\Networking\Requests\Messages\UseItemPotionMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\UseItemReviveMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\UseItemXpBoostMessage.cs" />
+    <Compile Include="Proto\Networking\Requests\Messages\VerifyChallenge.cs" />
     <Compile Include="Proto\Networking\Requests\Request.cs" />
     <Compile Include="Proto\Networking\Requests\RequestType.cs" />
+    <Compile Include="Proto\Networking\Responses\CheckChallengeResponse.cs" />
+    <Compile Include="Proto\Networking\Responses\GetBuddyWalkedResponse.cs" />
+    <Compile Include="Proto\Networking\Responses\SetBuddyPokemonResponse.cs" />
+    <Compile Include="Proto\Networking\Responses\VerifyChallengeResponse.cs" />
     <Compile Include="Proto\ResponseContainer.cs" />
     <Compile Include="Proto\Networking\Responses\AddFortModifierResponse.cs" />
     <Compile Include="Proto\Networking\Responses\AttackGymResponse.cs" />
@@ -387,7 +402,6 @@
     <Compile Include="Rpc\PlayerClient.cs" />
     <Compile Include="Session\AccessToken.cs" />
     <Compile Include="Session\ApiFailureStrategy.cs" />
-    <Compile Include="Wrappers\PokemonData.cs" />
     <EmbeddedResource Include="Properties\PoGo.ApiClient.rd.xml" />
   </ItemGroup>
   <ItemGroup />

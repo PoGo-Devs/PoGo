@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Exceptions;
 using PoGo.ApiClient.Helpers;
 using PoGo.ApiClient.Interfaces;
@@ -9,9 +10,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace PoGo.ApiClient.HttpClient
+namespace PoGo.ApiClient
 {
-    public class PokemonHttpClient : System.Net.Http.HttpClient
+    public class PokemonHttpClient : HttpClient
     {
 
         #region Static Members

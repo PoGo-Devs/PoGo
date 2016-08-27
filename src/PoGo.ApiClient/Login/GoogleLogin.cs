@@ -1,11 +1,10 @@
-﻿using DankMemes.GPSOAuthSharp;
-using PoGo.ApiClient.Enums;
-using PoGo.ApiClient.Exceptions;
-using PoGo.ApiClient.Extensions;
-using PoGo.ApiClient.Session;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Windows.System;
+using DankMemes.GPSOAuthSharp;
+using PoGo.ApiClient.Session;
+using PoGo.ApiClient.Exceptions;
+using PoGo.ApiClient.Enums;
 
 namespace PoGo.ApiClient.Login
 {
@@ -64,7 +63,7 @@ namespace PoGo.ApiClient.Login
             {
                 Username = _email,
                 Token = oauthResponse["Auth"],
-                Expiry = DateTimeExtensions.GetDateTimeFromSeconds(int.Parse(oauthResponse["Expiry"])),
+                ExpiresUtc = DateTimeExtensions.GetDateTimeFromSeconds(int.Parse(oauthResponse["Expiry"])),
                 AuthType = AuthType.Google
             };
         }

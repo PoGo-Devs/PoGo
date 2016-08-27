@@ -7,6 +7,8 @@ namespace PoGo.ApiClient.Interfaces
 {
     public interface IDownload
     {
+        string DownloadSettingsHash { get; set; }
+
         Task<DownloadSettingsResponse> GetSettings();
         Task<DownloadItemTemplatesResponse> GetItemTemplates();
 
