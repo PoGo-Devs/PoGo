@@ -114,6 +114,13 @@ namespace PoGo.ApiClient
         public async Task<ResponseEnvelope> PostProto<TRequest>(string url, RequestEnvelope requestEnvelope)
             where TRequest : IMessage<TRequest>
         {
+
+            //// robertmclaws: Let's be pro-active about token failures, instead of reactive.
+            //if (AccessToken == null || AccessToken.IsExpired)
+            //{
+            //    await Login.DoLogin();
+            //}
+
             //Encode payload and put in envelop, then send
             var data = requestEnvelope.ToByteString();
             var result = await PostAsync(url, new ByteArrayContent(data.ToByteArray()));

@@ -314,6 +314,22 @@ namespace PoGo.ApiClient
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        private async Task<bool> ProcessResponse(ResponseEnvelope response)
+        {
+            // Per @wallycz, on code 502, wait 11 seconds before sending the request again.
+            if (response.StatusCode == 502)
+            {
+                await Task.Delay(11000);
+                return false;
+            }
+            return false;
+        }
+
         #endregion
 
     }

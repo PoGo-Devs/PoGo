@@ -92,7 +92,7 @@ namespace PoGo.ApiClient.Session
                 case StatusCode.ServerOverloaded:
                     // Slow servers?
                     Logger.Write("Server may be slow, let's wait a little bit");
-                    await Task.Delay(2000);
+                    await Task.Delay(11000);
                     break;
                 case StatusCode.Redirect:
                     // New RPC url
