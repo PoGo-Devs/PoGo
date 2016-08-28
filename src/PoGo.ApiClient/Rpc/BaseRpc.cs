@@ -1,5 +1,4 @@
 ﻿using Google.Protobuf;
-using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Helpers;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
@@ -13,7 +12,7 @@ namespace PoGo.ApiClient.Rpc
 
         #region Private Members
         
-        protected Client Client;
+        protected PokemonGoApiClient Client;
 
         private string ApiUrl => $"https://{Client.ApiUrl}/rpc";
 
@@ -24,17 +23,17 @@ namespace PoGo.ApiClient.Rpc
         /// <summary>
         /// 
         /// </summary>
-        public static DateTime LastRpcRequest { get; private set; }
+        public static DateTime LastRpcRequest { get; internal set; }
 
         #endregion
 
-        protected BaseRpc(Client client)
+        protected BaseRpc(PokemonGoApiClient client)
         {
             Client = client;
         }
 
         protected RequestBuilder RequestBuilder => new RequestBuilder(Client.AuthToken, Client.AuthType, 
-            Client.CurrentLatitude, Client.CurrentLongitude, Client.CurrentAltitude, Client.DeviceInfo, Client.AuthTicket);
+            Client.CurrentLatitude, Client.CurrentLongitude, Client.CurrentAccuracy, Client.DeviceInfo, Client.AuthTicket);
 
 
         protected async Task<TResponsePayload> PostProtoPayload<TRequest, TResponsePayload>(RequestType type, IMessage message)

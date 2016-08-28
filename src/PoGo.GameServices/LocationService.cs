@@ -13,9 +13,9 @@ namespace PoGo.GameServices
 
         #region Private Members
 
-        ObservableCollectionPlus<PokemonData> _catchablePokemon = default(ObservableCollectionPlus<PokemonData>);
-        ObservableCollectionPlus<PokemonData> _nearbyPokemon = default(ObservableCollectionPlus<PokemonData>);
-        ObservableCollectionPlus<PokemonData> _nearbyPokestops = default(ObservableCollectionPlus<PokemonData>);
+        private ObservableCollectionPlus<PokemonData> _catchablePokemon = default(ObservableCollectionPlus<PokemonData>);
+        private ObservableCollectionPlus<PokemonData> _nearbyPokemon = default(ObservableCollectionPlus<PokemonData>);
+        private ObservableCollectionPlus<PokemonData> _nearbyPokestops = default(ObservableCollectionPlus<PokemonData>);
 
         #endregion
 
@@ -62,6 +62,20 @@ namespace PoGo.GameServices
             CatchablePokemon = new ObservableCollectionPlus<PokemonData>();
             NearbyPokemon = new ObservableCollectionPlus<PokemonData>();
             NearbyPokestops = new ObservableCollectionPlus<PokemonData>();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void ResetState()
+        {
+            CatchablePokemon.Clear();
+            NearbyPokemon.Clear();
+            NearbyPokestops.Clear();
         }
 
         #endregion

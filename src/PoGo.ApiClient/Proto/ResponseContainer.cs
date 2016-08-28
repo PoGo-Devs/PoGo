@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf;
 using POGOProtos.Networking.Responses;
 
-namespace PoGo.ApiClient.ResponseContainers
+namespace PoGo.ApiClient.Proto
 {
 
     /// <summary>

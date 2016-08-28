@@ -1,23 +1,23 @@
 ﻿using Google.Protobuf;
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Exceptions;
-using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Login;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using System;
 using System.Threading.Tasks;
+using PoGo.ApiClient.Interfaces;
 
 namespace PoGo.ApiClient.Rpc
 {
     public delegate void GoogleDeviceCodeDelegate(string code, string uri);
 
-    public class Login : BaseRpc
+    public class LoginClient : BaseRpc
     {
         //public event GoogleDeviceCodeDelegate GoogleDeviceCodeEvent;
         private readonly ILoginType login;
 
-        public Login(Client client) : base(client)
+        public LoginClient(PokemonGoApiClient client) : base(client)
         {
             login = SetLoginType(client.Settings);
         }
@@ -38,53 +38,35 @@ namespace PoGo.ApiClient.Rpc
         public async Task DoLogin()
         {
             if (Client.AccessToken == null || Client.AccessToken.IsExpired)
-                Client.AccessToken = await login.GetAccessToken().ConfigureAwait(false);            
+            {
+                Client.AccessToken = await login.GetAccessToken().ConfigureAwait(false);
+            }
+            ///robertmclaws: Is it really necessary to put this in a separate function?
             await SetServer().ConfigureAwait(false);                        
         }
 
         private async Task SetServer()
         {
-            #region Standard intial request messages in right Order
-
-            var getPlayerMessage = new GetPlayerMessage();
-            var getHatchedEggsMessage = new GetHatchedEggsMessage();
-            var getInventoryMessage = new GetInventoryMessage
-            {
-                LastTimestampMs = DateTime.UtcNow.ToUnixTime()
-            };
-            var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
-            var downloadSettingsMessage = new DownloadSettingsMessage
-            {
-                Hash = "05daf51635c82611d1aac95c0b051d3ec088a930"
-            };
-
-            #endregion
 
             var serverRequest = RequestBuilder.GetInitialRequestEnvelope(
                 new Request
                 {
                     RequestType = RequestType.GetPlayer,
-                    RequestMessage = getPlayerMessage.ToByteString()
-                }, new Request
+                    RequestMessage = new GetPlayerMessage().ToByteString()
+                },
+                new Request
                 {
-                    RequestType = RequestType.GetHatchedEggs,
-                    RequestMessage = getHatchedEggsMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.GetInventory,
-                    RequestMessage = getInventoryMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.CheckAwardedBadges,
-                    RequestMessage = checkAwardedBadgesMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.DownloadSettings,
-                    RequestMessage = downloadSettingsMessage.ToByteString()
-                });
-
+                    RequestType = RequestType.CheckChallenge,
+                    RequestMessage = new CheckChallengeMessage().ToByteString()
+                }
+            );
 
             var serverResponse = await PostProto<Request>(Resources.RpcUrl, serverRequest);
+
+            if(serverRequest.StatusCode == (int) StatusCode.AccessDenied)
+            {
+                throw new AccountLockedException();
+            }
 
             if (serverResponse.AuthTicket == null)
             {
@@ -93,7 +75,11 @@ namespace PoGo.ApiClient.Rpc
             }
 
             Client.AccessToken.AuthTicket = serverResponse.AuthTicket;
-            Client.ApiUrl = serverResponse.ApiUrl;
+
+            if (serverResponse.StatusCode == (int)StatusCode.Redirect)
+            {
+                Client.ApiUrl = serverResponse.ApiUrl;
+            }
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using Google.Protobuf;
 using PoGo.ApiClient.Enums;
-using PoGo.ApiClient.Extensions;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using static POGOProtos.Networking.Envelopes.RequestEnvelope.Types;
@@ -11,7 +10,7 @@ namespace PoGo.ApiClient.Helpers
 {
     public class RequestBuilder
     {
-        private readonly double _altitude;
+        private readonly double _accuracy;
         private readonly AuthTicket _authTicket;
         private readonly string _authToken;
         private readonly AuthType _authType;
@@ -19,9 +18,9 @@ namespace PoGo.ApiClient.Helpers
         private readonly double _latitude;
         private readonly double _longitude;
         private readonly Random _random = new Random();
-        private byte[] _sessionHash = null;
+        private static byte[] _sessionHash = null;
 
-        public RequestBuilder(string authToken, AuthType authType, double latitude, double longitude, double altitude,
+        public RequestBuilder(string authToken, AuthType authType, double latitude, double longitude, double accuracy,
             IDeviceInfo deviceInfo,
             AuthTicket authTicket = null)
         {
@@ -29,7 +28,7 @@ namespace PoGo.ApiClient.Helpers
             _authType = authType;
             _latitude = latitude;
             _longitude = longitude;
-            _altitude = altitude;
+            _accuracy = accuracy;
             _authTicket = authTicket;
             _deviceInfo = deviceInfo;
         }
@@ -47,64 +46,87 @@ namespace PoGo.ApiClient.Helpers
                 requestEnvelope.AuthInfo.ToByteArray();
 
 
-            var normAccel = new Vector(_deviceInfo.AccelRawX, _deviceInfo.AccelRawY, _deviceInfo.AccelRawZ);
-            normAccel.NormalizeVector(9.81);
-            normAccel.Round(2);
-
-            ulong timeFromStart = (ulong)_deviceInfo.TimeSnapshot.TotalMilliseconds;
+            var normAccel = new Vector(_deviceInfo.Sensors.AccelRawX, _deviceInfo.Sensors.AccelRawY, _deviceInfo.Sensors.AccelRawZ);
+            normAccel.NormalizeVector(1.0f);//1.0f on iOS, 9.81 on Android?
 
             var sig = new Signature
             {
                 LocationHash1 =
                     Utils.GenerateLocation1(authSeed, requestEnvelope.Latitude, requestEnvelope.Longitude,
-                        requestEnvelope.Altitude),
+                        requestEnvelope.Accuracy),
                 LocationHash2 =
                     Utils.GenerateLocation2(requestEnvelope.Latitude, requestEnvelope.Longitude,
-                        requestEnvelope.Altitude),
+                        requestEnvelope.Accuracy),
                 SessionHash = ByteString.CopyFrom(_sessionHash),
-                Unknown25 = -8537042734809897855L,
-                Timestamp = (ulong) DateTime.UtcNow.ToUnixTime(),
-                TimestampSinceStart = timeFromStart,
+                Unknown25 = 7363665268261373700L,
+                Timestamp = (ulong)DateTime.UtcNow.ToUnixTime(),
+                TimestampSinceStart = (ulong)_deviceInfo.TimeSnapshot,
                 SensorInfo = new Signature.Types.SensorInfo
                 {
                     AccelNormalizedX = normAccel.X,
                     AccelNormalizedY = normAccel.Y,
                     AccelNormalizedZ = normAccel.Z,
-                    AccelRawX = -_deviceInfo.AccelRawX,
-                    AccelRawY = -_deviceInfo.AccelRawY,
-                    AccelRawZ = -_deviceInfo.AccelRawZ,
-                    MagnetometerX = _deviceInfo.MagnetometerX,
-                    MagnetometerY = _deviceInfo.MagnetometerY,
-                    MagnetometerZ = _deviceInfo.MagnetometerZ,
-                    GyroscopeRawX = _deviceInfo.GyroscopeRawX,
-                    GyroscopeRawY = _deviceInfo.GyroscopeRawY,
-                    GyroscopeRawZ = _deviceInfo.GyroscopeRawZ,
-                    AngleNormalizedX = _deviceInfo.AngleNormalizedX,
-                    AngleNormalizedY = _deviceInfo.AngleNormalizedY,
-                    AngleNormalizedZ = _deviceInfo.AngleNormalizedZ,
-                    AccelerometerAxes = _deviceInfo.AccelerometerAxes,
-                    TimestampSnapshot = timeFromStart - (ulong) _random.Next(150, 260)
+                    AccelRawX = -_deviceInfo.Sensors.AccelRawX,
+                    AccelRawY = -_deviceInfo.Sensors.AccelRawY,
+                    AccelRawZ = -_deviceInfo.Sensors.AccelRawZ,
+                    MagnetometerX = _deviceInfo.Sensors.MagnetometerX,
+                    MagnetometerY = _deviceInfo.Sensors.MagnetometerY,
+                    MagnetometerZ = _deviceInfo.Sensors.MagnetometerZ,
+                    GyroscopeRawX = _deviceInfo.Sensors.GyroscopeRawX,
+                    GyroscopeRawY = _deviceInfo.Sensors.GyroscopeRawY,
+                    GyroscopeRawZ = _deviceInfo.Sensors.GyroscopeRawZ,
+                    AngleNormalizedX = _deviceInfo.Sensors.AngleNormalizedX,
+                    AngleNormalizedY = _deviceInfo.Sensors.AngleNormalizedY,
+                    AngleNormalizedZ = _deviceInfo.Sensors.AngleNormalizedZ,
+                    AccelerometerAxes = _deviceInfo.Sensors.AccelerometerAxes,
+                    TimestampSnapshot = (ulong)(_deviceInfo.Sensors.TimeSnapshot - _random.Next(150, 260))
                 },
                 DeviceInfo = new Signature.Types.DeviceInfo
                 {
                     DeviceId = _deviceInfo.DeviceID,
+                    AndroidBoardName = _deviceInfo.AndroidBoardName,
+                    AndroidBootloader = _deviceInfo.AndroidBootloader,
+                    DeviceBrand = _deviceInfo.DeviceBrand,
+                    DeviceModel = _deviceInfo.DeviceModel,
+                    DeviceModelBoot = _deviceInfo.DeviceModelBoot,
+                    DeviceModelIdentifier = _deviceInfo.DeviceModelIdentifier,
+                    FirmwareFingerprint = _deviceInfo.FirmwareFingerprint,
+                    FirmwareTags = _deviceInfo.FirmwareTags,
+                    HardwareManufacturer = _deviceInfo.HardwareManufacturer,
+                    HardwareModel = _deviceInfo.HardwareModel,
                     FirmwareBrand = _deviceInfo.FirmwareBrand,
                     FirmwareType = _deviceInfo.FirmwareType
-                }
+                },
 
-                /*ActivityStatus = new Signature.Types.ActivityStatus()
+                ActivityStatus = _deviceInfo.ActivityStatus != null ? new Signature.Types.ActivityStatus()
                 {
-                    StartTimeMs = timeFromStart - (ulong)_random.Next(150, 350),
-                    Walking = false,
-                    Automotive = false,
-                    Cycling = false,
-                    Running = false,
-                    Stationary = true,
-                    Tilting = false,
-                    UnknownStatus = false,
-                    Status = ByteString.Empty //Have no idea what is there
-                }*/
+                    Walking = _deviceInfo.ActivityStatus.Walking,
+                    Automotive = _deviceInfo.ActivityStatus.Automotive,
+                    Cycling = _deviceInfo.ActivityStatus.Cycling,
+                    Running = _deviceInfo.ActivityStatus.Running,
+                    Stationary = _deviceInfo.ActivityStatus.Stationary,
+                    Tilting = _deviceInfo.ActivityStatus.Tilting,
+                }
+                : null
             };
+
+
+            if(_deviceInfo.GpsSattelitesInfo.Length > 0)
+            {
+                sig.GpsInfo = new Signature.Types.AndroidGpsInfo();
+                //sig.GpsInfo.TimeToFix //currently not filled
+
+                _deviceInfo.GpsSattelitesInfo.ToList().ForEach(sat =>
+                {
+                    sig.GpsInfo.Azimuth.Add(sat.Azimuth);
+                    sig.GpsInfo.Elevation.Add(sat.Elevation);
+                    sig.GpsInfo.HasAlmanac.Add(sat.Almanac);
+                    sig.GpsInfo.HasEphemeris.Add(sat.Emphasis);
+                    sig.GpsInfo.SatellitesPrn.Add(sat.SattelitesPrn);
+                    sig.GpsInfo.Snr.Add(sat.Snr);
+                    sig.GpsInfo.UsedInFix.Add(sat.UsedInFix);
+                });
+            }
 
             _deviceInfo.LocationFixes.ToList().ForEach(loc => sig.LocationFix.Add(new Signature.Types.LocationFix
             {
@@ -117,7 +139,9 @@ namespace PoGo.ApiClient.Helpers
                 ProviderStatus = loc.ProviderStatus,
                 HorizontalAccuracy = loc.HorizontalAccuracy,
                 VerticalAccuracy = loc.VerticalAccuracy,
-                TimestampSnapshot = loc.Timestamp
+                Course = loc.Course,
+                Speed = loc.Speed,
+                TimestampSnapshot = loc.TimeSnapshot
 
             }));
 
@@ -152,10 +176,10 @@ namespace PoGo.ApiClient.Helpers
                 //Unknown6 = , //6
                 Latitude = _latitude, //7
                 Longitude = _longitude, //8
-                Altitude = _altitude, //9
+                Accuracy = _accuracy, //9
                 AuthTicket = _authTicket, //11
-                Unknown12 = 989 //12
-            });
+                MsSinceLastLocationfix = _random.Next(500, 1000) //12
+        });
         }
 
         public RequestEnvelope GetInitialRequestEnvelope(params Request[] customRequests)
@@ -170,7 +194,7 @@ namespace PoGo.ApiClient.Helpers
                 //Unknown6 = , //6
                 Latitude = _latitude, //7
                 Longitude = _longitude, //8
-                Altitude = _altitude, //9
+                Accuracy = _accuracy, //9
                 AuthInfo = new AuthInfo
                 {
                     Provider = _authType == AuthType.Google ? "google" : "ptc",
@@ -180,7 +204,7 @@ namespace PoGo.ApiClient.Helpers
                         Unknown2 = 14
                     }
                 }, //10
-                Unknown12 = 989 //12
+                MsSinceLastLocationfix = _random.Next(500, 1000) //12
             });
         }
 

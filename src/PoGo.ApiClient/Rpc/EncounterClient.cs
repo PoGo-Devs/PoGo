@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using PoGo.ApiClient.Interfaces;
 using POGOProtos.Enums;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
@@ -7,9 +8,9 @@ using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class Encounter : BaseRpc
+    public class EncounterClient : BaseRpc, IEncounter
     {
-        public Encounter(Client client) : base(client)
+        public EncounterClient(PokemonGoApiClient client) : base(client)
         {
         }
 

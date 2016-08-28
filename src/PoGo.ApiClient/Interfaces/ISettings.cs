@@ -1,6 +1,6 @@
 ﻿using PoGo.ApiClient.Enums;
 
-namespace PoGo.ApiClient
+namespace PoGo.ApiClient.Interfaces
 {
     public interface ISettings
     {

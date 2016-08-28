@@ -6,6 +6,10 @@ namespace PoGo.ApiClient.Exceptions
 {
     public class LoginFailedException : Exception
     {
+        public LoginFailedException()
+        {
+        }
+
         public LoginFailedException(HttpResponseMessage loginResponse)
         {
             LoginResponse = loginResponse;

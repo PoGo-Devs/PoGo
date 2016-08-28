@@ -27,23 +27,23 @@ namespace POGOProtos.Networking.Envelopes {
             "UE9HT1Byb3Rvcy9OZXR3b3JraW5nL1JlcXVlc3RzL1JlcXVlc3QucHJvdG8a",
             "MFBPR09Qcm90b3MvTmV0d29ya2luZy9FbnZlbG9wZXMvQXV0aFRpY2tldC5w",
             "cm90bxouUE9HT1Byb3Rvcy9OZXR3b3JraW5nL0VudmVsb3Blcy9Vbmtub3du",
-            "Ni5wcm90byKkBAoPUmVxdWVzdEVudmVsb3BlEhMKC3N0YXR1c19jb2RlGAEg",
+            "Ni5wcm90byK0BAoPUmVxdWVzdEVudmVsb3BlEhMKC3N0YXR1c19jb2RlGAEg",
             "ASgFEhIKCnJlcXVlc3RfaWQYAyABKAQSOQoIcmVxdWVzdHMYBCADKAsyJy5Q",
             "T0dPUHJvdG9zLk5ldHdvcmtpbmcuUmVxdWVzdHMuUmVxdWVzdBI7Cgh1bmtu",
             "b3duNhgGIAEoCzIpLlBPR09Qcm90b3MuTmV0d29ya2luZy5FbnZlbG9wZXMu",
             "VW5rbm93bjYSEAoIbGF0aXR1ZGUYByABKAESEQoJbG9uZ2l0dWRlGAggASgB",
-            "EhAKCGFsdGl0dWRlGAkgASgBEkwKCWF1dGhfaW5mbxgKIAEoCzI5LlBPR09Q",
+            "EhAKCGFjY3VyYWN5GAkgASgBEkwKCWF1dGhfaW5mbxgKIAEoCzI5LlBPR09Q",
             "cm90b3MuTmV0d29ya2luZy5FbnZlbG9wZXMuUmVxdWVzdEVudmVsb3BlLkF1",
             "dGhJbmZvEkAKC2F1dGhfdGlja2V0GAsgASgLMisuUE9HT1Byb3Rvcy5OZXR3",
-            "b3JraW5nLkVudmVsb3Blcy5BdXRoVGlja2V0EhEKCXVua25vd24xMhgMIAEo",
-            "AxqVAQoIQXV0aEluZm8SEAoIcHJvdmlkZXIYASABKAkSTAoFdG9rZW4YAiAB",
-            "KAsyPS5QT0dPUHJvdG9zLk5ldHdvcmtpbmcuRW52ZWxvcGVzLlJlcXVlc3RF",
-            "bnZlbG9wZS5BdXRoSW5mby5KV1QaKQoDSldUEhAKCGNvbnRlbnRzGAEgASgJ",
-            "EhAKCHVua25vd24yGAIgASgFYgZwcm90bzM="));
+            "b3JraW5nLkVudmVsb3Blcy5BdXRoVGlja2V0EiEKGW1zX3NpbmNlX2xhc3Rf",
+            "bG9jYXRpb25maXgYDCABKAMalQEKCEF1dGhJbmZvEhAKCHByb3ZpZGVyGAEg",
+            "ASgJEkwKBXRva2VuGAIgASgLMj0uUE9HT1Byb3Rvcy5OZXR3b3JraW5nLkVu",
+            "dmVsb3Blcy5SZXF1ZXN0RW52ZWxvcGUuQXV0aEluZm8uSldUGikKA0pXVBIQ",
+            "Cghjb250ZW50cxgBIAEoCRIQCgh1bmtub3duMhgCIAEoBWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::POGOProtos.Networking.Requests.RequestReflection.Descriptor, global::POGOProtos.Networking.Envelopes.AuthTicketReflection.Descriptor, global::POGOProtos.Networking.Envelopes.Unknown6Reflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::POGOProtos.Networking.Envelopes.RequestEnvelope), global::POGOProtos.Networking.Envelopes.RequestEnvelope.Parser, new[]{ "StatusCode", "RequestId", "Requests", "Unknown6", "Latitude", "Longitude", "Altitude", "AuthInfo", "AuthTicket", "Unknown12" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo), global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo.Parser, new[]{ "Provider", "Token" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo.Types.JWT), global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo.Types.JWT.Parser, new[]{ "Contents", "Unknown2" }, null, null, null)})})
+            new pbr::GeneratedClrTypeInfo(typeof(global::POGOProtos.Networking.Envelopes.RequestEnvelope), global::POGOProtos.Networking.Envelopes.RequestEnvelope.Parser, new[]{ "StatusCode", "RequestId", "Requests", "Unknown6", "Latitude", "Longitude", "Accuracy", "AuthInfo", "AuthTicket", "MsSinceLastLocationfix" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo), global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo.Parser, new[]{ "Provider", "Token" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo.Types.JWT), global::POGOProtos.Networking.Envelopes.RequestEnvelope.Types.AuthInfo.Types.JWT.Parser, new[]{ "Contents", "Unknown2" }, null, null, null)})})
           }));
     }
     #endregion
@@ -80,10 +80,10 @@ namespace POGOProtos.Networking.Envelopes {
       Unknown6 = other.unknown6_ != null ? other.Unknown6.Clone() : null;
       latitude_ = other.latitude_;
       longitude_ = other.longitude_;
-      altitude_ = other.altitude_;
+      accuracy_ = other.accuracy_;
       AuthInfo = other.authInfo_ != null ? other.AuthInfo.Clone() : null;
       AuthTicket = other.authTicket_ != null ? other.AuthTicket.Clone() : null;
-      unknown12_ = other.unknown12_;
+      msSinceLastLocationfix_ = other.msSinceLastLocationfix_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -160,14 +160,14 @@ namespace POGOProtos.Networking.Envelopes {
       }
     }
 
-    /// <summary>Field number for the "altitude" field.</summary>
-    public const int AltitudeFieldNumber = 9;
-    private double altitude_;
+    /// <summary>Field number for the "accuracy" field.</summary>
+    public const int AccuracyFieldNumber = 9;
+    private double accuracy_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public double Altitude {
-      get { return altitude_; }
+    public double Accuracy {
+      get { return accuracy_; }
       set {
-        altitude_ = value;
+        accuracy_ = value;
       }
     }
 
@@ -193,14 +193,14 @@ namespace POGOProtos.Networking.Envelopes {
       }
     }
 
-    /// <summary>Field number for the "unknown12" field.</summary>
-    public const int Unknown12FieldNumber = 12;
-    private long unknown12_;
+    /// <summary>Field number for the "ms_since_last_locationfix" field.</summary>
+    public const int MsSinceLastLocationfixFieldNumber = 12;
+    private long msSinceLastLocationfix_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long Unknown12 {
-      get { return unknown12_; }
+    public long MsSinceLastLocationfix {
+      get { return msSinceLastLocationfix_; }
       set {
-        unknown12_ = value;
+        msSinceLastLocationfix_ = value;
       }
     }
 
@@ -223,10 +223,10 @@ namespace POGOProtos.Networking.Envelopes {
       if (!object.Equals(Unknown6, other.Unknown6)) return false;
       if (Latitude != other.Latitude) return false;
       if (Longitude != other.Longitude) return false;
-      if (Altitude != other.Altitude) return false;
+      if (Accuracy != other.Accuracy) return false;
       if (!object.Equals(AuthInfo, other.AuthInfo)) return false;
       if (!object.Equals(AuthTicket, other.AuthTicket)) return false;
-      if (Unknown12 != other.Unknown12) return false;
+      if (MsSinceLastLocationfix != other.MsSinceLastLocationfix) return false;
       return true;
     }
 
@@ -239,10 +239,10 @@ namespace POGOProtos.Networking.Envelopes {
       if (unknown6_ != null) hash ^= Unknown6.GetHashCode();
       if (Latitude != 0D) hash ^= Latitude.GetHashCode();
       if (Longitude != 0D) hash ^= Longitude.GetHashCode();
-      if (Altitude != 0D) hash ^= Altitude.GetHashCode();
+      if (Accuracy != 0D) hash ^= Accuracy.GetHashCode();
       if (authInfo_ != null) hash ^= AuthInfo.GetHashCode();
       if (authTicket_ != null) hash ^= AuthTicket.GetHashCode();
-      if (Unknown12 != 0L) hash ^= Unknown12.GetHashCode();
+      if (MsSinceLastLocationfix != 0L) hash ^= MsSinceLastLocationfix.GetHashCode();
       return hash;
     }
 
@@ -274,9 +274,9 @@ namespace POGOProtos.Networking.Envelopes {
         output.WriteRawTag(65);
         output.WriteDouble(Longitude);
       }
-      if (Altitude != 0D) {
+      if (Accuracy != 0D) {
         output.WriteRawTag(73);
-        output.WriteDouble(Altitude);
+        output.WriteDouble(Accuracy);
       }
       if (authInfo_ != null) {
         output.WriteRawTag(82);
@@ -286,9 +286,9 @@ namespace POGOProtos.Networking.Envelopes {
         output.WriteRawTag(90);
         output.WriteMessage(AuthTicket);
       }
-      if (Unknown12 != 0L) {
+      if (MsSinceLastLocationfix != 0L) {
         output.WriteRawTag(96);
-        output.WriteInt64(Unknown12);
+        output.WriteInt64(MsSinceLastLocationfix);
       }
     }
 
@@ -311,7 +311,7 @@ namespace POGOProtos.Networking.Envelopes {
       if (Longitude != 0D) {
         size += 1 + 8;
       }
-      if (Altitude != 0D) {
+      if (Accuracy != 0D) {
         size += 1 + 8;
       }
       if (authInfo_ != null) {
@@ -320,8 +320,8 @@ namespace POGOProtos.Networking.Envelopes {
       if (authTicket_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(AuthTicket);
       }
-      if (Unknown12 != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Unknown12);
+      if (MsSinceLastLocationfix != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(MsSinceLastLocationfix);
       }
       return size;
     }
@@ -350,8 +350,8 @@ namespace POGOProtos.Networking.Envelopes {
       if (other.Longitude != 0D) {
         Longitude = other.Longitude;
       }
-      if (other.Altitude != 0D) {
-        Altitude = other.Altitude;
+      if (other.Accuracy != 0D) {
+        Accuracy = other.Accuracy;
       }
       if (other.authInfo_ != null) {
         if (authInfo_ == null) {
@@ -365,8 +365,8 @@ namespace POGOProtos.Networking.Envelopes {
         }
         AuthTicket.MergeFrom(other.AuthTicket);
       }
-      if (other.Unknown12 != 0L) {
-        Unknown12 = other.Unknown12;
+      if (other.MsSinceLastLocationfix != 0L) {
+        MsSinceLastLocationfix = other.MsSinceLastLocationfix;
       }
     }
 
@@ -406,7 +406,7 @@ namespace POGOProtos.Networking.Envelopes {
             break;
           }
           case 73: {
-            Altitude = input.ReadDouble();
+            Accuracy = input.ReadDouble();
             break;
           }
           case 82: {
@@ -424,7 +424,7 @@ namespace POGOProtos.Networking.Envelopes {
             break;
           }
           case 96: {
-            Unknown12 = input.ReadInt64();
+            MsSinceLastLocationfix = input.ReadInt64();
             break;
           }
         }

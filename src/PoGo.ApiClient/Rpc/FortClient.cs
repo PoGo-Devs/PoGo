@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using PoGo.ApiClient.Interfaces;
 using POGOProtos.Data.Battle;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
@@ -8,9 +9,9 @@ using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class Fort : BaseRpc
+    public class FortClient : BaseRpc, IFort
     {
-        public Fort(Client client) : base(client)
+        public FortClient(PokemonGoApiClient client) : base(client)
         {
         }
 

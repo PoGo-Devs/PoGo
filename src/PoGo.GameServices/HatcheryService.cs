@@ -1,5 +1,5 @@
 ﻿using PoGo.ApiClient.Interfaces;
-using PoGo.ApiClient.Wrappers;
+using POGOProtos.Data;
 using POGOProtos.Inventory;
 using System.Collections.ObjectModel;
 
@@ -14,9 +14,9 @@ namespace PoGo.GameServices
 
         #region Private Members
 
-        ObservableCollectionPlus<PokemonData> _eggs;
-        ObservableCollectionPlus<EggIncubator> _incubatorsFree;
-        ObservableCollectionPlus<EggIncubator> _incubatorsUsed;
+        private ObservableCollectionPlus<PokemonData> _eggs;
+        private ObservableCollectionPlus<EggIncubator> _incubatorsFree;
+        private ObservableCollectionPlus<EggIncubator> _incubatorsUsed;
 
         #endregion
 

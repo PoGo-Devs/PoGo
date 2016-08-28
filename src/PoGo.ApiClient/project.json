@@ -4,7 +4,8 @@
     "Microsoft.AspNet.WebApi.Client": "5.2.3",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
     "Newtonsoft.Json": "9.0.1",
-    "S2Geometry": "1.0.3"
+    "S2Geometry": "1.0.3",
+    "System.Net.Http": "4.1.0"
   },
   "frameworks": {
     "uap10.0": {}
@@ -13,5 +14,6 @@
     "win10-arm": {},
     "win10-x86": {},
     "win10-x64": {}
-  }
+  },
+  "buildOptions": { "allowUnsafe": true }
 }

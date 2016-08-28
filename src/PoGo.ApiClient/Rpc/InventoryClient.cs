@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using PoGo.ApiClient.Interfaces;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
@@ -6,9 +7,9 @@ using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class Inventory : BaseRpc
+    public class InventoryClient : BaseRpc, IInventory
     {
-        public Inventory(Client client) : base(client)
+        public InventoryClient(PokemonGoApiClient client) : base(client)
         {
         }
 

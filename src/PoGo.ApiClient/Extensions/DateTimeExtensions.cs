@@ -1,7 +1,11 @@
-﻿using System;
-
-namespace PoGo.ApiClient.Extensions
+﻿
+namespace System
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>Extensions methods should ALWAYS be in the namespace they extend.</remarks>
     public static class DateTimeExtensions
     {
         public static long ToUnixTime(this DateTime date)

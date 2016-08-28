@@ -14,7 +14,7 @@ namespace PoGo.GameServices
 
         #region Private Members
 
-        ObservableCollectionPlus<ItemData> _usableItems;
+        private ObservableCollectionPlus<ItemData> _usableItems;
 
         /// <summary>
         ///     List of items that can be used when trying to catch a Pokemon
@@ -62,7 +62,13 @@ namespace PoGo.GameServices
 
         #region Public Members
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void ResetState()
+        {
+            UsableItems.Clear();
+        }
 
         #endregion
 

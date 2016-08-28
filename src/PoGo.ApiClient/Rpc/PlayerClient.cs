@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Google.Protobuf;
+using PoGo.ApiClient.Interfaces;
 using POGOProtos.Data.Player;
 using POGOProtos.Enums;
 using POGOProtos.Networking.Requests;
@@ -8,16 +9,16 @@ using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class Player : BaseRpc
+    public class PlayerClient : BaseRpc, IPlayer
     {
-        public Player(Client client) : base(client)
+        public PlayerClient(PokemonGoApiClient client) : base(client)
         {
             Client = client;
         }
 
-        public async Task<PlayerUpdateResponse> UpdatePlayerLocation(double latitude, double longitude, double altitude)
+        public async Task<PlayerUpdateResponse> UpdatePlayerLocation(double latitude, double longitude, double accuracy)
         {
-            SetCoordinates(latitude, longitude, altitude);
+            SetCoordinates(latitude, longitude, accuracy);
             var message = new PlayerUpdateMessage
             {
                 Latitude = Client.CurrentLatitude,
@@ -34,11 +35,11 @@ namespace PoGo.ApiClient.Rpc
             return await PostProtoPayload<Request, PlayerUpdateResponse>(updatePlayerLocationRequestEnvelope);
         }
 
-        internal void SetCoordinates(double lat, double lng, double altitude)
+        public void SetCoordinates(double lat, double lng, double accuracy)
         {
             Client.CurrentLatitude = lat;
             Client.CurrentLongitude = lng;
-            Client.CurrentAltitude = altitude;
+            Client.CurrentAccuracy = accuracy;
         }
 
         public async Task<GetPlayerResponse> GetPlayer()

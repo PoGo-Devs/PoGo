@@ -18,9 +18,9 @@ namespace PoGo.ApiClient.Helpers
         public void NormalizeVector(double normalValue)
         {
             var length = Math.Sqrt(X*X + Y*Y + Z*Z)/normalValue;
-            X = Math.Abs(X/length);
-            Y = Math.Abs(Y/length);
-            Z = Math.Abs(Z/length);
+            X = X/length;
+            Y = Y/length;
+            Z = Z/length;
         }
 
         public void Round(int places)

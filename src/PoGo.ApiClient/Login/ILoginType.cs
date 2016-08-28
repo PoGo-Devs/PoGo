@@ -13,5 +13,7 @@ namespace PoGo.ApiClient.Login
         /// </summary>
         /// <returns></returns>
         Task<AccessToken> GetAccessToken();
+
     }
+
 }

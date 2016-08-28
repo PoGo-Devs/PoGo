@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Google.Protobuf;
-using PoGo.ApiClient.Extensions;
 using PoGo.ApiClient.Helpers;
+using PoGo.ApiClient.Interfaces;
+using PoGo.ApiClient.Proto;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using POGOProtos.Networking.Responses;
-using PoGo.ApiClient.ResponseContainers;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class Map : BaseRpc
+    public class MapClient : BaseRpc, IMap
     {
-        public Map(Client client) : base(client)
+        public MapClient(PokemonGoApiClient client) : base(client)
         {
         }
 
@@ -35,7 +35,7 @@ namespace PoGo.ApiClient.Rpc
             var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
             var downloadSettingsMessage = new DownloadSettingsMessage
             {
-                Hash = "05daf51635c82611d1aac95c0b051d3ec088a930"
+                Hash = Client.Download.DownloadSettingsHash
             };
 
             #endregion
@@ -66,6 +66,9 @@ namespace PoGo.ApiClient.Rpc
 
             var response =  await PostProtoPayload<Request, GetMapObjectsResponse, GetHatchedEggsResponse, 
                 GetInventoryResponse, CheckAwardedBadgesResponse, DownloadSettingsResponse>(request);
+
+            Client.Download.DownloadSettingsHash = response?.Item5?.Hash ?? "";
+
             return new ResponseContainer<GetMapObjectsResponse>(response.Item1, response.Item2, response.Item3, response.Item4, response.Item5);
         }
 

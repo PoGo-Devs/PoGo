@@ -17,6 +17,17 @@ namespace PoGo.GameServices
 
         #endregion
 
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void ResetState()
+        {
+        }
+
+        #endregion
+
     }
 
 }
