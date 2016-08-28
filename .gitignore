@@ -15,3 +15,5 @@ obj/
 *.suo
 *.user
 *.tss
+src/PoGo.Tests.ApiClient/project.fragment.lock.json
+src/PoGo.Tests.GameServices/project.fragment.lock.json
