@@ -325,54 +325,10 @@ namespace PoGo.ApiClient
 
             // robertmclaws: We're not using the strategy pattern here anymore. Specific requests will be retried as needed.
             //               For example, there's no need to retry a map request when another will come along in 5 seconds.
-            var response = await PostProto<TRequest>(url, requestEnvelope, RetryPolicyManager.GetRetryPolicy(requestEnvelope.Requests[0].RequestType));
-
-            switch ((StatusCode)response.StatusCode)
-            {
-                case StatusCode.Success:
-                    if (response.AuthTicket != null)
-                    {
-                        Logger.Write("Received a new AuthTicket from the Api!");
-                        AccessToken.AuthTicket = response.AuthTicket;
-                        // robertmclaws to do: See if we need to clone the AccessToken so we don't have a threading violation.
-                        RaiseAccessTokenUpdated(AccessToken);
-                    }
-                    break;
-
-                case StatusCode.AccessDenied:
-                    Logger.Write("Account has been banned. Our condolences for your loss.");
-                    CancelCurrentRequests();
-                    //RequestQueue.CompleteAdding();
-                    // robertmclaws to do: Allow you to sop adding events to the queue, and re-initialize the queue if needed.
-                    throw new AccountLockedException();
-
-                case StatusCode.Redirect:
-                    if (!Regex.IsMatch(response.ApiUrl, "pgorelease\\.nianticlabs\\.com\\/plfe\\/\\d+"))
-                    {
-                        throw new Exception($"Received an incorrect API url '{response.ApiUrl}', status code was '{response.StatusCode}'.");
-                    }
-                    ApiUrl = $"https://{response.ApiUrl}/rpc";
-                    Logger.Write($"Received an updated API url = {ApiUrl}");
-                    // robertmclaws to do: See if we need to retry the request.
-                    break;
-
-                case StatusCode.InvalidToken:
-                    Logger.Write("Received StatusCode 102, reauthenticating.");
-                    AccessToken?.Expire();
-                    // robertmclaws to do: trigger a retry here. We'll automatically try to log in again on the next request.
-                    break;
-
-                case StatusCode.ServerOverloaded:
-                    // Per @wallycz, on code 52, wait 11 seconds before sending the request again.
-                    Logger.Write("Server says to slow the hell down. Try again in 11 sec.");
-                    await Task.Delay(11000);
-                    // robertmclaws to do: trigger a retry here. We'll automatically try to log in again on the next request.
-                    break;
-
-                default:
-                    Logger.Write($"Unknown status code: {response.StatusCode}");
-                    break;
-            }
+            //               Since the function we're calling is now recursive, let's make sure we only encode the payload once.
+            var byteArrayContent = new ByteArrayContent(requestEnvelope.ToByteString().ToByteArray());
+            var retryPolicy = RetryPolicyManager.GetRetryPolicy(requestEnvelope.Requests[0].RequestType);
+            var response = await PostProto<TRequest>(url, byteArrayContent, retryPolicy);
 
             // robertmclaws: Now marry up the results from the service whith the type instances we already created.
             for (var i = 0; i < responseTypes.Length; i++)
@@ -388,34 +344,82 @@ namespace PoGo.ApiClient
         /// </summary>
         /// <typeparam name="TRequest"></typeparam>
         /// <param name="url"></param>
-        /// <param name="requestEnvelope"></param>
+        /// <param name="payload"></param>
         /// <param name="retryPolicy"></param>
         /// <param name="attemptCount"></param>
         /// <returns></returns>
-        public async Task<ResponseEnvelope> PostProto<TRequest>(string url, RequestEnvelope requestEnvelope, RetryPolicy retryPolicy, int attemptCount = 0)
+        public async Task<ResponseEnvelope> PostProto<TRequest>(string url, ByteArrayContent payload, RetryPolicy retryPolicy, int attemptCount = 0)
             where TRequest : IMessage<TRequest>
         {
             attemptCount++;
-            // robertmclaws: Let's be pro-active about token failures, instead of reactive.
+            // robertmclaws: We've exceeded the maximum number of attempts, so we're done.
+            if (attemptCount > retryPolicy.MaxAttempts) return null;
+
+            // robertmclaws: We're gonna keep going, so let's be pro-active about token failures, instead of reactive.
             if (AccessToken == null || AccessToken.IsExpired)
             {
                 await Login.DoLogin();
             }
 
-            //Encode payload and put in envelop, then send
-            var data = requestEnvelope.ToByteString();
-            var result = await PostAsync(url, new ByteArrayContent(data.ToByteArray()));
+            var result = await PostAsync(url, payload);
 
-            //Decode message
+            var response = new ResponseEnvelope();
             var responseData = await result.Content.ReadAsByteArrayAsync();
-            var decodedResponse = new ResponseEnvelope();
 
             using (var codedStream = new CodedInputStream(responseData))
             {
-                decodedResponse.MergeFrom(codedStream);
+                response.MergeFrom(codedStream);
             }
 
-            return decodedResponse;
+            switch ((StatusCode)response.StatusCode)
+            {
+                case StatusCode.Success:
+                    if (response.AuthTicket != null)
+                    {
+                        Logger.Write("Received a new AuthTicket from the Api!");
+                        AccessToken.AuthTicket = response.AuthTicket;
+                        // robertmclaws to do: See if we need to clone the AccessToken so we don't have a threading violation.
+                        RaiseAccessTokenUpdated(AccessToken);
+                    }
+                    return response;
+
+                case StatusCode.AccessDenied:
+                    Logger.Write("Account has been banned. Our condolences for your loss.");
+                    CancelCurrentRequests();
+                    //RequestQueue.CompleteAdding();
+                    // robertmclaws to do: Allow you to stop adding events to the queue, and re-initialize the queue if needed.
+                    throw new AccountLockedException();
+
+                case StatusCode.Redirect:
+                    if (!Regex.IsMatch(response.ApiUrl, "pgorelease\\.nianticlabs\\.com\\/plfe\\/\\d+"))
+                    {
+                        throw new Exception($"Received an incorrect API url '{response.ApiUrl}', status code was '{response.StatusCode}'.");
+                    }
+                    ApiUrl = $"https://{response.ApiUrl}/rpc";
+                    Logger.Write($"Received an updated API url = {ApiUrl}");
+                    // robertmclaws to do: Check to see if redirects should count against the RetryPolicy.
+                    await Task.Delay(retryPolicy.DelayInSeconds * 1000);
+                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount);
+
+                case StatusCode.InvalidToken:
+                    Logger.Write("Received StatusCode 102, reauthenticating.");
+                    AccessToken?.Expire();
+                    // robertmclaws: trigger a retry here. We'll automatically try to log in again on the next request.
+                    await Task.Delay(retryPolicy.DelayInSeconds * 1000);
+                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount);
+
+                case StatusCode.ServerOverloaded:
+                    // Per @wallycz, on code 52, wait 11 seconds before sending the request again.
+                    Logger.Write("Server says to slow the hell down. Try again in 11 sec.");
+                    await Task.Delay(11000);
+                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount);
+
+                default:
+                    Logger.Write($"Unknown status code: {response.StatusCode}");
+                    break;
+            }
+
+            return response;
         }
 
         /// <summary>

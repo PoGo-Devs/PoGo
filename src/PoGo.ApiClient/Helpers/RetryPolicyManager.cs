@@ -18,12 +18,12 @@ namespace PoGo.ApiClient.Helpers
         {
             { RequestType.PlayerUpdate, new RetryPolicy(1, 11) },
             { RequestType.GetPlayer, new RetryPolicy(1, 11) },
-            { RequestType.GetInventory, new RetryPolicy(0, 0) },
+            { RequestType.GetInventory, new RetryPolicy(1, 0) },
         };
 
         internal static RetryPolicy GetRetryPolicy(RequestType type)
         {
-            return _retryPolicies.ContainsKey(type) ? _retryPolicies[type] : new RetryPolicy(0, 0);
+            return _retryPolicies.ContainsKey(type) ? _retryPolicies[type] : new RetryPolicy(1, 0);
         }
 
     }

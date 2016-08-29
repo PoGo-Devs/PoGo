@@ -116,7 +116,6 @@
     <Compile Include="Helpers\RetryPolicy.cs" />
     <Compile Include="Helpers\RetryPolicyManager.cs" />
     <Compile Include="Helpers\TypeSwitch\TypeSwitch.cs" />
-    <Compile Include="Interfaces\IApiFailureStrategy.cs" />
     <Compile Include="Interfaces\IPokemonGoApiClient.cs" />
     <Compile Include="Login\PtcAuthenticationTicketResponse.cs" />
     <Compile Include="Login\PtcLoginParameters.cs" />
@@ -132,7 +131,7 @@
     <Compile Include="Exceptions\PTCOfflineException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Helpers\Crypt.cs" />
-    <Compile Include="Helpers\IDeviceInfos.cs" />
+    <Compile Include="Interfaces\IDeviceInfos.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Helpers\RequestBuilder.cs" />
@@ -145,9 +144,9 @@
     <Compile Include="Helpers\xxHash\xxHash.cs" />
     <Compile Include="HttpClient\PokemonClient.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Login\GoogleLogin.cs" />
     <Compile Include="Login\GSPOAuthSharp.cs" />
     <Compile Include="Login\ILoginType.cs" />
@@ -408,7 +407,6 @@
     <Compile Include="Rpc\Misc.cs" />
     <Compile Include="Rpc\PlayerClient.cs" />
     <Compile Include="Session\AccessToken.cs" />
-    <Compile Include="Session\ApiFailureStrategy.cs" />
     <EmbeddedResource Include="Properties\PoGo.ApiClient.rd.xml" />
   </ItemGroup>
   <ItemGroup />

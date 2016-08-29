@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PoGo.ApiClient.Helpers
+namespace PoGo.ApiClient.Interfaces
 {
     public interface ILocationFix
     {
