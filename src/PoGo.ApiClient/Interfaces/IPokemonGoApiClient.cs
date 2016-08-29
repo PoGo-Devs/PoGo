@@ -3,6 +3,7 @@ using PoGo.ApiClient.Helpers;
 using PoGo.ApiClient.Rpc;
 using PoGo.ApiClient.Session;
 using POGOProtos.Networking.Envelopes;
+using System.Net.Http;
 
 namespace PoGo.ApiClient.Interfaces
 {
@@ -10,7 +11,6 @@ namespace PoGo.ApiClient.Interfaces
     {
         string AuthToken { get; }
         AuthType AuthType { get; }
-        IApiFailureStrategy ApiFailure { get; }
         string ApiUrl { get; set; }
         AuthTicket AuthTicket { get; }
         AccessToken AccessToken { get; set; }

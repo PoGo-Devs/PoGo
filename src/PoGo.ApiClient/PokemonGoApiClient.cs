@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using PoGo.ApiClient.Enums;
+using PoGo.ApiClient.Exceptions;
 using PoGo.ApiClient.Helpers;
 using PoGo.ApiClient.Interfaces;
 using PoGo.ApiClient.Rpc;
@@ -8,9 +9,12 @@ using POGOProtos.Inventory;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
+using POGOProtos.Networking.Responses;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,15 +24,10 @@ namespace PoGo.ApiClient
     /// <summary>
     /// 
     /// </summary>
-    public class PokemonGoApiClient : IPokemonGoApiClient
+    public partial class PokemonGoApiClient : HttpClient, IPokemonGoApiClient
     {
 
         #region Private Members
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal readonly PokemonHttpClient PokemonHttpClient = new PokemonHttpClient();
 
         /// <summary>
         /// 
@@ -43,9 +42,9 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        private readonly List<RequestType> _wrappableRequests = new List<RequestType>
+        private readonly List<RequestType> _singleRequests = new List<RequestType>
         {
-            RequestType.GetMapObjects,
+            RequestType.GetPlayer,
         };
 
         #endregion
@@ -61,11 +60,6 @@ namespace PoGo.ApiClient
         /// 
         /// </summary>
         public AuthType AuthType => Settings.AuthType;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IApiFailureStrategy ApiFailure { get; }
 
         /// <summary>
         /// 
@@ -160,36 +154,17 @@ namespace PoGo.ApiClient
 
         #endregion
 
-        #region Events
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>These might not stay here, we'll see how the pattern plays out.</remarks>
-        public event EventHandler<InventoryDelta> InventoryReceived;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <remarks>These might not stay here, we'll see how the pattern plays out.</remarks>
-        void RaiseInventoryReceived(InventoryDelta value) => InventoryReceived?.Invoke(this, value);  
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="settings"></param>
-        /// <param name="apiFailureStrategy"></param>
         /// <param name="deviceInfo"></param>
         /// <param name="accessToken"></param>
-        public PokemonGoApiClient(ISettings settings, IApiFailureStrategy apiFailureStrategy, IDeviceInfo deviceInfo, AccessToken accessToken = null)
+        public PokemonGoApiClient(ISettings settings, IDeviceInfo deviceInfo, AccessToken accessToken = null)
         {
             Settings = settings;
-            ApiFailure = apiFailureStrategy;
             AccessToken = accessToken;
 
             CancellationTokenSource = new CancellationTokenSource();
@@ -226,22 +201,30 @@ namespace PoGo.ApiClient
         /// <param name="message"></param>
         /// <param name="requestType"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// robertmclaws: Every request will have a minimum of two payloads. So no single-payload results anymore.
+        /// </remarks>
         public bool QueueRequest(IMessage message, RequestType requestType)
         {
             RequestEnvelope envelope = null;
-            if (_wrappableRequests.Contains(requestType))
+            if (_singleRequests.Contains(requestType))
             {
-                envelope = BuildBatchRequestEnvelope(message, requestType);
+                envelope = RequestBuilder.GetRequestEnvelope(
+                    new Request
+                    {
+                        RequestType = requestType,
+                        RequestMessage = message.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.CheckChallenge,
+                        RequestMessage = new CheckChallengeMessage().ToByteString()
+                    }
+                );
             }
             else
             {
-                var request = new Request
-                {
-                    RequestType = requestType,
-                    RequestMessage = message.ToByteString()
-                };
-                envelope = RequestBuilder.GetRequestEnvelope(request);
-
+                envelope = BuildBatchRequestEnvelope(message, requestType);
             }
             return RequestQueue.TryAdd(envelope);
 
@@ -257,9 +240,12 @@ namespace PoGo.ApiClient
              {
                  foreach (var workItem in RequestQueue.GetConsumingEnumerable())
                  {
+                     // robertmclaws: The line below should collapse the queue quickly.
                      if (CancellationTokenSource.IsCancellationRequested) continue;
                      //TODO: RWM: We'll do the real work here. Below is just a placeholder.
                      Task.Delay(1).Wait();
+
+
                  }
              }, TaskCreationOptions.LongRunning);
         }
@@ -317,20 +303,135 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="response"></param>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="requestEnvelope"></param>
+        /// <param name="responseTypes"></param>
         /// <returns></returns>
-        private async Task<bool> ProcessResponse(ResponseEnvelope response)
+        /// <remarks></remarks>
+        public async Task<IMessage[]> PostProtoPayload<TRequest>(string url, RequestEnvelope requestEnvelope, params Type[] responseTypes)
+            where TRequest : IMessage<TRequest>
         {
-            // Per @wallycz, on code 502, wait 11 seconds before sending the request again.
-            if (response.StatusCode == 502)
+            // robertmclaws: Start by preparing the results array based on the types we're expecting to be returned.
+            var result = new IMessage[responseTypes.Length];
+            for (var i = 0; i < responseTypes.Length; i++)
             {
-                await Task.Delay(11000);
-                return false;
+                result[i] = Activator.CreateInstance(responseTypes[i]) as IMessage;
+                if (result[i] == null)
+                {
+                    throw new ArgumentException($"ResponseType {i} is not an IMessage");
+                }
             }
-            return false;
+
+            // robertmclaws: We're not using the strategy pattern here anymore. Specific requests will be retried as needed.
+            //               For example, there's no need to retry a map request when another will come along in 5 seconds.
+            var response = await PostProto<TRequest>(url, requestEnvelope, RetryPolicyManager.GetRetryPolicy(requestEnvelope.Requests[0].RequestType));
+
+            switch ((StatusCode)response.StatusCode)
+            {
+                case StatusCode.Success:
+                    if (response.AuthTicket != null)
+                    {
+                        Logger.Write("Received a new AuthTicket from the Api!");
+                        AccessToken.AuthTicket = response.AuthTicket;
+                        // robertmclaws to do: See if we need to clone the AccessToken so we don't have a threading violation.
+                        RaiseAccessTokenUpdated(AccessToken);
+                    }
+                    break;
+
+                case StatusCode.AccessDenied:
+                    Logger.Write("Account has been banned. Our condolences for your loss.");
+                    CancelCurrentRequests();
+                    //RequestQueue.CompleteAdding();
+                    // robertmclaws to do: Allow you to sop adding events to the queue, and re-initialize the queue if needed.
+                    throw new AccountLockedException();
+
+                case StatusCode.Redirect:
+                    if (!Regex.IsMatch(response.ApiUrl, "pgorelease\\.nianticlabs\\.com\\/plfe\\/\\d+"))
+                    {
+                        throw new Exception($"Received an incorrect API url '{response.ApiUrl}', status code was '{response.StatusCode}'.");
+                    }
+                    ApiUrl = $"https://{response.ApiUrl}/rpc";
+                    Logger.Write($"Received an updated API url = {ApiUrl}");
+                    // robertmclaws to do: See if we need to retry the request.
+                    break;
+
+                case StatusCode.InvalidToken:
+                    Logger.Write("Received StatusCode 102, reauthenticating.");
+                    AccessToken?.Expire();
+                    // robertmclaws to do: trigger a retry here. We'll automatically try to log in again on the next request.
+                    break;
+
+                case StatusCode.ServerOverloaded:
+                    // Per @wallycz, on code 52, wait 11 seconds before sending the request again.
+                    Logger.Write("Server says to slow the hell down. Try again in 11 sec.");
+                    await Task.Delay(11000);
+                    // robertmclaws to do: trigger a retry here. We'll automatically try to log in again on the next request.
+                    break;
+
+                default:
+                    Logger.Write($"Unknown status code: {response.StatusCode}");
+                    break;
+            }
+
+            // robertmclaws: Now marry up the results from the service whith the type instances we already created.
+            for (var i = 0; i < responseTypes.Length; i++)
+            {
+                var item = response.Returns[i];
+                result[i].MergeFrom(item);
+            }
+            return result;
         }
 
-        #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TRequest"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="requestEnvelope"></param>
+        /// <param name="retryPolicy"></param>
+        /// <param name="attemptCount"></param>
+        /// <returns></returns>
+        public async Task<ResponseEnvelope> PostProto<TRequest>(string url, RequestEnvelope requestEnvelope, RetryPolicy retryPolicy, int attemptCount = 0)
+            where TRequest : IMessage<TRequest>
+        {
+            attemptCount++;
+            // robertmclaws: Let's be pro-active about token failures, instead of reactive.
+            if (AccessToken == null || AccessToken.IsExpired)
+            {
+                await Login.DoLogin();
+            }
+
+            //Encode payload and put in envelop, then send
+            var data = requestEnvelope.ToByteString();
+            var result = await PostAsync(url, new ByteArrayContent(data.ToByteArray()));
+
+            //Decode message
+            var responseData = await result.Content.ReadAsByteArrayAsync();
+            var decodedResponse = new ResponseEnvelope();
+
+            using (var codedStream = new CodedInputStream(responseData))
+            {
+                decodedResponse.MergeFrom(codedStream);
+            }
+
+            return decodedResponse;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="messages"></param>
+        /// <returns></returns>
+        private async Task<bool> ProcessMessages(IMessage[] messages)
+        {
+            foreach (var inner in messages)
+            {
+
+            }
+
+            return false;
+        }
 
     }
 

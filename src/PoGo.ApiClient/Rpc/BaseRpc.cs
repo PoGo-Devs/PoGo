@@ -41,44 +41,14 @@ namespace PoGo.ApiClient.Rpc
             where TResponsePayload : IMessage<TResponsePayload>, new()
         {
             var requestEnvelops = RequestBuilder.GetRequestEnvelope(type, message);
-            return await  Client.PokemonHttpClient.PostProtoPayload<TRequest, TResponsePayload>(ApiUrl, requestEnvelops, Client.ApiFailure);
+            return await  Client.PostProto<TRequest, TResponsePayload>(ApiUrl, requestEnvelops);
         }
 
         protected async Task<TResponsePayload> PostProtoPayload<TRequest, TResponsePayload>(RequestEnvelope requestEnvelope)
             where TRequest : IMessage<TRequest>
             where TResponsePayload : IMessage<TResponsePayload>, new()
         {
-            return await Client.PokemonHttpClient.PostProtoPayload<TRequest, TResponsePayload>(ApiUrl, requestEnvelope, Client.ApiFailure);
-        }
-
-        protected async Task<Tuple<T1, T2>> PostProtoPayload<TRequest, T1, T2>(RequestEnvelope requestEnvelope)
-            where TRequest : IMessage<TRequest>
-            where T1 : class, IMessage<T1>, new()
-            where T2 : class, IMessage<T2>, new()
-        {
-            var responses = await PostProtoPayload<TRequest>(requestEnvelope, typeof(T1), typeof(T2));
-            return new Tuple<T1, T2>(responses[0] as T1, responses[1] as T2);
-        }
-
-        protected async Task<Tuple<T1, T2, T3>> PostProtoPayload<TRequest, T1, T2, T3>(RequestEnvelope requestEnvelope)
-            where TRequest : IMessage<TRequest>
-            where T1 : class, IMessage<T1>, new()
-            where T2 : class, IMessage<T2>, new()
-            where T3 : class, IMessage<T3>, new()
-        {
-            var responses = await PostProtoPayload<TRequest>(requestEnvelope, typeof(T1), typeof(T2), typeof(T3));
-            return new Tuple<T1, T2, T3>(responses[0] as T1, responses[1] as T2, responses[2] as T3);
-        }
-
-        protected async Task<Tuple<T1, T2, T3, T4>> PostProtoPayload<TRequest, T1, T2, T3, T4>(RequestEnvelope requestEnvelope)
-            where TRequest : IMessage<TRequest>
-            where T1 : class, IMessage<T1>, new()
-            where T2 : class, IMessage<T2>, new()
-            where T3 : class, IMessage<T3>, new()
-            where T4 : class, IMessage<T4>, new()
-        {
-            var responses = await PostProtoPayload<TRequest>(requestEnvelope, typeof(T1), typeof(T2), typeof(T3), typeof(T4));
-            return new Tuple<T1, T2, T3, T4>(responses[0] as T1, responses[1] as T2, responses[2] as T3, responses[3] as T4);
+            return await Client.PostProto<TRequest, TResponsePayload>(ApiUrl, requestEnvelope);
         }
 
         protected async Task<Tuple<T1, T2, T3, T4, T5>> PostProtoPayload<TRequest, T1, T2, T3, T4, T5>(RequestEnvelope requestEnvelope)
@@ -99,12 +69,6 @@ namespace PoGo.ApiClient.Rpc
         {
             LastRpcRequest = DateTime.Now;
             return await  Client.PokemonHttpClient.PostProtoPayload<TRequest>(ApiUrl, requestEnvelope, Client.ApiFailure, responseTypes);
-        }
-
-        protected async Task<ResponseEnvelope> PostProto<TRequest>(RequestEnvelope requestEnvelope)
-            where TRequest : IMessage<TRequest>
-        {
-            return await Client.PokemonHttpClient.PostProto<TRequest>(ApiUrl, requestEnvelope);
         }
 
         protected async Task<ResponseEnvelope> PostProto<TRequest>(string url, RequestEnvelope requestEnvelope)

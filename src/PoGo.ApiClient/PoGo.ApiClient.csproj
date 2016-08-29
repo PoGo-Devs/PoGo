@@ -113,6 +113,9 @@
     <Compile Include="Enums\StatusCode.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="Exceptions\ApiNonRecoverableException.cs" />
+    <Compile Include="Helpers\RetryPolicy.cs" />
+    <Compile Include="Helpers\RetryPolicyManager.cs" />
+    <Compile Include="Helpers\TypeSwitch\TypeSwitch.cs" />
     <Compile Include="Interfaces\IApiFailureStrategy.cs" />
     <Compile Include="Interfaces\IPokemonGoApiClient.cs" />
     <Compile Include="Login\PtcAuthenticationTicketResponse.cs" />
@@ -149,6 +152,9 @@
     <Compile Include="Login\GSPOAuthSharp.cs" />
     <Compile Include="Login\ILoginType.cs" />
     <Compile Include="Login\PtcLogin.cs" />
+    <Compile Include="PokemonGoApiClient.Events.cs">
+      <DependentUpon>PokemonGoApiClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proto\Data\AssetDigestEntry.cs" />
     <Compile Include="Proto\Data\Battle\BattleAction.cs" />
