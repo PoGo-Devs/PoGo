@@ -253,16 +253,20 @@ namespace PoGo.ApiClient
         /// <returns></returns>
         public Task StartProcessingRequests()
         {
-             return Task.Factory.StartNew(() =>
+             return Task.Factory.StartNew(async () =>
              {
                  foreach (var workItem in RequestQueue.GetConsumingEnumerable())
                  {
                      // robertmclaws: The line below should collapse the queue quickly.
-                     if (CancellationTokenSource.IsCancellationRequested) continue;
-                     //TODO: RWM: We'll do the real work here. Below is just a placeholder.
-                     Task.Delay(1).Wait();
+                     if (CancellationTokenSource.IsCancellationRequested)
+                     {
+                         Logger.Write("A queued request was cancelled before it was processed.");
+                         continue;
+                     }
 
-
+                     var response = await PostProtoPayload(ApiUrl, workItem, null);
+                     if (response == null) continue;
+                     await ProcessMessages(response);
                  }
              }, TaskCreationOptions.LongRunning);
         }
@@ -320,14 +324,12 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TRequest"></typeparam>
         /// <param name="url"></param>
         /// <param name="requestEnvelope"></param>
         /// <param name="responseTypes"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public async Task<IMessage[]> PostProtoPayload<TRequest>(string url, RequestEnvelope requestEnvelope, params Type[] responseTypes)
-            where TRequest : IMessage<TRequest>
+        public async Task<IMessage[]> PostProtoPayload(string url, RequestEnvelope requestEnvelope, params Type[] responseTypes)
         {
             // robertmclaws: Start by preparing the results array based on the types we're expecting to be returned.
             var result = new IMessage[responseTypes.Length];
@@ -345,7 +347,7 @@ namespace PoGo.ApiClient
             //               Since the function we're calling is now recursive, let's make sure we only encode the payload once.
             var byteArrayContent = new ByteArrayContent(requestEnvelope.ToByteString().ToByteArray());
             var retryPolicy = RetryPolicyManager.GetRetryPolicy(requestEnvelope.Requests[0].RequestType);
-            var response = await PostProto<TRequest>(url, byteArrayContent, retryPolicy, CancellationTokenSource.Token);
+            var response = await PostProto(url, byteArrayContent, retryPolicy, CancellationTokenSource.Token);
 
             if (response == null || response.Returns.Count == 0)
             {
@@ -365,7 +367,6 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TRequest"></typeparam>
         /// <param name="url"></param>
         /// <param name="payload"></param>
         /// <param name="retryPolicy"></param>
@@ -373,19 +374,30 @@ namespace PoGo.ApiClient
         /// <param name="attemptCount"></param>
         /// <param name="redirectCount"></param>
         /// <returns></returns>
-        public async Task<ResponseEnvelope> PostProto<TRequest>(string url, ByteArrayContent payload, RetryPolicy retryPolicy, CancellationToken token,
+        internal async Task<ResponseEnvelope> PostProto(string url, ByteArrayContent payload, RetryPolicy retryPolicy, CancellationToken token,
             int attemptCount = 0, int redirectCount = 0)
-            where TRequest : IMessage<TRequest>
         {
 
             // robertmclaws: If someone wants us to be done, we're done.
-            if (token.IsCancellationRequested) return null;
+            if (token.IsCancellationRequested)
+            {
+                Logger.Write("The request was cancelled. (PostProto cancellation check)");
+                return null;
+            }
             
             attemptCount++;
 
             // robertmclaws: If we've exceeded the maximum number of attempts, we're done.
-            if (attemptCount > retryPolicy.MaxFailureAttempts) return null;
-            if (redirectCount > retryPolicy.MaxRedirectAttempts) return null;
+            if (attemptCount > retryPolicy.MaxFailureAttempts)
+            {
+                Logger.Write("The request exceeded the number of retries allowed and has been cancelled.");
+                return null;
+            }
+            if (redirectCount > retryPolicy.MaxRedirectAttempts)
+            {
+                Logger.Write("The request exceeded the number of redirect attempts allowed and has been cancelled.");
+                return null;
+            }
 
             // robertmclaws: We're gonna keep going, so let's be pro-active about token failures, instead of reactive.
             if (AccessToken == null || AccessToken.IsExpired)
@@ -393,7 +405,7 @@ namespace PoGo.ApiClient
                 await Login.DoLoginAsync();
             }
 
-            var result = await PostAsync(url, payload);
+            var result = await PostAsync(url, payload, token);
 
             var response = new ResponseEnvelope();
             var responseData = await result.Content.ReadAsByteArrayAsync();
@@ -432,20 +444,20 @@ namespace PoGo.ApiClient
                     // robertmclaws to do: Check to see if redirects should count against the RetryPolicy.
                     await Task.Delay(retryPolicy.DelayInSeconds * 1000);
                     redirectCount++;
-                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
+                    return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
 
                 case StatusCode.InvalidToken:
                     Logger.Write("Received StatusCode 102, reauthenticating.");
                     AccessToken?.Expire();
                     // robertmclaws: trigger a retry here. We'll automatically try to log in again on the next request.
                     await Task.Delay(retryPolicy.DelayInSeconds * 1000);
-                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
+                    return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
 
                 case StatusCode.ServerOverloaded:
                     // Per @wallycz, on code 52, wait 11 seconds before sending the request again.
                     Logger.Write("Server says to slow the hell down. Try again in 11 sec.");
                     await Task.Delay(11000);
-                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
+                    return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
 
                 default:
                     Logger.Write($"Unknown status code: {response.StatusCode}");
