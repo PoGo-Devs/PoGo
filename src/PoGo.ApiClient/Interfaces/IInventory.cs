@@ -4,21 +4,115 @@ using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Interfaces
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IInventory
     {
-        Task<ReleasePokemonResponse> TransferPokemon(ulong pokemonId);
-        Task<EvolvePokemonResponse> EvolvePokemon(ulong pokemonId);
-        Task<UpgradePokemonResponse> UpgradePokemon(ulong pokemonId);
-        Task<GetInventoryResponse> GetInventory();
-        Task<RecycleInventoryItemResponse> RecycleItem(ItemId itemId, int amount);
-        Task<UseItemXpBoostResponse> UseItemXpBoost();
-        Task<UseItemEggIncubatorResponse> UseItemEggIncubator(string itemId, ulong pokemonId);
-        Task<GetHatchedEggsResponse> GetHatchedEgg();
-        Task<UseItemPotionResponse> UseItemPotion(ItemId itemId, ulong pokemonId);
-        Task<UseItemEggIncubatorResponse> UseItemRevive(ItemId itemId, ulong pokemonId);
-        Task<UseIncenseResponse> UseIncense(ItemId incenseType);
-        Task<UseItemGymResponse> UseItemInGym(string gymId, ItemId itemId);
-        Task<NicknamePokemonResponse> NicknamePokemon(ulong pokemonId, string nickName);
-        Task<SetFavoritePokemonResponse> SetFavoritePokemon(long pokemonId, bool isFavorite);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        bool QueueTransferPokemonRequest(ulong pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        bool QueueEvolvePokemonRequest(ulong pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        bool QueueUpgradePokemonRequest(ulong pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        bool QueueGetInventoryRequest();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        bool QueueRecycleItemRequest(ItemId itemId, int amount);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        bool QueueUseItemXpBoostRequest();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        bool QueueUseItemEggIncubatorRequest(string itemId, ulong pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        bool QueueGetHatchedEggRequest();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        bool QueueUseItemPotionRequest(ItemId itemId, ulong pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        bool QueueUseItemReviveRequest(ItemId itemId, ulong pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="incenseType"></param>
+        /// <returns></returns>
+        bool QueueUseIncenseRequest(ItemId incenseType);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gymId"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        bool QueueUseItemInGymRequest(string gymId, ItemId itemId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <param name="nickName"></param>
+        /// <returns></returns>
+        bool QueueNicknamePokemonRequest(ulong pokemonId, string nickName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <param name="isFavorite"></param>
+        /// <returns></returns>
+        bool QueueSetFavoritePokemonRequest(long pokemonId, bool isFavorite);
+
     }
+
 }

@@ -1,56 +1,92 @@
-﻿using System.Threading.Tasks;
-using PoGo.ApiClient.Interfaces;
+﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
-using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class InventoryClient : BaseRpc, IInventory
     {
+
+        #region Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
         public InventoryClient(PokemonGoApiClient client) : base(client)
         {
         }
 
-        public async Task<ReleasePokemonResponse> TransferPokemon(ulong pokemonId)
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueTransferPokemonRequest(ulong pokemonId)
         {
             var message = new ReleasePokemonMessage
             {
                 PokemonId = pokemonId
             };
 
-            return await PostProtoPayload<Request, ReleasePokemonResponse>(RequestType.ReleasePokemon, message);
+            return Client.QueueRequest(RequestType.ReleasePokemon, message);
         }
 
-        public async Task<EvolvePokemonResponse> EvolvePokemon(ulong pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueEvolvePokemonRequest(ulong pokemonId)
         {
             var message = new EvolvePokemonMessage
             {
                 PokemonId = pokemonId
             };
 
-            return await PostProtoPayload<Request, EvolvePokemonResponse>(RequestType.EvolvePokemon, message);
+            return Client.QueueRequest(RequestType.EvolvePokemon, message);
         }
 
-        public async Task<UpgradePokemonResponse> UpgradePokemon(ulong pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueUpgradePokemonRequest(ulong pokemonId)
         {
             var message = new UpgradePokemonMessage
             {
                 PokemonId = pokemonId
             };
 
-            return await PostProtoPayload<Request, UpgradePokemonResponse>(RequestType.UpgradePokemon, message);
+            return Client.QueueRequest(RequestType.UpgradePokemon, message);
         }
 
-        public async Task<GetInventoryResponse> GetInventory()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueGetInventoryRequest()
         {
-            return
-                await
-                    PostProtoPayload<Request, GetInventoryResponse>(RequestType.GetInventory, new GetInventoryMessage());
+            return Client.QueueRequest(RequestType.GetInventory, new GetInventoryMessage());
         }
 
-        public async Task<RecycleInventoryItemResponse> RecycleItem(ItemId itemId, int amount)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public bool QueueRecycleItemRequest(ItemId itemId, int amount)
         {
             var message = new RecycleInventoryItemMessage
             {
@@ -58,21 +94,30 @@ namespace PoGo.ApiClient.Rpc
                 Count = amount
             };
 
-            return
-                await PostProtoPayload<Request, RecycleInventoryItemResponse>(RequestType.RecycleInventoryItem, message);
+            return Client.QueueRequest(RequestType.RecycleInventoryItem, message);
         }
 
-        public async Task<UseItemXpBoostResponse> UseItemXpBoost()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueUseItemXpBoostRequest()
         {
             var message = new UseItemXpBoostMessage
             {
                 ItemId = ItemId.ItemLuckyEgg
             };
 
-            return await PostProtoPayload<Request, UseItemXpBoostResponse>(RequestType.UseItemXpBoost, message);
+            return Client.QueueRequest(RequestType.UseItemXpBoost, message);
         }
 
-        public async Task<UseItemEggIncubatorResponse> UseItemEggIncubator(string itemId, ulong pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueUseItemEggIncubatorRequest(string itemId, ulong pokemonId)
         {
             var message = new UseItemEggIncubatorMessage
             {
@@ -80,19 +125,25 @@ namespace PoGo.ApiClient.Rpc
                 PokemonId = pokemonId
             };
 
-            return
-                await PostProtoPayload<Request, UseItemEggIncubatorResponse>(RequestType.UseItemEggIncubator, message);
+            return Client.QueueRequest(RequestType.UseItemEggIncubator, message);
         }
 
-        public async Task<GetHatchedEggsResponse> GetHatchedEgg()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueGetHatchedEggRequest()
         {
-            return
-                await
-                    PostProtoPayload<Request, GetHatchedEggsResponse>(RequestType.GetHatchedEggs,
-                        new GetHatchedEggsMessage());
+            return Client.QueueRequest(RequestType.GetHatchedEggs, new GetHatchedEggsMessage());
         }
 
-        public async Task<UseItemPotionResponse> UseItemPotion(ItemId itemId, ulong pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueUseItemPotionRequest(ItemId itemId, ulong pokemonId)
         {
             var message = new UseItemPotionMessage
             {
@@ -100,10 +151,16 @@ namespace PoGo.ApiClient.Rpc
                 PokemonId = pokemonId
             };
 
-            return await PostProtoPayload<Request, UseItemPotionResponse>(RequestType.UseItemPotion, message);
+            return Client.QueueRequest(RequestType.UseItemPotion, message);
         }
 
-        public async Task<UseItemEggIncubatorResponse> UseItemRevive(ItemId itemId, ulong pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueUseItemReviveRequest(ItemId itemId, ulong pokemonId)
         {
             var message = new UseItemReviveMessage
             {
@@ -111,21 +168,31 @@ namespace PoGo.ApiClient.Rpc
                 PokemonId = pokemonId
             };
 
-            return
-                await PostProtoPayload<Request, UseItemEggIncubatorResponse>(RequestType.UseItemEggIncubator, message);
+            return Client.QueueRequest(RequestType.UseItemEggIncubator, message);
         }
 
-        public async Task<UseIncenseResponse> UseIncense(ItemId incenseType)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="incenseType"></param>
+        /// <returns></returns>
+        public bool QueueUseIncenseRequest(ItemId incenseType)
         {
             var message = new UseIncenseMessage
             {
                 IncenseType = incenseType
             };
 
-            return await PostProtoPayload<Request, UseIncenseResponse>(RequestType.UseIncense, message);
+            return Client.QueueRequest(RequestType.UseIncense, message);
         }
 
-        public async Task<UseItemGymResponse> UseItemInGym(string gymId, ItemId itemId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gymId"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        public bool QueueUseItemInGymRequest(string gymId, ItemId itemId)
         {
             var message = new UseItemGymMessage
             {
@@ -135,10 +202,16 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, UseItemGymResponse>(RequestType.UseItemGym, message);
+            return Client.QueueRequest(RequestType.UseItemGym, message);
         }
 
-        public async Task<NicknamePokemonResponse> NicknamePokemon(ulong pokemonId, string nickName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <param name="nickName"></param>
+        /// <returns></returns>
+        public bool QueueNicknamePokemonRequest(ulong pokemonId, string nickName)
         {
             var message = new NicknamePokemonMessage
             {
@@ -146,10 +219,16 @@ namespace PoGo.ApiClient.Rpc
                 Nickname = nickName
             };
 
-            return await PostProtoPayload<Request, NicknamePokemonResponse>(RequestType.NicknamePokemon, message);
+            return Client.QueueRequest(RequestType.NicknamePokemon, message);
         }
 
-        public async Task<SetFavoritePokemonResponse> SetFavoritePokemon(long pokemonId, bool isFavorite)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <param name="isFavorite"></param>
+        /// <returns></returns>
+        public bool QueueSetFavoritePokemonRequest(long pokemonId, bool isFavorite)
         {
             var message = new SetFavoritePokemonMessage
             {
@@ -157,7 +236,11 @@ namespace PoGo.ApiClient.Rpc
                 IsFavorite = isFavorite
             };
 
-            return await PostProtoPayload<Request, SetFavoritePokemonResponse>(RequestType.SetFavoritePokemon, message);
+            return Client.QueueRequest(RequestType.SetFavoritePokemon, message);
         }
+
+        #endregion
+
     }
+
 }

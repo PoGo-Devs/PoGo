@@ -281,7 +281,7 @@ namespace PoGo.ApiClient
         /// <param name="message"></param>
         /// <param name="requestType"></param>
         /// <returns></returns>
-        private RequestEnvelope BuildBatchRequestEnvelope(IMessage message, RequestType requestType)
+        internal RequestEnvelope BuildBatchRequestEnvelope(IMessage message, RequestType requestType)
         {
 
             var getHatchedEggsMessage = new GetHatchedEggsMessage();
@@ -329,7 +329,7 @@ namespace PoGo.ApiClient
         /// <param name="responseTypes"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public async Task<IMessage[]> PostProtoPayload(string url, RequestEnvelope requestEnvelope, params Type[] responseTypes)
+        internal async Task<IMessage[]> PostProtoPayload(string url, RequestEnvelope requestEnvelope, params Type[] responseTypes)
         {
             // robertmclaws: Start by preparing the results array based on the types we're expecting to be returned.
             var result = new IMessage[responseTypes.Length];
@@ -472,7 +472,7 @@ namespace PoGo.ApiClient
         /// </summary>
         /// <param name="messages"></param>
         /// <returns></returns>
-        private async Task<bool> ProcessMessages(IMessage[] messages)
+        internal async Task<bool> ProcessMessages(IMessage[] messages)
         {
             foreach (var inner in messages)
             {
