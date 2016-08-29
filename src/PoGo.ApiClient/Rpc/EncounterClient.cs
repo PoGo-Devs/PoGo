@@ -1,20 +1,39 @@
-﻿using System.Threading.Tasks;
-using PoGo.ApiClient.Interfaces;
+﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Enums;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
-using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class EncounterClient : BaseRpc, IEncounter
     {
+
+        #region Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
         public EncounterClient(PokemonGoApiClient client) : base(client)
         {
         }
 
-        public async Task<EncounterResponse> EncounterPokemon(ulong encounterId, string spawnPointGuid)
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="encounterId"></param>
+        /// <param name="spawnPointGuid"></param>
+        /// <returns></returns>
+        public bool QueueEncounterPokemonRequest(ulong encounterId, string spawnPointGuid)
         {
             var message = new EncounterMessage
             {
@@ -24,10 +43,17 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, EncounterResponse>(RequestType.Encounter, message);
+            return Client.QueueRequest(RequestType.Encounter, message);
         }
 
-        public async Task<UseItemCaptureResponse> UseCaptureItem(ulong encounterId, ItemId itemId, string spawnPointId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="encounterId"></param>
+        /// <param name="itemId"></param>
+        /// <param name="spawnPointId"></param>
+        /// <returns></returns>
+        public bool QueueUseCaptureItemRequest(ulong encounterId, ItemId itemId, string spawnPointId)
         {
             var message = new UseItemCaptureMessage
             {
@@ -36,12 +62,22 @@ namespace PoGo.ApiClient.Rpc
                 SpawnPointId = spawnPointId
             };
 
-            return await PostProtoPayload<Request, UseItemCaptureResponse>(RequestType.UseItemCapture, message);
+            return Client.QueueRequest(RequestType.UseItemCapture, message);
         }
 
-        public async Task<CatchPokemonResponse> CatchPokemon(ulong encounterId, string spawnPointGuid,
-            ItemId pokeballItemId, double normalizedRecticleSize = 1.950, double spinModifier = 1,
-            double normalizedHitPos = 1, bool hitPokemon = true)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="encounterId"></param>
+        /// <param name="spawnPointGuid"></param>
+        /// <param name="pokeballItemId"></param>
+        /// <param name="normalizedRecticleSize"></param>
+        /// <param name="spinModifier"></param>
+        /// <param name="normalizedHitPos"></param>
+        /// <param name="hitPokemon"></param>
+        /// <returns></returns>
+        public bool QueueCatchPokemonRequest(ulong encounterId, string spawnPointGuid, ItemId pokeballItemId, double normalizedRecticleSize = 1.950, 
+            double spinModifier = 1, double normalizedHitPos = 1, bool hitPokemon = true)
         {
             var message = new CatchPokemonMessage
             {
@@ -54,10 +90,16 @@ namespace PoGo.ApiClient.Rpc
                 NormalizedHitPosition = normalizedHitPos
             };
 
-            return await PostProtoPayload<Request, CatchPokemonResponse>(RequestType.CatchPokemon, message);
+            return Client.QueueRequest(RequestType.CatchPokemon, message);
         }
 
-        public async Task<IncenseEncounterResponse> EncounterIncensePokemon(ulong encounterId, string encounterLocation)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="encounterId"></param>
+        /// <param name="encounterLocation"></param>
+        /// <returns></returns>
+        public bool QueueEncounterIncensePokemonRequest(ulong encounterId, string encounterLocation)
         {
             var message = new IncenseEncounterMessage
             {
@@ -65,10 +107,16 @@ namespace PoGo.ApiClient.Rpc
                 EncounterLocation = encounterLocation
             };
 
-            return await PostProtoPayload<Request, IncenseEncounterResponse>(RequestType.IncenseEncounter, message);
+            return Client.QueueRequest(RequestType.IncenseEncounter, message);
         }
 
-        public async Task<DiskEncounterResponse> EncounterLurePokemon(ulong encounterId, string fortId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="encounterId"></param>
+        /// <param name="fortId"></param>
+        /// <returns></returns>
+        public bool QueueEncounterLuredPokemonRequest(ulong encounterId, string fortId)
         {
             var message = new DiskEncounterMessage
             {
@@ -78,20 +126,26 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, DiskEncounterResponse>(RequestType.DiskEncounter, message);
+            return Client.QueueRequest(RequestType.DiskEncounter, message);
         }
 
-        public async Task<EncounterTutorialCompleteResponse> EncounterTutorialComplete(PokemonId pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueEncounterTutorialCompleteRequest(PokemonId pokemonId)
         {
             var message = new EncounterTutorialCompleteMessage
             {
                 PokemonId = pokemonId
             };
 
-            return
-                await
-                    PostProtoPayload<Request, EncounterTutorialCompleteResponse>(RequestType.EncounterTutorialComplete,
-                        message);
+            return Client.QueueRequest(RequestType.EncounterTutorialComplete, message);
         }
+
+        #endregion
+
     }
+
 }
