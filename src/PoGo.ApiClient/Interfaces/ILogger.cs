@@ -1,4 +1,4 @@
-﻿namespace PoGo.ApiClient.Logging
+﻿namespace PoGo.ApiClient.Interfaces
 {
     /// <summary>
     ///     All loggers must implement this interface.

@@ -16,7 +16,12 @@ namespace PoGo.ApiClient.Helpers
         /// <summary>
         /// A 1-based integer indicating the number of times this operation can be retried.
         /// </summary>
-        internal int MaxAttempts { get; set; }
+        internal int MaxFailureAttempts { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        internal int MaxRedirectAttempts { get; set; }
 
         /// <summary>
         /// The number of seconds the system should wait before retrying the operation.
@@ -26,11 +31,13 @@ namespace PoGo.ApiClient.Helpers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="maxAttempts"></param>
+        /// <param name="maxFailureAttempts"></param>
+        /// <param name="maxRedirectAttempts"></param>
         /// <param name="delayInSeconds"></param>
-        public RetryPolicy(int maxAttempts, int delayInSeconds)
+        public RetryPolicy(int maxFailureAttempts, int maxRedirectAttempts, int delayInSeconds)
         {
-            MaxAttempts = maxAttempts;
+            MaxFailureAttempts = maxFailureAttempts;
+            MaxRedirectAttempts = maxRedirectAttempts;
             DelayInSeconds = delayInSeconds;
         }
 

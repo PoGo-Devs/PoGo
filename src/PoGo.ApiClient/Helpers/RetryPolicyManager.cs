@@ -16,14 +16,14 @@ namespace PoGo.ApiClient.Helpers
 
         private static readonly Dictionary<RequestType, RetryPolicy> _retryPolicies = new Dictionary<RequestType, RetryPolicy>
         {
-            { RequestType.PlayerUpdate, new RetryPolicy(1, 11) },
-            { RequestType.GetPlayer, new RetryPolicy(1, 11) },
-            { RequestType.GetInventory, new RetryPolicy(1, 0) },
+            { RequestType.PlayerUpdate, new RetryPolicy(1, 1, 11) },
+            { RequestType.GetPlayer, new RetryPolicy(1, 1, 11) },
+            { RequestType.GetInventory, new RetryPolicy(1, 1, 0) },
         };
 
         internal static RetryPolicy GetRetryPolicy(RequestType type)
         {
-            return _retryPolicies.ContainsKey(type) ? _retryPolicies[type] : new RetryPolicy(1, 0);
+            return _retryPolicies.ContainsKey(type) ? _retryPolicies[type] : new RetryPolicy(1, 1, 0);
         }
 
     }

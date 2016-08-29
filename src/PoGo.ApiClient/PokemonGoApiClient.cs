@@ -5,14 +5,13 @@ using PoGo.ApiClient.Helpers;
 using PoGo.ApiClient.Interfaces;
 using PoGo.ApiClient.Rpc;
 using PoGo.ApiClient.Session;
-using POGOProtos.Inventory;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
-using POGOProtos.Networking.Responses;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -38,6 +37,12 @@ namespace PoGo.ApiClient
         /// 
         /// </summary>
         internal RequestBuilder RequestBuilder => new RequestBuilder(AuthToken, AuthType, CurrentLatitude, CurrentLongitude, CurrentAccuracy, DeviceInfo, AuthTicket);
+
+        private static readonly HttpClientHandler Handler = new HttpClientHandler
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            AllowAutoRedirect = false
+        };
 
         /// <summary>
         /// 
@@ -159,6 +164,18 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
+        public PokemonGoApiClient() : base(Handler)
+        {
+            DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Niantic App");
+            DefaultRequestHeaders.ExpectContinue = false;
+            DefaultRequestHeaders.TryAddWithoutValidation("Connection", "keep-alive");
+            DefaultRequestHeaders.TryAddWithoutValidation("Accept", "*/*");
+            DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/x-www-form-urlencoded");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="settings"></param>
         /// <param name="deviceInfo"></param>
         /// <param name="accessToken"></param>
@@ -204,7 +221,7 @@ namespace PoGo.ApiClient
         /// <remarks>
         /// robertmclaws: Every request will have a minimum of two payloads. So no single-payload results anymore.
         /// </remarks>
-        public bool QueueRequest(IMessage message, RequestType requestType)
+        public bool QueueRequest(RequestType requestType, IMessage message)
         {
             RequestEnvelope envelope = null;
             if (_singleRequests.Contains(requestType))
@@ -271,7 +288,7 @@ namespace PoGo.ApiClient
             var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
             var downloadSettingsMessage = new DownloadSettingsMessage
             {
-                Hash = "05daf51635c82611d1aac95c0b051d3ec088a930"
+                Hash = Download.DownloadSettingsHash
             };
 
             return RequestBuilder.GetRequestEnvelope(
@@ -330,6 +347,12 @@ namespace PoGo.ApiClient
             var retryPolicy = RetryPolicyManager.GetRetryPolicy(requestEnvelope.Requests[0].RequestType);
             var response = await PostProto<TRequest>(url, byteArrayContent, retryPolicy);
 
+            if (response == null || response.Returns.Count == 0)
+            {
+                // robertmclaws: We didn't get anything back after several attempts. Let's bounce.
+                return null;
+            }
+
             // robertmclaws: Now marry up the results from the service whith the type instances we already created.
             for (var i = 0; i < responseTypes.Length; i++)
             {
@@ -347,18 +370,21 @@ namespace PoGo.ApiClient
         /// <param name="payload"></param>
         /// <param name="retryPolicy"></param>
         /// <param name="attemptCount"></param>
+        /// <param name="redirectCount"></param>
         /// <returns></returns>
-        public async Task<ResponseEnvelope> PostProto<TRequest>(string url, ByteArrayContent payload, RetryPolicy retryPolicy, int attemptCount = 0)
+        public async Task<ResponseEnvelope> PostProto<TRequest>(string url, ByteArrayContent payload, RetryPolicy retryPolicy, int attemptCount = 0, int redirectCount = 0)
             where TRequest : IMessage<TRequest>
         {
             attemptCount++;
-            // robertmclaws: We've exceeded the maximum number of attempts, so we're done.
-            if (attemptCount > retryPolicy.MaxAttempts) return null;
+
+            // robertmclaws: If we've exceeded the maximum number of attempts, we're done.
+            if (attemptCount > retryPolicy.MaxFailureAttempts) return null;
+            if (redirectCount > retryPolicy.MaxRedirectAttempts) return null;
 
             // robertmclaws: We're gonna keep going, so let's be pro-active about token failures, instead of reactive.
             if (AccessToken == null || AccessToken.IsExpired)
             {
-                await Login.DoLogin();
+                await Login.DoLoginAsync();
             }
 
             var result = await PostAsync(url, payload);
@@ -399,20 +425,21 @@ namespace PoGo.ApiClient
                     Logger.Write($"Received an updated API url = {ApiUrl}");
                     // robertmclaws to do: Check to see if redirects should count against the RetryPolicy.
                     await Task.Delay(retryPolicy.DelayInSeconds * 1000);
-                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount);
+                    redirectCount++;
+                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount, redirectCount);
 
                 case StatusCode.InvalidToken:
                     Logger.Write("Received StatusCode 102, reauthenticating.");
                     AccessToken?.Expire();
                     // robertmclaws: trigger a retry here. We'll automatically try to log in again on the next request.
                     await Task.Delay(retryPolicy.DelayInSeconds * 1000);
-                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount);
+                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount, redirectCount);
 
                 case StatusCode.ServerOverloaded:
                     // Per @wallycz, on code 52, wait 11 seconds before sending the request again.
                     Logger.Write("Server says to slow the hell down. Try again in 11 sec.");
                     await Task.Delay(11000);
-                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount);
+                    return await PostProto<TRequest>(response.ApiUrl, payload, retryPolicy, attemptCount, redirectCount);
 
                 default:
                     Logger.Write($"Unknown status code: {response.StatusCode}");
@@ -436,6 +463,8 @@ namespace PoGo.ApiClient
 
             return false;
         }
+
+        #endregion
 
     }
 

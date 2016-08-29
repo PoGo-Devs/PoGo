@@ -1,82 +1,131 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using PoGo.ApiClient.Interfaces;
+﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Enums;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
-using POGOProtos.Networking.Responses;
+using System.Collections.Generic;
 
 namespace PoGo.ApiClient.Rpc
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class DownloadClient : BaseRpc, IDownload
     {
+
+        #region Properties
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string DownloadSettingsHash { get; set; }
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
         public DownloadClient(PokemonGoApiClient client) : base(client)
         {
             DownloadSettingsHash = "";
         }
 
-        public async Task<DownloadSettingsResponse> GetSettings()
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueSettingsRequest()
         {
             var message = new DownloadSettingsMessage
             {
                 Hash = DownloadSettingsHash
             };
 
-            var response = await PostProtoPayload<Request, DownloadSettingsResponse>(RequestType.DownloadSettings, message);
-            DownloadSettingsHash = response?.Hash ?? "";
+            return Client.QueueRequest(RequestType.DownloadSettings, message);
 
-            return response;
+            //robertmclaws to do: Handle SettingsChanged event and push the new value.
+            //DownloadSettingsHash = response?.Hash ?? "";
+           // return response;
         }
 
-        public async Task<DownloadItemTemplatesResponse> GetItemTemplates()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueDownloadItemTemplatesRequest()
         {
-            return await PostProtoPayload<Request, DownloadItemTemplatesResponse>(
-                RequestType.DownloadItemTemplates,
-                new DownloadItemTemplatesMessage());
+            return Client.QueueRequest(RequestType.DownloadItemTemplates, new DownloadItemTemplatesMessage());
         }
 
-        public async Task<DownloadRemoteConfigVersionResponse> GetRemoteConfigVersion(uint appVersion,
-            string deviceManufacturer, string deviceModel, string locale, Platform platform)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appVersion"></param>
+        /// <param name="deviceManufacturer"></param>
+        /// <param name="deviceModel"></param>
+        /// <param name="locale"></param>
+        /// <param name="platform"></param>
+        public bool QueueRemoteConfigVersionRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
         {
-            return
-                await
-                    PostProtoPayload<Request, DownloadRemoteConfigVersionResponse>(
-                        RequestType.DownloadRemoteConfigVersion, new DownloadRemoteConfigVersionMessage
-                        {
-                            AppVersion = appVersion,
-                            DeviceManufacturer = deviceManufacturer,
-                            DeviceModel = deviceModel,
-                            Locale = locale,
-                            Platform = platform
-                        });
+            var message = new DownloadRemoteConfigVersionMessage
+            {
+                AppVersion = appVersion,
+                DeviceManufacturer = deviceManufacturer,
+                DeviceModel = deviceModel,
+                Locale = locale,
+                Platform = platform
+            };
+
+            return Client.QueueRequest(RequestType.DownloadRemoteConfigVersion, message);
         }
 
-        public async Task<GetAssetDigestResponse> GetAssetDigest(uint appVersion, string deviceManufacturer,
-            string deviceModel, string locale, Platform platform)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appVersion"></param>
+        /// <param name="deviceManufacturer"></param>
+        /// <param name="deviceModel"></param>
+        /// <param name="locale"></param>
+        /// <param name="platform"></param>
+        /// <returns></returns>
+        public bool QueueAssetDigestRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
         {
-            return
-                await
-                    PostProtoPayload<Request, GetAssetDigestResponse>(RequestType.GetAssetDigest,
-                        new GetAssetDigestMessage
-                        {
-                            AppVersion = appVersion,
-                            DeviceManufacturer = deviceManufacturer,
-                            DeviceModel = deviceModel,
-                            Locale = locale,
-                            Platform = platform
-                        });
+            var message = new GetAssetDigestMessage
+            {
+                AppVersion = appVersion,
+                DeviceManufacturer = deviceManufacturer,
+                DeviceModel = deviceModel,
+                Locale = locale,
+                Platform = platform
+            };
+
+            return Client.QueueRequest(RequestType.GetAssetDigest, message);
         }
 
-        public async Task<GetDownloadUrlsResponse> GetDownloadUrls(IEnumerable<string> assetIds)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assetIds"></param>
+        /// <returns></returns>
+        public bool QueueDownloadUrlsRequest (IEnumerable<string> assetIds)
         {
-            return
-                await
-                    PostProtoPayload<Request, GetDownloadUrlsResponse>(RequestType.GetDownloadUrls,
-                        new GetDownloadUrlsMessage
-                        {
-                            AssetId = {assetIds}
-                        });
+            var message = new GetDownloadUrlsMessage
+            {
+                AssetId = { assetIds }
+            };
+
+            return Client.QueueRequest(RequestType.GetDownloadUrls, message);
         }
+
+        #endregion
+
     }
+
 }

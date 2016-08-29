@@ -135,14 +135,12 @@
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Helpers\RequestBuilder.cs" />
-    <Compile Include="Helpers\RetryHandler.cs" />
     <Compile Include="Helpers\S2Helper.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Helpers\Vector.cs" />
     <Compile Include="Helpers\xxHash\ArrayData.cs" />
     <Compile Include="Helpers\xxHash\UnifiedData.cs" />
     <Compile Include="Helpers\xxHash\xxHash.cs" />
-    <Compile Include="HttpClient\PokemonClient.cs" />
     <Compile Include="Interfaces\ISettings.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

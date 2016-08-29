@@ -1,4 +1,5 @@
-﻿using PoGo.ApiClient.Logging;
+﻿using PoGo.ApiClient.Interfaces;
+using PoGo.ApiClient.Logging;
 
 namespace PoGo.ApiClient
 {

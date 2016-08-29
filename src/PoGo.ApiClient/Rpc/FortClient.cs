@@ -1,21 +1,41 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using PoGo.ApiClient.Interfaces;
+﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Data.Battle;
 using POGOProtos.Inventory.Item;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
-using POGOProtos.Networking.Responses;
+using System.Collections.Generic;
 
 namespace PoGo.ApiClient.Rpc
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class FortClient : BaseRpc, IFort
     {
+
+        #region Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
         public FortClient(PokemonGoApiClient client) : base(client)
         {
         }
 
-        public async Task<FortDetailsResponse> GetFort(string fortId, double fortLatitude, double fortLongitude)
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="fortLatitude"></param>
+        /// <param name="fortLongitude"></param>
+        /// <returns></returns>
+        public bool QueueGetFortRequest(string fortId, double fortLatitude, double fortLongitude)
         {
             var message = new FortDetailsMessage
             {
@@ -24,10 +44,17 @@ namespace PoGo.ApiClient.Rpc
                 Longitude = fortLongitude
             };
 
-            return await PostProtoPayload<Request, FortDetailsResponse>(RequestType.FortDetails, message);
+            return Client.QueueRequest(RequestType.FortDetails, message);
         }
 
-        public async Task<FortSearchResponse> SearchFort(string fortId, double fortLat, double fortLng)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="fortLat"></param>
+        /// <param name="fortLng"></param>
+        /// <returns></returns>
+        public bool QueueSearchFortRequest(string fortId, double fortLat, double fortLng)
         {
             var message = new FortSearchMessage
             {
@@ -38,10 +65,16 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, FortSearchResponse>(RequestType.FortSearch, message);
+            return Client.QueueRequest(RequestType.FortSearch, message);
         }
 
-        public async Task<AddFortModifierResponse> AddFortModifier(string fortId, ItemId modifierType)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="modifierType"></param>
+        /// <returns></returns>
+        public bool QueueAddFortModifierRequest(string fortId, ItemId modifierType)
         {
             var message = new AddFortModifierMessage
             {
@@ -51,11 +84,18 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, AddFortModifierResponse>(RequestType.AddFortModifier, message);
+            return Client.QueueRequest(RequestType.AddFortModifier, message);
         }
 
-        public async Task<AttackGymResponse> AttackGym(string fortId, string battleId, List<BattleAction> battleActions,
-            BattleAction lastRetrievedAction)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="battleId"></param>
+        /// <param name="battleActions"></param>
+        /// <param name="lastRetrievedAction"></param>
+        /// <returns></returns>
+        public bool QueueAttackGymRequest(string fortId, string battleId, List<BattleAction> battleActions, BattleAction lastRetrievedAction)
         {
             var message = new AttackGymMessage
             {
@@ -69,10 +109,16 @@ namespace PoGo.ApiClient.Rpc
 
             message.AttackActions.AddRange(battleActions);
 
-            return await PostProtoPayload<Request, AttackGymResponse>(RequestType.AttackGym, message);
+            return Client.QueueRequest(RequestType.AttackGym, message);
         }
 
-        public async Task<FortDeployPokemonResponse> FortDeployPokemon(string fortId, ulong pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueFortDeployPokemonRequest(string fortId, ulong pokemonId)
         {
             var message = new FortDeployPokemonMessage
             {
@@ -82,10 +128,16 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, FortDeployPokemonResponse>(RequestType.FortDeployPokemon, message);
+            return Client.QueueRequest(RequestType.FortDeployPokemon, message);
         }
 
-        public async Task<FortRecallPokemonResponse> FortRecallPokemon(string fortId, ulong pokemonId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        public bool QueueFortRecallPokemonRequest(string fortId, ulong pokemonId)
         {
             var message = new FortRecallPokemonMessage
             {
@@ -95,10 +147,17 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, FortRecallPokemonResponse>(RequestType.FortRecallPokemon, message);
+            return Client.QueueRequest(RequestType.FortRecallPokemon, message);
         }
 
-        public async Task<GetGymDetailsResponse> GetGymDetails(string gymId, double gymLat, double gymLng)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gymId"></param>
+        /// <param name="gymLat"></param>
+        /// <param name="gymLng"></param>
+        /// <returns></returns>
+        public bool QueueGetGymDetailsRequest(string gymId, double gymLat, double gymLng)
         {
             var message = new GetGymDetailsMessage
             {
@@ -109,11 +168,17 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, GetGymDetailsResponse>(RequestType.GetGymDetails, message);
+            return Client.QueueRequest(RequestType.GetGymDetails, message);
         }
 
-        public async Task<StartGymBattleResponse> StartGymBattle(string gymId, ulong defendingPokemonId,
-            IEnumerable<ulong> attackingPokemonIds)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gymId"></param>
+        /// <param name="defendingPokemonId"></param>
+        /// <param name="attackingPokemonIds"></param>
+        /// <returns></returns>
+        public bool QueueStartGymBattleRequest(string gymId, ulong defendingPokemonId, IEnumerable<ulong> attackingPokemonIds)
         {
             var message = new StartGymBattleMessage
             {
@@ -124,7 +189,11 @@ namespace PoGo.ApiClient.Rpc
                 PlayerLongitude = Client.CurrentLongitude
             };
 
-            return await PostProtoPayload<Request, StartGymBattleResponse>(RequestType.StartGymBattle, message);
+            return Client.QueueRequest(RequestType.StartGymBattle, message);
         }
+
+        #endregion
+
     }
+
 }

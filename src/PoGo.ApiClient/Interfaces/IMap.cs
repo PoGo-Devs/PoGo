@@ -1,12 +1,26 @@
-﻿using System.Threading.Tasks;
-using PoGo.ApiClient.Proto;
-using POGOProtos.Networking.Responses;
-
+﻿
 namespace PoGo.ApiClient.Interfaces
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IMap
     {
-        Task<ResponseContainer<GetMapObjectsResponse>> GetMapObjects();
-        Task<GetIncensePokemonResponse> GetIncensePokemons();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        bool QueueMapObjectsRequest();
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        bool QueueIncensedPokemonRequest();
+
     }
+
 }

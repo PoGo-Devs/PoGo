@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using PoGo.ApiClient.Enums;
+using PoGo.ApiClient.Interfaces;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
+using System;
+using System.Linq;
 using static POGOProtos.Networking.Envelopes.RequestEnvelope.Types;
 
 namespace PoGo.ApiClient.Helpers

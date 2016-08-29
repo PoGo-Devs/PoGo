@@ -35,20 +35,20 @@ namespace PoGo.ApiClient.Rpc
             }
         }
 
-        public async Task DoLogin()
+        public async Task DoLoginAsync()
         {
             if (Client.AccessToken == null || Client.AccessToken.IsExpired)
             {
                 Client.AccessToken = await login.GetAccessToken().ConfigureAwait(false);
             }
             ///robertmclaws: Is it really necessary to put this in a separate function?
-            await SetServer().ConfigureAwait(false);                        
+            await SetServerAsync().ConfigureAwait(false);                        
         }
 
-        private async Task SetServer()
+        private async Task SetServerAsync()
         {
 
-            var serverRequest = RequestBuilder.GetInitialRequestEnvelope(
+            var serverRequest = Client.RequestBuilder.GetInitialRequestEnvelope(
                 new Request
                 {
                     RequestType = RequestType.GetPlayer,
@@ -61,7 +61,7 @@ namespace PoGo.ApiClient.Rpc
                 }
             );
 
-            var serverResponse = await PostProto<Request>(Resources.RpcUrl, serverRequest);
+            var serverResponse = await Client.PostProto<Request>(Resources.RpcUrl, serverRequest);
 
             if(serverRequest.StatusCode == (int) StatusCode.AccessDenied)
             {
