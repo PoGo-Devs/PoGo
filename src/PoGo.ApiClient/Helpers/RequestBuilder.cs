@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf;
+using PoGo.ApiClient.Authentication;
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Interfaces;
 using POGOProtos.Networking.Envelopes;
@@ -14,23 +15,21 @@ namespace PoGo.ApiClient.Helpers
         private readonly double _accuracy;
         private readonly AuthTicket _authTicket;
         private readonly string _authToken;
-        private readonly AuthType _authType;
+        private readonly AuthenticationProviderTypes _authType;
         private readonly IDeviceInfo _deviceInfo;
         private readonly double _latitude;
         private readonly double _longitude;
         private readonly Random _random = new Random();
         private static byte[] _sessionHash = null;
 
-        public RequestBuilder(string authToken, AuthType authType, double latitude, double longitude, double accuracy,
-            IDeviceInfo deviceInfo,
-            AuthTicket authTicket = null)
+        public RequestBuilder(AuthenticatedUser authUser, GeoCoordinate position, IDeviceInfo deviceInfo)
         {
-            _authToken = authToken;
-            _authType = authType;
-            _latitude = latitude;
-            _longitude = longitude;
-            _accuracy = accuracy;
-            _authTicket = authTicket;
+            _authToken = authUser.AccessToken;
+            _authType = authUser.ProviderType;
+            _latitude = position.Latitude;
+            _longitude = position.Longitude;
+            _accuracy = position.Accuracy;
+            _authTicket = authUser.AuthTicket;
             _deviceInfo = deviceInfo;
         }
 
@@ -198,7 +197,7 @@ namespace PoGo.ApiClient.Helpers
                 Accuracy = _accuracy, //9
                 AuthInfo = new AuthInfo
                 {
-                    Provider = _authType == AuthType.Google ? "google" : "ptc",
+                    Provider = _authType == AuthenticationProviderTypes.Google ? "google" : "ptc",
                     Token = new AuthInfo.Types.JWT
                     {
                         Contents = _authToken,

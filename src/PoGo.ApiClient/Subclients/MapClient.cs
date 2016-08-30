@@ -9,7 +9,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class MapClient : BaseRpc, IMapClient
+    public class MapClient : ClientBase, IMapClient
     {
 
         /// <summary>
@@ -28,10 +28,10 @@ namespace PoGo.ApiClient.Rpc
         {
             var message = new GetMapObjectsMessage
             {
-                CellId = { S2Helper.GetNearbyCellIds(Client.CurrentLongitude, Client.CurrentLatitude) },
+                CellId = { S2Helper.GetNearbyCellIds(Client.CurrentPosition.Longitude, Client.CurrentPosition.Latitude) },
                 SinceTimestampMs = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-                Latitude = Client.CurrentLatitude,
-                Longitude = Client.CurrentLongitude
+                Latitude = Client.CurrentPosition.Latitude,
+                Longitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.GetMapObjects, message);
@@ -45,8 +45,8 @@ namespace PoGo.ApiClient.Rpc
         {
             var message = new GetIncensePokemonMessage
             {
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.GetIncensePokemon, message);

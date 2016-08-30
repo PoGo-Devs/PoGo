@@ -109,19 +109,19 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\ApiOperation.cs" />
-    <Compile Include="Enums\StatusCode.cs" />
+    <Compile Include="CurrentPosition.cs" />
+    <Compile Include="Enums\StatusCodes.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
-    <Compile Include="Exceptions\ApiNonRecoverableException.cs" />
-    <Compile Include="Session\RetryPolicy.cs" />
-    <Compile Include="Session\RetryPolicyManager.cs" />
+    <Compile Include="Authentication\PoGoCredentials.cs" />
+    <Compile Include="RetryPolicy\RetryPolicy.cs" />
+    <Compile Include="RetryPolicy\RetryPolicyManager.cs" />
     <Compile Include="Helpers\TypeSwitch\TypeSwitch.cs" />
     <Compile Include="Interfaces\IPokemonGoApiClient.cs" />
-    <Compile Include="Login\PtcAuthenticationTicketResponse.cs" />
-    <Compile Include="Login\PtcLoginParameters.cs" />
+    <Compile Include="Authentication\PtcAuthenticationTicketResponse.cs" />
+    <Compile Include="Authentication\PtcAuthenticationParameters.cs" />
     <Compile Include="PokemonGoApiClient.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Enums\AuthType.cs" />
+    <Compile Include="Enums\AuthenticationProviderTypes.cs" />
     <Compile Include="Exceptions\AccessTokenExpiredException.cs" />
     <Compile Include="Exceptions\AccountNotVerifiedException.cs" />
     <Compile Include="Exceptions\GoogleException.cs" />
@@ -131,7 +131,6 @@
     <Compile Include="Exceptions\PTCOfflineException.cs" />
     <Compile Include="Helpers\Crypt.cs" />
     <Compile Include="Interfaces\IDeviceInfos.cs" />
-    <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Helpers\RequestBuilder.cs" />
     <Compile Include="Helpers\S2Helper.cs" />
@@ -144,10 +143,10 @@
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
-    <Compile Include="Login\GoogleLogin.cs" />
-    <Compile Include="Login\GSPOAuthSharp.cs" />
-    <Compile Include="Interfaces\ILoginProvider.cs" />
-    <Compile Include="Login\PtcLogin.cs" />
+    <Compile Include="Authentication\GoogleAuthenticationProvider.cs" />
+    <Compile Include="Authentication\GSPOAuthSharp.cs" />
+    <Compile Include="Interfaces\IAuthenticationProvider.cs" />
+    <Compile Include="Authentication\PtcAuthenticationProvider.cs" />
     <Compile Include="PokemonGoApiClient.Events.cs">
       <DependentUpon>PokemonGoApiClient.cs</DependentUpon>
     </Compile>
@@ -299,7 +298,6 @@
     <Compile Include="Proto\Networking\Responses\GetBuddyWalkedResponse.cs" />
     <Compile Include="Proto\Networking\Responses\SetBuddyPokemonResponse.cs" />
     <Compile Include="Proto\Networking\Responses\VerifyChallengeResponse.cs" />
-    <Compile Include="Proto\ResponseContainer.cs" />
     <Compile Include="Proto\Networking\Responses\AddFortModifierResponse.cs" />
     <Compile Include="Proto\Networking\Responses\AttackGymResponse.cs" />
     <Compile Include="Proto\Networking\Responses\CatchPokemonResponse.cs" />
@@ -387,21 +385,20 @@
     <Compile Include="Proto\Settings\Master\Pokemon\EncounterAttributes.cs" />
     <Compile Include="Proto\Settings\Master\Pokemon\StatsAttributes.cs" />
     <Compile Include="Proto\Settings\Master\TypeEffectiveSettings.cs" />
-    <Compile Include="Rpc\BaseRpc.cs" />
-    <Compile Include="Rpc\DownloadClient.cs" />
-    <Compile Include="Rpc\EncounterClient.cs" />
-    <Compile Include="Rpc\FortClient.cs" />
+    <Compile Include="Subclients\ClientBase.cs" />
+    <Compile Include="Subclients\DownloadClient.cs" />
+    <Compile Include="Subclients\EncounterClient.cs" />
+    <Compile Include="Subclients\FortClient.cs" />
     <Compile Include="Interfaces\IEncounterClient.cs" />
     <Compile Include="Interfaces\IFortClient.cs" />
     <Compile Include="Interfaces\IInventoryClient.cs" />
     <Compile Include="Interfaces\IMapClient.cs" />
     <Compile Include="Interfaces\IDownloadClient.cs" />
-    <Compile Include="Rpc\InventoryClient.cs" />
+    <Compile Include="Subclients\InventoryClient.cs" />
     <Compile Include="Interfaces\IPlayerClient.cs" />
-    <Compile Include="Rpc\UserClient.cs" />
-    <Compile Include="Rpc\MapClient.cs" />
-    <Compile Include="Rpc\PlayerClient.cs" />
-    <Compile Include="Session\AccessToken.cs" />
+    <Compile Include="Subclients\MapClient.cs" />
+    <Compile Include="Subclients\PlayerClient.cs" />
+    <Compile Include="Authentication\AuthenticatedUser.cs" />
     <EmbeddedResource Include="Properties\PoGo.ApiClient.rd.xml" />
   </ItemGroup>
   <ItemGroup />

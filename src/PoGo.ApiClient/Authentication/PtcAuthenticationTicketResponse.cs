@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace PoGo.ApiClient.Login
+namespace PoGo.ApiClient.Authentication
 {
-    internal class PtcAuthenticationTicketResponse : PtcLoginParameters
+    internal class PtcAuthenticationTicketResponse : PtcAuthenticationParameters
     {
 
         /// <summary>

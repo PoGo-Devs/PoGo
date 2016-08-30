@@ -11,7 +11,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class FortClient : BaseRpc, IFortClient
+    public class FortClient : ClientBase, IFortClient
     {
 
         #region Constructors
@@ -61,8 +61,8 @@ namespace PoGo.ApiClient.Rpc
                 FortId = fortId,
                 FortLatitude = fortLat,
                 FortLongitude = fortLng,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.FortSearch, message);
@@ -80,8 +80,8 @@ namespace PoGo.ApiClient.Rpc
             {
                 FortId = fortId,
                 ModifierType = modifierType,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.AddFortModifier, message);
@@ -102,8 +102,8 @@ namespace PoGo.ApiClient.Rpc
                 BattleId = battleId,
                 GymId = fortId,
                 LastRetrievedActions = lastRetrievedAction,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude,
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude,
                 AttackActions = {battleActions}
             };
 
@@ -124,8 +124,8 @@ namespace PoGo.ApiClient.Rpc
             {
                 PokemonId = pokemonId,
                 FortId = fortId,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.FortDeployPokemon, message);
@@ -143,8 +143,8 @@ namespace PoGo.ApiClient.Rpc
             {
                 PokemonId = pokemonId,
                 FortId = fortId,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.FortRecallPokemon, message);
@@ -164,8 +164,8 @@ namespace PoGo.ApiClient.Rpc
                 GymId = gymId,
                 GymLatitude = gymLat,
                 GymLongitude = gymLng,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.GetGymDetails, message);
@@ -185,8 +185,8 @@ namespace PoGo.ApiClient.Rpc
                 GymId = gymId,
                 DefendingPokemonId = defendingPokemonId,
                 AttackingPokemonIds = {attackingPokemonIds},
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.StartGymBattle, message);

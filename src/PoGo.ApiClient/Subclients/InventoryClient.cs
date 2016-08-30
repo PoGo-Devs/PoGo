@@ -9,7 +9,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class InventoryClient : BaseRpc, IInventoryClient
+    public class InventoryClient : ClientBase, IInventoryClient
     {
 
         #region Constructors
@@ -198,8 +198,8 @@ namespace PoGo.ApiClient.Rpc
             {
                 ItemId = itemId,
                 GymId = gymId,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.UseItemGym, message);

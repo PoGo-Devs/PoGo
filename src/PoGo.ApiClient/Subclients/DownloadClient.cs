@@ -10,7 +10,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class DownloadClient : BaseRpc, IDownloadClient
+    public class DownloadClient : ClientBase, IDownloadClient
     {
 
         #region Properties

@@ -1,11 +1,8 @@
-﻿using System.Threading.Tasks;
-using Google.Protobuf;
-using PoGo.ApiClient.Interfaces;
+﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Data.Player;
 using POGOProtos.Enums;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
-using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
@@ -13,7 +10,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class PlayerClient : BaseRpc, IPlayerClient
+    public class PlayerClient : ClientBase, IPlayerClient
     {
 
         #region Constructors
@@ -34,74 +31,38 @@ namespace PoGo.ApiClient.Rpc
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="latitude"></param>
-        /// <param name="longitude"></param>
-        /// <param name="accuracy"></param>
+        /// <param name="codename"></param>
         /// <returns></returns>
-        public bool QueueUpdatePlayerLocationRequest(double latitude, double longitude, double accuracy)
+        public bool QueueCheckCodenameAvailableRequest(string codename)
         {
-            SetCoordinates(latitude, longitude, accuracy);
-            var message = new PlayerUpdateMessage
+            var message = new CheckCodenameAvailableMessage
             {
-                Latitude = Client.CurrentLatitude,
-                Longitude = Client.CurrentLongitude
+                Codename = codename
             };
 
-            return Client.QueueRequest(RequestType.PlayerUpdate, message);
+            return Client.QueueRequest(RequestType.CheckCodenameAvailable, message);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="lat"></param>
-        /// <param name="lng"></param>
-        /// <param name="accuracy"></param>
-        public void SetCoordinates(double lat, double lng, double accuracy)
-        {
-            Client.CurrentLatitude = lat;
-            Client.CurrentLongitude = lng;
-            Client.CurrentAccuracy = accuracy;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <param name="codename"></param>
         /// <returns></returns>
-        public bool QueueGetPlayerRequest()
+        public bool QueueClaimCodenameRequest(string codename)
         {
-            return Client.QueueRequest(RequestType.GetPlayer, new GetPlayerMessage());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="playerName"></param>
-        /// <returns></returns>
-        public bool QueueGetPlayerProfileRequest(string playerName)
-        {
-            var message = new GetPlayerProfileMessage
+            var message = new ClaimCodenameMessage
             {
-                PlayerName = playerName
+                Codename = codename
             };
 
-            return Client.QueueRequest(RequestType.GetPlayerProfile, message);
-
+            return Client.QueueRequest(RequestType.ClaimCodename, message);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public bool QueueGetNewlyAwardedBadgesRequest()
-        {
-            return Client.QueueRequest(RequestType.CheckAwardedBadges, new CheckAwardedBadgesMessage());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool QueueollectDailyBonusRequest()
+        public bool QueueCollectDailyBonusRequest()
         {
             return Client.QueueRequest(RequestType.CollectDailyBonus, new CollectDailyBonusMessage());
         }
@@ -133,6 +94,40 @@ namespace PoGo.ApiClient.Rpc
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        public bool QueueGetPlayerRequest()
+        {
+            return Client.QueueRequest(RequestType.GetPlayer, new GetPlayerMessage());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="playerName"></param>
+        /// <returns></returns>
+        public bool QueueGetPlayerProfileRequest(string playerName)
+        {
+            var message = new GetPlayerProfileMessage
+            {
+                PlayerName = playerName
+            };
+
+            return Client.QueueRequest(RequestType.GetPlayerProfile, message);
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueCheckAwardedBadgesRequest()
+        {
+            return Client.QueueRequest(RequestType.CheckAwardedBadges, new CheckAwardedBadgesMessage());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="level"></param>
         /// <returns></returns>
         public bool QueueGetLevelUpRewardsRequest(int level)
@@ -144,6 +139,33 @@ namespace PoGo.ApiClient.Rpc
 
             return Client.QueueRequest(RequestType.LevelUpRewards, message);
   
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueGetSuggestedCodenamesRequest()
+        {
+            return Client.QueueRequest(RequestType.GetSuggestedCodenames, new GetSuggestedCodenamesMessage());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueMarkTutorialCompleteRequest()
+        {
+            return Client.QueueRequest(RequestType.MarkTutorialComplete, new MarkTutorialCompleteMessage());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueSendEchoRequest()
+        {
+            return Client.QueueRequest(RequestType.Echo, new EchoMessage());
         }
 
         /// <summary>
@@ -195,58 +217,31 @@ namespace PoGo.ApiClient.Rpc
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="codename"></param>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <param name="accuracy"></param>
         /// <returns></returns>
-        public bool QueueClaimCodenameRequest(string codename)
+        public bool QueueUpdatePlayerLocationRequest(double latitude, double longitude, double accuracy)
         {
-            var message = new ClaimCodenameMessage
+            SetCoordinates(latitude, longitude, accuracy);
+            var message = new PlayerUpdateMessage
             {
-                Codename = codename
+                Latitude = Client.CurrentPosition.Latitude,
+                Longitude = Client.CurrentPosition.Longitude,
             };
 
-            return Client.QueueRequest(RequestType.ClaimCodename, message);
+            return Client.QueueRequest(RequestType.PlayerUpdate, message);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="codename"></param>
-        /// <returns></returns>
-        public bool QueueCheckCodenameAvailableRequest(string codename)
+        /// <param name="lat"></param>
+        /// <param name="lng"></param>
+        /// <param name="accuracy"></param>
+        public void SetCoordinates(double lat, double lng, double accuracy)
         {
-            var message = new CheckCodenameAvailableMessage
-            {
-                Codename = codename
-            };
-
-            return Client.QueueRequest(RequestType.CheckCodenameAvailable, message);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool QueueGetSuggestedCodenamesRequest()
-        {
-            return Client.QueueRequest(RequestType.GetSuggestedCodenames, new GetSuggestedCodenamesMessage());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool QueueSendEchoRequest()
-        {
-            return Client.QueueRequest(RequestType.Echo, new EchoMessage());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool QueueMarkTutorialCompleteRequest()
-        {
-            return Client.QueueRequest(RequestType.MarkTutorialComplete, new MarkTutorialCompleteMessage());
+            Client.CurrentPosition = new GeoCoordinate(lat, lng, accuracy);
         }
 
         #endregion

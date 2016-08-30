@@ -10,7 +10,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class EncounterClient : BaseRpc, IEncounterClient
+    public class EncounterClient : ClientBase, IEncounterClient
     {
 
         #region Constructors
@@ -39,8 +39,8 @@ namespace PoGo.ApiClient.Rpc
             {
                 EncounterId = encounterId,
                 SpawnPointId = spawnPointGuid,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.Encounter, message);
@@ -122,8 +122,8 @@ namespace PoGo.ApiClient.Rpc
             {
                 EncounterId = encounterId,
                 FortId = fortId,
-                PlayerLatitude = Client.CurrentLatitude,
-                PlayerLongitude = Client.CurrentLongitude
+                PlayerLatitude = Client.CurrentPosition.Latitude,
+                PlayerLongitude = Client.CurrentPosition.Longitude
             };
 
             return Client.QueueRequest(RequestType.DiskEncounter, message);

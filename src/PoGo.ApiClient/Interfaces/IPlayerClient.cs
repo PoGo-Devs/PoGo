@@ -73,7 +73,7 @@ namespace PoGo.ApiClient.Interfaces
         /// 
         /// </summary>
         /// <returns></returns>
-        bool QueueNewlyAwardedBadgesRequest();
+        bool QueueCheckAwardedBadgesRequest();
 
         /// <summary>
         /// 
@@ -123,7 +123,7 @@ namespace PoGo.ApiClient.Interfaces
         /// <param name="lat"></param>
         /// <param name="lng"></param>
         /// <param name="altitude"></param>
-        void SetCoordinates(double lat, double lng, double altitude);
+        void SetCoordinates(double lat, double lng, double accuracye);
 
     }
 

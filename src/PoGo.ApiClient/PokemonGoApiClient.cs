@@ -1,13 +1,14 @@
 ﻿using Google.Protobuf;
+using PoGo.ApiClient.Authentication;
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Exceptions;
 using PoGo.ApiClient.Helpers;
 using PoGo.ApiClient.Interfaces;
 using PoGo.ApiClient.Rpc;
-using PoGo.ApiClient.Session;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
+using POGOProtos.Networking.Responses;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthToken, AuthType, CurrentLatitude, CurrentLongitude, CurrentAccuracy, DeviceInfo, AuthTicket);
+        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthenticatedUser, CurrentPosition, DeviceInfo);
 
         private static readonly HttpClientHandler Handler = new HttpClientHandler
         {
@@ -59,12 +60,7 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public string AuthToken => AccessToken?.Token;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public AuthType AuthType => Settings.AuthType;
+        public IApiSettings ApiSettings { get; }
 
         /// <summary>
         /// 
@@ -74,33 +70,17 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public AuthTicket AuthTicket => AccessToken?.AuthTicket;
+        public AuthenticatedUser AuthenticatedUser { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public AccessToken AccessToken { get; set; }
+        public GeoCoordinate CurrentPosition { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public double CurrentLatitude { get; internal set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double CurrentLongitude { get; internal set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double CurrentAltitude { get; internal set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double CurrentAccuracy { get; internal set; }
-
+        public IAuthenticationProvider CurrentProvider { get; }
 
         /// <summary>
         /// 
@@ -130,11 +110,6 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public Rpc.UserClient User { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public IMapClient Map { get; }
 
         /// <summary>
@@ -146,11 +121,6 @@ namespace PoGo.ApiClient
         /// 
         /// </summary>
         internal BlockingCollection<RequestEnvelope> RequestQueue { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IApiSettings Settings { get; }
 
         #endregion
 
@@ -173,31 +143,58 @@ namespace PoGo.ApiClient
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="deviceInfo"></param>
-        /// <param name="accessToken"></param>
-        public PokemonGoApiClient(IApiSettings settings, IDeviceInfo deviceInfo, AccessToken accessToken = null)
+        /// <param name="authenticatedUser"></param>
+        public PokemonGoApiClient(IApiSettings settings, IDeviceInfo deviceInfo, AuthenticatedUser authenticatedUser = null)
         {
-            Settings = settings;
-            AccessToken = accessToken;
+            switch (settings.AuthenticationProvider)
+            {
+                case AuthenticationProviderTypes.Google:
+                    CurrentProvider = new GoogleAuthenticationProvider(settings.Credentials.Username, settings.Credentials.Password);
+                    break;
+                case AuthenticationProviderTypes.PokemonTrainerClub:
+                    CurrentProvider = new PtcAuthenticationProvider(settings.Credentials.Username, settings.Credentials.Password);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(settings.AuthenticationProvider), "Unknown AuthType");
+            }
+
+            ApiSettings = settings;
+            AuthenticatedUser = authenticatedUser;
 
             CancellationTokenSource = new CancellationTokenSource();
             RequestQueue = new BlockingCollection<RequestEnvelope>();
 
-            Login = new Rpc.UserClient(this);
             Player = new PlayerClient(this);
             Download = new DownloadClient(this);
             Inventory = new InventoryClient(this);
             Map = new MapClient(this);
             Fort = new FortClient(this);
             Encounter = new EncounterClient(this);
-            Misc = new Misc(this);
             DeviceInfo = deviceInfo;
 
-            Player.SetCoordinates(Settings.DefaultLatitude, Settings.DefaultLongitude, Settings.DefaultAltitude);
+            Player.SetCoordinates(ApiSettings.DefaultPosition.Latitude, ApiSettings.DefaultPosition.Longitude, ApiSettings.DefaultPosition.Accuracy);
         }
 
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task AuthenticateAsync()
+        {
+            if (AuthenticatedUser == null || AuthenticatedUser.IsExpired)
+            {
+                AuthenticatedUser = await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
+            }
+
+            // @robertmclaws: We're going to bypass the queue here 
+            var envelope = BuildRequestEnvelope(RequestType.GetPlayer, new GetPlayerMessage());
+            var result = await PostProtoPayload(ApiUrl, envelope, typeof(GetPlayerResponse), typeof(CheckChallengeResponse));
+            await ProcessMessages(result);
+        }
 
         /// <summary>
         /// Triggers any currently-executing requests to cancel ASAP. This will also have the effect of clearing the <see cref="RequestQueue"/>.
@@ -218,26 +215,7 @@ namespace PoGo.ApiClient
         /// </remarks>
         public bool QueueRequest(RequestType requestType, IMessage message)
         {
-            RequestEnvelope envelope = null;
-            if (_singleRequests.Contains(requestType))
-            {
-                envelope = RequestBuilder.GetRequestEnvelope(
-                    new Request
-                    {
-                        RequestType = requestType,
-                        RequestMessage = message.ToByteString()
-                    },
-                    new Request
-                    {
-                        RequestType = RequestType.CheckChallenge,
-                        RequestMessage = new CheckChallengeMessage().ToByteString()
-                    }
-                );
-            }
-            else
-            {
-                envelope = BuildBatchRequestEnvelope(message, requestType);
-            }
+            var envelope = BuildRequestEnvelope(requestType, message);
             return RequestQueue.TryAdd(envelope);
 
         }
@@ -276,44 +254,61 @@ namespace PoGo.ApiClient
         /// <param name="message"></param>
         /// <param name="requestType"></param>
         /// <returns></returns>
-        internal RequestEnvelope BuildBatchRequestEnvelope(IMessage message, RequestType requestType)
+        internal RequestEnvelope BuildRequestEnvelope(RequestType requestType, IMessage message)
         {
-
-            var getHatchedEggsMessage = new GetHatchedEggsMessage();
-            var getInventoryMessage = new GetInventoryMessage
+            if (_singleRequests.Contains(requestType))
             {
-                LastTimestampMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-            };
-            var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
-            var downloadSettingsMessage = new DownloadSettingsMessage
+                return RequestBuilder.GetRequestEnvelope(
+                    new Request
+                    {
+                        RequestType = requestType,
+                        RequestMessage = message.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.CheckChallenge,
+                        RequestMessage = new CheckChallengeMessage().ToByteString()
+                    }
+                );
+            }
+            else
             {
-                Hash = Download.DownloadSettingsHash
-            };
+                var getHatchedEggsMessage = new GetHatchedEggsMessage();
+                var getInventoryMessage = new GetInventoryMessage
+                {
+                    LastTimestampMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                };
+                var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
+                var downloadSettingsMessage = new DownloadSettingsMessage
+                {
+                    Hash = Download.DownloadSettingsHash
+                };
 
-            return RequestBuilder.GetRequestEnvelope(
-                new Request
-                {
-                    RequestType = requestType,
-                    RequestMessage = message.ToByteString()
-                },
-                new Request
-                {
-                    RequestType = RequestType.GetHatchedEggs,
-                    RequestMessage = getHatchedEggsMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.GetInventory,
-                    RequestMessage = getInventoryMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.CheckAwardedBadges,
-                    RequestMessage = checkAwardedBadgesMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.DownloadSettings,
-                    RequestMessage = downloadSettingsMessage.ToByteString()
-                });
-
+                return RequestBuilder.GetRequestEnvelope(
+                    new Request
+                    {
+                        RequestType = requestType,
+                        RequestMessage = message.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.GetHatchedEggs,
+                        RequestMessage = getHatchedEggsMessage.ToByteString()
+                    }, new Request
+                    {
+                        RequestType = RequestType.GetInventory,
+                        RequestMessage = getInventoryMessage.ToByteString()
+                    }, new Request
+                    {
+                        RequestType = RequestType.CheckAwardedBadges,
+                        RequestMessage = checkAwardedBadgesMessage.ToByteString()
+                    }, new Request
+                    {
+                        RequestType = RequestType.DownloadSettings,
+                        RequestMessage = downloadSettingsMessage.ToByteString()
+                    }
+                );
+            }
         }
 
         /// <summary>
@@ -395,9 +390,9 @@ namespace PoGo.ApiClient
             }
 
             // robertmclaws: We're gonna keep going, so let's be pro-active about token failures, instead of reactive.
-            if (AccessToken == null || AccessToken.IsExpired)
+            if (AuthenticatedUser == null || AuthenticatedUser.IsExpired)
             {
-                await Login.DoLoginAsync();
+                await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
             }
 
             var result = await PostAsync(url, payload, token);
@@ -410,26 +405,26 @@ namespace PoGo.ApiClient
                 response.MergeFrom(codedStream);
             }
 
-            switch ((StatusCode)response.StatusCode)
+            switch ((StatusCodes)response.StatusCode)
             {
-                case StatusCode.Success:
+                case StatusCodes.Success:
                     if (response.AuthTicket != null)
                     {
                         Logger.Write("Received a new AuthTicket from the Api!");
-                        AccessToken.AuthTicket = response.AuthTicket;
+                        AuthenticatedUser.AuthTicket = response.AuthTicket;
                         // robertmclaws to do: See if we need to clone the AccessToken so we don't have a threading violation.
-                        RaiseAccessTokenUpdated(AccessToken);
+                        RaiseAccessTokenUpdated(AuthenticatedUser);
                     }
                     return response;
 
-                case StatusCode.AccessDenied:
+                case StatusCodes.AccessDenied:
                     Logger.Write("Account has been banned. Our condolences for your loss.");
                     CancelCurrentRequests();
                     //RequestQueue.CompleteAdding();
                     // robertmclaws to do: Allow you to stop adding events to the queue, and re-initialize the queue if needed.
                     throw new AccountLockedException();
 
-                case StatusCode.Redirect:
+                case StatusCodes.Redirect:
                     if (!Regex.IsMatch(response.ApiUrl, "pgorelease\\.nianticlabs\\.com\\/plfe\\/\\d+"))
                     {
                         throw new Exception($"Received an incorrect API url '{response.ApiUrl}', status code was '{response.StatusCode}'.");
@@ -441,14 +436,14 @@ namespace PoGo.ApiClient
                     redirectCount++;
                     return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
 
-                case StatusCode.InvalidToken:
+                case StatusCodes.InvalidToken:
                     Logger.Write("Received StatusCode 102, reauthenticating.");
-                    AccessToken?.Expire();
+                    AuthenticatedUser?.Expire();
                     // robertmclaws: trigger a retry here. We'll automatically try to log in again on the next request.
                     await Task.Delay(retryPolicy.DelayInSeconds * 1000);
                     return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
 
-                case StatusCode.ServerOverloaded:
+                case StatusCodes.ServerOverloaded:
                     // Per @wallycz, on code 52, wait 11 seconds before sending the request again.
                     Logger.Write("Server says to slow the hell down. Try again in 11 sec.");
                     await Task.Delay(11000);

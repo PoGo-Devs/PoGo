@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 
-namespace PoGo.ApiClient.Login
+namespace PoGo.ApiClient.Authentication
 {
 
     /// <summary>
     /// 
     /// </summary>
-    internal class PtcLoginParameters
+    internal class PtcAuthenticationParameters
     {
 
         /// <summary>

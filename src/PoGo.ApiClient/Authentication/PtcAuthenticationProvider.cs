@@ -2,7 +2,6 @@
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Exceptions;
 using PoGo.ApiClient.Interfaces;
-using PoGo.ApiClient.Session;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,13 +11,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
-namespace PoGo.ApiClient.Login
+namespace PoGo.ApiClient.Authentication
 {
 
     /// <summary>
     /// 
     /// </summary>
-    internal class PtcLogin : ILoginProvider
+    internal class PtcAuthenticationProvider : IAuthenticationProvider
     {
 
         #region Private Members
@@ -26,12 +25,12 @@ namespace PoGo.ApiClient.Login
         /// <summary>
         /// The Password for the user currently attempting  to authenticate.
         /// </summary>
-        private string Password { get; }
+        public string Password { get; }
 
         /// <summary>
         /// The Username for the user currenrtly attempting to authenticate.
         /// </summary>
-        private string Username { get; }
+        public string Username { get; }
 
         #endregion
 
@@ -42,7 +41,7 @@ namespace PoGo.ApiClient.Login
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
-        public PtcLogin(string username, string password)
+        public PtcAuthenticationProvider(string username, string password)
         {
             Username = username;
             Password = password;
@@ -56,7 +55,7 @@ namespace PoGo.ApiClient.Login
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<AccessToken> GetAccessToken()
+        public async Task<AuthenticatedUser> GetAuthenticatedUser()
         {
             using (var handler = GetHttpClientHandler())
             {
@@ -94,11 +93,11 @@ namespace PoGo.ApiClient.Login
         /// Responsible for retrieving login parameters for <see cref="GetAuthenticationTicket" />.
         /// </summary>
         /// <param name="httpClient">An initialized <see cref="HttpClient" /></param>
-        /// <returns><see cref="PtcLoginParameters" /> for <see cref="GetAuthenticationTicket" />.</returns>
-        internal async Task<PtcLoginParameters> GetLoginParameters(HttpClient httpClient)
+        /// <returns><see cref="PtcAuthenticationParameters" /> for <see cref="GetAuthenticationTicket" />.</returns>
+        internal async Task<PtcAuthenticationParameters> GetLoginParameters(HttpClient httpClient)
         {
             var response = await httpClient.GetAsync(Constants.LoginUrl);
-            var loginData = JsonConvert.DeserializeObject<PtcLoginParameters>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var loginData = JsonConvert.DeserializeObject<PtcAuthenticationParameters>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             return loginData;
         }
 
@@ -106,9 +105,9 @@ namespace PoGo.ApiClient.Login
         /// Authenticates against the PTC login service and acquires an Authentication Ticket.
         /// </summary>
         /// <param name="httpClient">The <see cref="HttpClient"/> instance to use for this request.</param>
-        /// <param name="loginData">The <see cref="PtcLoginParameters" /> to use from this request. Obtained by calling <see cref="GetLoginParameters(HttpClient)"/>.</param>
+        /// <param name="loginData">The <see cref="PtcAuthenticationParameters" /> to use from this request. Obtained by calling <see cref="GetLoginParameters(HttpClient)"/>.</param>
         /// <returns></returns>
-        internal async Task<string> GetAuthenticationTicket(HttpClient httpClient, PtcLoginParameters loginData)
+        internal async Task<string> GetAuthenticationTicket(HttpClient httpClient, PtcAuthenticationParameters loginData)
         {
             var requestData = new Dictionary<string, string>
                 {
@@ -150,9 +149,9 @@ namespace PoGo.ApiClient.Login
         /// Retrieves an OAuth 2.0 token for a given Authentication ticket.
         /// </summary>
         /// <param name="httpClient">The <see cref="HttpClient"/> instance to use for this request.</param>
-        /// <param name="authTicket">The Authentication Ticket to use for this request. Obtained by calling <see cref="GetAuthenticationTicket(HttpClient, PtcLoginParameters)"/>.</param>
+        /// <param name="authTicket">The Authentication Ticket to use for this request. Obtained by calling <see cref="GetAuthenticationTicket(HttpClient, PtcAuthenticationParameters)"/>.</param>
         /// <returns></returns>
-        internal async Task<AccessToken> GetOAuthToken(HttpClient httpClient, string authTicket)
+        internal async Task<AuthenticatedUser> GetOAuthToken(HttpClient httpClient, string authTicket)
         {
             var requestData = new Dictionary<string, string>
                 {
@@ -177,12 +176,12 @@ namespace PoGo.ApiClient.Login
                 throw new Exception("Your login was OK, but we could not get an API Token.");
             }
 
-            return new AccessToken
+            return new AuthenticatedUser
             {
                 Username = this.Username,
-                Token = decoder.GetFirstValueByName("access_token"),
+                AccessToken = decoder.GetFirstValueByName("access_token"),
                 ExpiresUtc = DateTime.UtcNow.AddSeconds(int.Parse(decoder.GetFirstValueByName("expires"))),
-                AuthType = AuthType.Ptc
+                ProviderType = AuthenticationProviderTypes.PokemonTrainerClub
             };
         }
 

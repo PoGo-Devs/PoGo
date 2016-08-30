@@ -2,36 +2,55 @@
 using System.Threading.Tasks;
 using Windows.System;
 using DankMemes.GPSOAuthSharp;
-using PoGo.ApiClient.Session;
 using PoGo.ApiClient.Exceptions;
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Interfaces;
 
-namespace PoGo.ApiClient.Login
+namespace PoGo.ApiClient.Authentication
 {
 
     /// <summary>
     /// 
     /// </summary>
-    public class GoogleLogin : ILoginProvider
+    public class GoogleAuthenticationProvider : IAuthenticationProvider
     {
 
-        private readonly string _email;
-        private readonly string _password;
+        #region Private Members
 
-        public GoogleLogin(string email, string password)
+        /// <summary>
+        /// The Password for the user currently attempting  to authenticate.
+        /// </summary>
+        public string Password { get; }
+
+        /// <summary>
+        /// The Username for the user currenrtly attempting to authenticate.
+        /// </summary>
+        public string Username { get; }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        public GoogleAuthenticationProvider(string email, string password)
         {
-            _email = email;
-            _password = password;
+            Username = email;
+            Password = password;
         }
+
+        #endregion
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<AccessToken> GetAccessToken()
+        public async Task<AuthenticatedUser> GetAuthenticatedUser()
         {
-            var client = new GPSOAuthClient(_email, _password);
+            var client = new GPSOAuthClient(Username, Password);
             var response = await client.PerformMasterLogin(Constants.GoogleOAuthAndroidId);
 
             if (response.ContainsKey("Error"))
@@ -59,12 +78,12 @@ namespace PoGo.ApiClient.Login
                 throw new GoogleOfflineException();
             }
 
-            return new AccessToken
+            return new AuthenticatedUser
             {
-                Username = _email,
-                Token = oauthResponse["Auth"],
+                Username = Username,
+                AccessToken = oauthResponse["Auth"],
                 ExpiresUtc = DateTimeOffset.FromUnixTimeSeconds(long.Parse(oauthResponse["Expiry"])).UtcDateTime,
-                AuthType = AuthType.Google
+                ProviderType = AuthenticationProviderTypes.Google
             };
         }
     }
