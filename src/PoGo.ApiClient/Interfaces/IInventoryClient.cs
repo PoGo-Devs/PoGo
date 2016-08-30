@@ -8,8 +8,51 @@ namespace PoGo.ApiClient.Interfaces
     /// <summary>
     /// 
     /// </summary>
-    public interface IInventory
+    public interface IInventoryClient
     {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
+        bool QueueEvolvePokemonRequest(ulong pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        bool QueueGetHatchedEggRequest();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        bool QueueGetInventoryRequest();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <param name="nickName"></param>
+        /// <returns></returns>
+        bool QueueNicknamePokemonRequest(ulong pokemonId, string nickName);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        bool QueueRecycleItemRequest(ItemId itemId, int amount);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pokemonId"></param>
+        /// <param name="isFavorite"></param>
+        /// <returns></returns>
+        bool QueueSetFavoritePokemonRequest(long pokemonId, bool isFavorite);
 
         /// <summary>
         /// 
@@ -23,34 +66,14 @@ namespace PoGo.ApiClient.Interfaces
         /// </summary>
         /// <param name="pokemonId"></param>
         /// <returns></returns>
-        bool QueueEvolvePokemonRequest(ulong pokemonId);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pokemonId"></param>
-        /// <returns></returns>
         bool QueueUpgradePokemonRequest(ulong pokemonId);
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="incenseType"></param>
         /// <returns></returns>
-        bool QueueGetInventoryRequest();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="itemId"></param>
-        /// <param name="amount"></param>
-        /// <returns></returns>
-        bool QueueRecycleItemRequest(ItemId itemId, int amount);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        bool QueueUseItemXpBoostRequest();
+        bool QueueUseIncenseRequest(ItemId incenseType);
 
         /// <summary>
         /// 
@@ -63,8 +86,10 @@ namespace PoGo.ApiClient.Interfaces
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="gymId"></param>
+        /// <param name="itemId"></param>
         /// <returns></returns>
-        bool QueueGetHatchedEggRequest();
+        bool QueueUseItemInGymRequest(string gymId, ItemId itemId);
 
         /// <summary>
         /// 
@@ -85,33 +110,8 @@ namespace PoGo.ApiClient.Interfaces
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="incenseType"></param>
         /// <returns></returns>
-        bool QueueUseIncenseRequest(ItemId incenseType);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gymId"></param>
-        /// <param name="itemId"></param>
-        /// <returns></returns>
-        bool QueueUseItemInGymRequest(string gymId, ItemId itemId);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pokemonId"></param>
-        /// <param name="nickName"></param>
-        /// <returns></returns>
-        bool QueueNicknamePokemonRequest(ulong pokemonId, string nickName);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pokemonId"></param>
-        /// <param name="isFavorite"></param>
-        /// <returns></returns>
-        bool QueueSetFavoritePokemonRequest(long pokemonId, bool isFavorite);
+        bool QueueUseItemXpBoostRequest();
 
     }
 

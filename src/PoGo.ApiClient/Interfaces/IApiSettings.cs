@@ -2,7 +2,8 @@
 
 namespace PoGo.ApiClient.Interfaces
 {
-    public interface ISettings
+
+    public interface IApiSettings
     {
         AuthType AuthType { get; set; }
         double DefaultLatitude { get; set; }

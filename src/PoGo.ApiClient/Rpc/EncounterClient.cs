@@ -10,7 +10,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class EncounterClient : BaseRpc, IEncounter
+    public class EncounterClient : BaseRpc, IEncounterClient
     {
 
         #region Constructors

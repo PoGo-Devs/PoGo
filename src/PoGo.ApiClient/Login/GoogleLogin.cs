@@ -5,18 +5,16 @@ using DankMemes.GPSOAuthSharp;
 using PoGo.ApiClient.Session;
 using PoGo.ApiClient.Exceptions;
 using PoGo.ApiClient.Enums;
+using PoGo.ApiClient.Interfaces;
 
 namespace PoGo.ApiClient.Login
 {
-    public class GoogleLogin : ILoginType
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class GoogleLogin : ILoginProvider
     {
-        public const string GoogleLoginAndroidId = "9774d56d682e549c";
-
-        public const string GoogleLoginService =
-            "audience:server:client_id:848232511240-7so421jotr2609rmqakceuu1luuq0ptb.apps.googleusercontent.com";
-
-        public const string GoogleLoginApp = "com.nianticlabs.pokemongo";
-        public const string GoogleLoginClientSig = "321187995bc7cdc2b5fc91b11a96e2baa8602c62";
 
         private readonly string _email;
         private readonly string _password;
@@ -27,12 +25,14 @@ namespace PoGo.ApiClient.Login
             _password = password;
         }
 
-#pragma warning disable 1998
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<AccessToken> GetAccessToken()
-#pragma warning restore 1998
         {
             var client = new GPSOAuthClient(_email, _password);
-            var response = await client.PerformMasterLogin(GoogleLoginAndroidId);
+            var response = await client.PerformMasterLogin(Constants.GoogleOAuthAndroidId);
 
             if (response.ContainsKey("Error"))
             {
@@ -41,7 +41,9 @@ namespace PoGo.ApiClient.Login
                     await Launcher.LaunchUriAsync(new Uri(response["Url"]));
                 }
                 else
+                {
                     throw new GoogleException(response["Error"]);
+                }
             }
 
             //Todo: captcha/2fa implementation
@@ -49,21 +51,19 @@ namespace PoGo.ApiClient.Login
             if (!response.ContainsKey("Auth"))
                 throw new GoogleOfflineException();
 
-            var oauthResponse =
-                await
-                    client.PerformOAuth(response["Token"], GoogleLoginService, GoogleLoginAndroidId, GoogleLoginApp,
-                        GoogleLoginClientSig);
+            var oauthResponse = await client.PerformOAuth(response["Token"], Constants.GoogleOAuthService, Constants.GoogleOAuthAndroidId, 
+                Constants.GoogleOAuthApp, Constants.GoogleOAuthClientSig);
 
             if (!oauthResponse.ContainsKey("Auth"))
+            {
                 throw new GoogleOfflineException();
-
-            //return oauthResponse["Auth"];
+            }
 
             return new AccessToken
             {
                 Username = _email,
                 Token = oauthResponse["Auth"],
-                ExpiresUtc = DateTimeExtensions.GetDateTimeFromSeconds(int.Parse(oauthResponse["Expiry"])),
+                ExpiresUtc = DateTimeOffset.FromUnixTimeSeconds(long.Parse(oauthResponse["Expiry"])).UtcDateTime,
                 AuthType = AuthType.Google
             };
         }

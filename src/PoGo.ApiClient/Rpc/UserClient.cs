@@ -1,28 +1,29 @@
 ﻿using Google.Protobuf;
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Exceptions;
+using PoGo.ApiClient.Interfaces;
 using PoGo.ApiClient.Login;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using System;
 using System.Threading.Tasks;
-using PoGo.ApiClient.Interfaces;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public delegate void GoogleDeviceCodeDelegate(string code, string uri);
 
-    public class LoginClient : BaseRpc
+    /// <summary>
+    /// 
+    /// </summary>
+    public class UserClient : BaseRpc
     {
-        //public event GoogleDeviceCodeDelegate GoogleDeviceCodeEvent;
-        private readonly ILoginType login;
+        private readonly ILoginProvider login;
 
-        public LoginClient(PokemonGoApiClient client) : base(client)
+        public UserClient(PokemonGoApiClient client) : base(client)
         {
             login = SetLoginType(client.Settings);
         }
 
-        private static ILoginType SetLoginType(ISettings settings)
+        private static ILoginProvider SetLoginType(IApiSettings settings)
         {
             switch (settings.AuthType)
             {

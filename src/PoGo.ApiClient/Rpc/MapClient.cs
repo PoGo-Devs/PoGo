@@ -9,7 +9,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class MapClient : BaseRpc, IMap
+    public class MapClient : BaseRpc, IMapClient
     {
 
         /// <summary>

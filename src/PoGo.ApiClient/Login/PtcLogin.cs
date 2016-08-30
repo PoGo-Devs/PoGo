@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using PoGo.ApiClient.Enums;
 using PoGo.ApiClient.Exceptions;
+using PoGo.ApiClient.Interfaces;
 using PoGo.ApiClient.Session;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace PoGo.ApiClient.Login
     /// <summary>
     /// 
     /// </summary>
-    internal class PtcLogin : ILoginType
+    internal class PtcLogin : ILoginProvider
     {
 
         #region Private Members
@@ -28,7 +29,7 @@ namespace PoGo.ApiClient.Login
         private string Password { get; }
 
         /// <summary>
-        /// The Username for teh suer currenrtly attempting to authenticate.
+        /// The Username for the user currenrtly attempting to authenticate.
         /// </summary>
         private string Username { get; }
 
@@ -113,7 +114,7 @@ namespace PoGo.ApiClient.Login
                 {
                     {"lt", loginData.Lt},
                     {"execution", loginData.Execution},
-                    {"_eventId", "submit"},
+                    {"_eventId", Constants.PtcAuthTicketEventId},
                     {"username", Username},
                     {"password", Password}
                 };
@@ -155,14 +156,14 @@ namespace PoGo.ApiClient.Login
         {
             var requestData = new Dictionary<string, string>
                 {
-                    {"client_id", "mobile-app_pokemon-go"},
-                    {"redirect_uri", "https://www.nianticlabs.com/pokemongo/error"},
-                    {"client_secret", "w8ScCUXJQc6kXKw8FiOhd8Fixzht18Dq3PEVkUCP5ZPxtgyWsbTvWHFLm2wNY0JR"},
-                    {"grant_type", "refresh_token"},
+                    {"client_id", Constants.PtcOAuthClientId},
+                    {"redirect_uri", Constants.PtcOAuthRedirectUri},
+                    {"client_secret", Constants.PtcOAuthClientSecret},
+                    {"grant_type", Constants.PtcOAuthGrantType},
                     {"code", authTicket}
                 };
 
-            var responseMessage = await httpClient.PostAsync(Constants.LoginOauthUrl, new FormUrlEncodedContent(requestData)).ConfigureAwait(false);
+            var responseMessage = await httpClient.PostAsync(Constants.LoginOAuthUrl, new FormUrlEncodedContent(requestData)).ConfigureAwait(false);
             var responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (string.IsNullOrWhiteSpace(responseContent))

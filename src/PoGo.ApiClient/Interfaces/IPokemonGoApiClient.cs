@@ -18,14 +18,14 @@ namespace PoGo.ApiClient.Interfaces
         double CurrentLongitude { get; }
         double CurrentAltitude { get; }
         IDeviceInfo DeviceInfo { get; }
-        IDownload Download { get; }
-        IEncounter Encounter { get; }
-        IFort Fort { get; }
-        IInventory Inventory { get; }
-        Rpc.LoginClient Login { get; }
-        IMap Map { get; }
+        IDownloadClient Download { get; }
+        IEncounterClient Encounter { get; }
+        IFortClient Fort { get; }
+        IInventoryClient Inventory { get; }
+        Rpc.UserClient Login { get; }
+        IMapClient Map { get; }
         Misc Misc { get; }
-        IPlayer Player { get; }
-        ISettings Settings { get; }
+        IPlayerClient Player { get; }
+        IApiSettings Settings { get; }
     }
 }

@@ -11,7 +11,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class FortClient : BaseRpc, IFort
+    public class FortClient : BaseRpc, IFortClient
     {
 
         #region Constructors

@@ -60,7 +60,7 @@ namespace PoGo.ApiClient.Helpers
                         requestEnvelope.Accuracy),
                 SessionHash = ByteString.CopyFrom(_sessionHash),
                 Unknown25 = 7363665268261373700L,
-                Timestamp = (ulong)DateTime.UtcNow.ToUnixTime(),
+                Timestamp = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TimestampSinceStart = (ulong)_deviceInfo.TimeSnapshot,
                 SensorInfo = new Signature.Types.SensorInfo
                 {

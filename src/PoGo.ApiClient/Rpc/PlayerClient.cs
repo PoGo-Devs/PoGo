@@ -9,14 +9,36 @@ using POGOProtos.Networking.Responses;
 
 namespace PoGo.ApiClient.Rpc
 {
-    public class PlayerClient : BaseRpc, IPlayer
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class PlayerClient : BaseRpc, IPlayerClient
     {
+
+        #region Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
         public PlayerClient(PokemonGoApiClient client) : base(client)
         {
             Client = client;
         }
 
-        public async Task<PlayerUpdateResponse> UpdatePlayerLocation(double latitude, double longitude, double accuracy)
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <param name="accuracy"></param>
+        /// <returns></returns>
+        public bool QueueUpdatePlayerLocationRequest(double latitude, double longitude, double accuracy)
         {
             SetCoordinates(latitude, longitude, accuracy);
             var message = new PlayerUpdateMessage
@@ -25,16 +47,15 @@ namespace PoGo.ApiClient.Rpc
                 Longitude = Client.CurrentLongitude
             };
 
-            var updatePlayerLocationRequestEnvelope = RequestBuilder.GetRequestEnvelope(
-                new Request
-                {
-                    RequestType = RequestType.PlayerUpdate,
-                    RequestMessage = message.ToByteString()
-                });
-
-            return await PostProtoPayload<Request, PlayerUpdateResponse>(updatePlayerLocationRequestEnvelope);
+            return Client.QueueRequest(RequestType.PlayerUpdate, message);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lat"></param>
+        /// <param name="lng"></param>
+        /// <param name="accuracy"></param>
         public void SetCoordinates(double lat, double lng, double accuracy)
         {
             Client.CurrentLatitude = lat;
@@ -42,92 +63,193 @@ namespace PoGo.ApiClient.Rpc
             Client.CurrentAccuracy = accuracy;
         }
 
-        public async Task<GetPlayerResponse> GetPlayer()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueGetPlayerRequest()
         {
-            return await PostProtoPayload<Request, GetPlayerResponse>(RequestType.GetPlayer, new GetPlayerMessage());
+            return Client.QueueRequest(RequestType.GetPlayer, new GetPlayerMessage());
         }
 
-        public async Task<GetPlayerProfileResponse> GetPlayerProfile(string playerName)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="playerName"></param>
+        /// <returns></returns>
+        public bool QueueGetPlayerProfileRequest(string playerName)
         {
-            return
-                await
-                    PostProtoPayload<Request, GetPlayerProfileResponse>(RequestType.GetPlayerProfile,
-                        new GetPlayerProfileMessage
-                        {
-                            PlayerName = playerName
-                        });
+            var message = new GetPlayerProfileMessage
+            {
+                PlayerName = playerName
+            };
+
+            return Client.QueueRequest(RequestType.GetPlayerProfile, message);
+
         }
 
-        public async Task<CheckAwardedBadgesResponse> GetNewlyAwardedBadges()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueGetNewlyAwardedBadgesRequest()
         {
-            return
-                await
-                    PostProtoPayload<Request, CheckAwardedBadgesResponse>(RequestType.CheckAwardedBadges,
-                        new CheckAwardedBadgesMessage());
+            return Client.QueueRequest(RequestType.CheckAwardedBadges, new CheckAwardedBadgesMessage());
         }
 
-        public async Task<CollectDailyBonusResponse> CollectDailyBonus()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueollectDailyBonusRequest()
         {
-            return
-                await
-                    PostProtoPayload<Request, CollectDailyBonusResponse>(RequestType.CollectDailyBonus,
-                        new CollectDailyBonusMessage());
+            return Client.QueueRequest(RequestType.CollectDailyBonus, new CollectDailyBonusMessage());
         }
 
-        public async Task<CollectDailyDefenderBonusResponse> CollectDailyDefenderBonus()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueCollectDailyDefenderBonusRequest()
         {
-            return
-                await
-                    PostProtoPayload<Request, CollectDailyDefenderBonusResponse>(RequestType.CollectDailyDefenderBonus,
-                        new CollectDailyDefenderBonusMessage());
+            return Client.QueueRequest(RequestType.CollectDailyDefenderBonus, new CollectDailyDefenderBonusMessage());
         }
 
-        public async Task<EquipBadgeResponse> EquipBadge(BadgeType type)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool QueueEquipBadgeRequest(BadgeType type)
         {
-            return
-                await
-                    PostProtoPayload<Request, EquipBadgeResponse>(RequestType.EquipBadge,
-                        new EquipBadgeMessage {BadgeType = type});
+            var message = new EquipBadgeMessage
+            {
+                BadgeType = type
+            };
+
+            return Client.QueueRequest(RequestType.EquipBadge, message);
         }
 
-        public async Task<LevelUpRewardsResponse> GetLevelUpRewards(int level)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public bool QueueGetLevelUpRewardsRequest(int level)
         {
-            return
-                await
-                    PostProtoPayload<Request, LevelUpRewardsResponse>(RequestType.LevelUpRewards,
-                        new LevelUpRewardsMessage
-                        {
-                            Level = level
-                        });
+            var message = new LevelUpRewardsMessage
+            {
+                Level = level
+            };
+
+            return Client.QueueRequest(RequestType.LevelUpRewards, message);
+  
         }
 
-        public async Task<SetAvatarResponse> SetAvatar(PlayerAvatar playerAvatar)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="playerAvatar"></param>
+        /// <returns></returns>
+        public bool QueueSetAvatarRequest(PlayerAvatar playerAvatar)
         {
-            return await PostProtoPayload<Request, SetAvatarResponse>(RequestType.SetAvatar, new SetAvatarMessage
+            var message = new SetAvatarMessage
             {
                 PlayerAvatar = playerAvatar
-            });
+            };
+
+            return Client.QueueRequest(RequestType.SetAvatar, message);
         }
 
-        public async Task<SetContactSettingsResponse> SetContactSetting(ContactSettings contactSettings)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contactSettings"></param>
+        /// <returns></returns>
+        public bool QueueSetContactSettingRequest(ContactSettings contactSettings)
         {
-            return
-                await
-                    PostProtoPayload<Request, SetContactSettingsResponse>(RequestType.SetContactSettings,
-                        new SetContactSettingsMessage
-                        {
-                            ContactSettings = contactSettings
-                        });
+            var message = new SetContactSettingsMessage
+            {
+                ContactSettings = contactSettings
+            };
+
+            return Client.QueueRequest(RequestType.SetContactSettings, message);
+                       
         }
 
-        public async Task<SetPlayerTeamResponse> SetPlayerTeam(TeamColor teamColor)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="teamColor"></param>
+        /// <returns></returns>
+        public bool QueueSetPlayerTeamRequest(TeamColor teamColor)
         {
-            return
-                await
-                    PostProtoPayload<Request, SetPlayerTeamResponse>(RequestType.SetPlayerTeam, new SetPlayerTeamMessage
-                    {
-                        Team = teamColor
-                    });
+            var message = new SetPlayerTeamMessage
+            {
+                Team = teamColor
+            };
+
+            return Client.QueueRequest(RequestType.SetPlayerTeam, message);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codename"></param>
+        /// <returns></returns>
+        public bool QueueClaimCodenameRequest(string codename)
+        {
+            var message = new ClaimCodenameMessage
+            {
+                Codename = codename
+            };
+
+            return Client.QueueRequest(RequestType.ClaimCodename, message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="codename"></param>
+        /// <returns></returns>
+        public bool QueueCheckCodenameAvailableRequest(string codename)
+        {
+            var message = new CheckCodenameAvailableMessage
+            {
+                Codename = codename
+            };
+
+            return Client.QueueRequest(RequestType.CheckCodenameAvailable, message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueGetSuggestedCodenamesRequest()
+        {
+            return Client.QueueRequest(RequestType.GetSuggestedCodenames, new GetSuggestedCodenamesMessage());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueSendEchoRequest()
+        {
+            return Client.QueueRequest(RequestType.Echo, new EchoMessage());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueMarkTutorialCompleteRequest()
+        {
+            return Client.QueueRequest(RequestType.MarkTutorialComplete, new MarkTutorialCompleteMessage());
+        }
+
+        #endregion
+
     }
 }

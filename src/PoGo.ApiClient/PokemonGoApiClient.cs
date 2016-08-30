@@ -110,42 +110,37 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public IDownload Download { get; }
+        public IDownloadClient Download { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IEncounter Encounter { get; }
+        public IEncounterClient Encounter { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IFort Fort { get; }
+        public IFortClient Fort { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IInventory Inventory { get; }
+        public IInventoryClient Inventory { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Rpc.LoginClient Login { get; }
+        public Rpc.UserClient User { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IMap Map { get; }
+        public IMapClient Map { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Misc Misc { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IPlayer Player { get; }
+        public IPlayerClient Player { get; }
 
         /// <summary>
         /// 
@@ -155,7 +150,7 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public ISettings Settings { get; }
+        public IApiSettings Settings { get; }
 
         #endregion
 
@@ -166,11 +161,11 @@ namespace PoGo.ApiClient
         /// </summary>
         public PokemonGoApiClient() : base(Handler)
         {
-            DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Niantic App");
+            DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Constants.HttpClientUserAgent);
             DefaultRequestHeaders.ExpectContinue = false;
-            DefaultRequestHeaders.TryAddWithoutValidation("Connection", "keep-alive");
-            DefaultRequestHeaders.TryAddWithoutValidation("Accept", "*/*");
-            DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/x-www-form-urlencoded");
+            DefaultRequestHeaders.TryAddWithoutValidation("Connection", Constants.HttpClientConnection);
+            DefaultRequestHeaders.TryAddWithoutValidation("Accept", Constants.HttpClientAccept);
+            DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", Constants.HttpClientContentType);
         }
 
         /// <summary>
@@ -179,7 +174,7 @@ namespace PoGo.ApiClient
         /// <param name="settings"></param>
         /// <param name="deviceInfo"></param>
         /// <param name="accessToken"></param>
-        public PokemonGoApiClient(ISettings settings, IDeviceInfo deviceInfo, AccessToken accessToken = null)
+        public PokemonGoApiClient(IApiSettings settings, IDeviceInfo deviceInfo, AccessToken accessToken = null)
         {
             Settings = settings;
             AccessToken = accessToken;
@@ -187,7 +182,7 @@ namespace PoGo.ApiClient
             CancellationTokenSource = new CancellationTokenSource();
             RequestQueue = new BlockingCollection<RequestEnvelope>();
 
-            Login = new Rpc.LoginClient(this);
+            Login = new Rpc.UserClient(this);
             Player = new PlayerClient(this);
             Download = new DownloadClient(this);
             Inventory = new InventoryClient(this);
@@ -287,7 +282,7 @@ namespace PoGo.ApiClient
             var getHatchedEggsMessage = new GetHatchedEggsMessage();
             var getInventoryMessage = new GetInventoryMessage
             {
-                LastTimestampMs = DateTime.UtcNow.ToUnixTime()
+                LastTimestampMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             };
             var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
             var downloadSettingsMessage = new DownloadSettingsMessage

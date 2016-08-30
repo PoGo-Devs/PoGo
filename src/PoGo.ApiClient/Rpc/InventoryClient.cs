@@ -9,7 +9,7 @@ namespace PoGo.ApiClient.Rpc
     /// <summary>
     /// 
     /// </summary>
-    public class InventoryClient : BaseRpc, IInventory
+    public class InventoryClient : BaseRpc, IInventoryClient
     {
 
         #region Constructors

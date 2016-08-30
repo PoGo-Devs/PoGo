@@ -7,25 +7,8 @@ namespace PoGo.ApiClient.Interfaces
     /// <summary>
     /// 
     /// </summary>
-    public interface IEncounter
+    public interface IEncounterClient
     {
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="encounterId"></param>
-        /// <param name="spawnPointGuid"></param>
-        /// <returns></returns>
-        bool QueueEncounterPokemonRequest(ulong encounterId, string spawnPointGuid);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="encounterId"></param>
-        /// <param name="itemId"></param>
-        /// <param name="spawnPointId"></param>
-        /// <returns></returns>
-        bool QueueUseCaptureItemRequest(ulong encounterId, ItemId itemId, string spawnPointId);
 
         /// <summary>
         /// 
@@ -38,7 +21,7 @@ namespace PoGo.ApiClient.Interfaces
         /// <param name="normalizedHitPos"></param>
         /// <param name="hitPokemon"></param>
         /// <returns></returns>
-        bool QueueCatchPokemonRequest(ulong encounterId, string spawnPointGuid, ItemId pokeballItemId, double normalizedRecticleSize = 1.950, 
+        bool QueueCatchPokemonRequest(ulong encounterId, string spawnPointGuid, ItemId pokeballItemId, double normalizedRecticleSize = 1.950,
             double spinModifier = 1, double normalizedHitPos = 1, bool hitPokemon = true);
 
         /// <summary>
@@ -60,8 +43,26 @@ namespace PoGo.ApiClient.Interfaces
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="encounterId"></param>
+        /// <param name="spawnPointGuid"></param>
+        /// <returns></returns>
+        bool QueueEncounterPokemonRequest(ulong encounterId, string spawnPointGuid);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="pokemonId"></param>
         /// <returns></returns>
         bool QueueEncounterTutorialCompleteRequest(PokemonId pokemonId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="encounterId"></param>
+        /// <param name="itemId"></param>
+        /// <param name="spawnPointId"></param>
+        /// <returns></returns>
+        bool QueueUseCaptureItemRequest(ulong encounterId, ItemId itemId, string spawnPointId);
+
     }
 }

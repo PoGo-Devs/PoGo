@@ -8,26 +8,8 @@ namespace PoGo.ApiClient.Interfaces
     /// <summary>
     /// 
     /// </summary>
-    public interface IFort
+    public interface IFortClient
     {
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fortId"></param>
-        /// <param name="fortLatitude"></param>
-        /// <param name="fortLongitude"></param>
-        /// <returns></returns>
-        bool QueueGetFortRequest(string fortId, double fortLatitude, double fortLongitude);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fortId"></param>
-        /// <param name="fortLat"></param>
-        /// <param name="fortLng"></param>
-        /// <returns></returns>
-        bool QueueSearchFortRequest(string fortId, double fortLat, double fortLng);
 
         /// <summary>
         /// 
@@ -66,11 +48,29 @@ namespace PoGo.ApiClient.Interfaces
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="fortLatitude"></param>
+        /// <param name="fortLongitude"></param>
+        /// <returns></returns>
+        bool QueueGetFortRequest(string fortId, double fortLatitude, double fortLongitude);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="gymId"></param>
         /// <param name="gymLat"></param>
         /// <param name="gymLng"></param>
         /// <returns></returns>
         bool QueueGetGymDetailsRequest(string gymId, double gymLat, double gymLng);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fortId"></param>
+        /// <param name="fortLat"></param>
+        /// <param name="fortLng"></param>
+        /// <returns></returns>
+        bool QueueSearchFortRequest(string fortId, double fortLat, double fortLng);
 
         /// <summary>
         /// 
