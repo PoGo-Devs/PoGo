@@ -113,6 +113,11 @@
     <Compile Include="Enums\StatusCodes.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="Authentication\PoGoCredentials.cs" />
+    <Compile Include="Interfaces\IPokemonGoApiClient.Events.Generated.cs">
+      <DependentUpon>IPokemonGoApiClient.Events.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="PokemonGoApiClient.Events.Generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -409,6 +414,10 @@
     <EmbeddedResource Include="Properties\PoGo.ApiClient.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Interfaces\IPokemonGoApiClient.Events.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IPokemonGoApiClient.Events.Generated.cs</LastGenOutput>
+    </Content>
     <Content Include="PokemonGoApiClient.Events.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PokemonGoApiClient.Events.Generated.cs</LastGenOutput>

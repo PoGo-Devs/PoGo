@@ -186,6 +186,8 @@ namespace PoGo.ApiClient
             var envelope = BuildRequestEnvelope(RequestType.GetPlayer, new GetPlayerMessage());
             var result = await PostProtoPayload(ApiUrl, envelope);
             ProcessMessages(result);
+            // @robertmclaws: Not sure if this is right, but should allow the queue to start filling back up.
+            CancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -259,6 +261,7 @@ namespace PoGo.ApiClient
                      }
 
                      var response = await PostProtoPayload(ApiUrl, workItem);
+                     // robertmclaws: If the request cancelled out for some reason, let's move on.
                      if (response == null) continue;
                      ProcessMessages(response);
                  }

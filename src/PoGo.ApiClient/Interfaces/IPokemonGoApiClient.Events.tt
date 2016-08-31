@@ -1,0 +1,62 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".Generated.cs" #>
+using POGOProtos.Networking.Responses;
+using System;
+
+namespace PoGo.ApiClient.Interfaces
+{
+    public partial interface IPokemonGoApiClient
+    {
+
+        #region Events
+
+<#
+	var currentDirectory = Path.GetDirectoryName(Host.TemplateFile);
+	var messagesDirectory = currentDirectory.Replace("\\Interfaces", "") + "\\Proto\\Networking\\Responses\\";
+	var responseFiles = Directory.EnumerateFiles(messagesDirectory);
+	foreach (var file in responseFiles)
+    {
+		var messageTypeName = Path.GetFileNameWithoutExtension(file);
+		var eventName = Path.GetFileNameWithoutExtension(file).Replace("Response", "").Replace("Get", "").Replace("Set", "").Replace("tings", "Settings");
+#>
+		///<summary>
+		/// Fires every time a <see cref="<#= messageTypeName #>" /> is received from the API.
+		/// </summary>
+		event EventHandler<<#= messageTypeName #>> <#= eventName #>Received;
+
+<#
+    }
+#>
+
+		#endregion
+
+		#region Event Raisers
+
+<#
+	foreach (var file in responseFiles)
+    {
+		var messageTypeName = Path.GetFileNameWithoutExtension(file);
+		var eventName = Path.GetFileNameWithoutExtension(file).Replace("Response", "").Replace("Get", "").Replace("Set", "").Replace("tings", "Settings");
+#>
+
+        /// <summary>
+        /// Provides a safe way to invoke the <see cref="<#= eventName #>Received" /> event.
+        /// </summary>
+        /// <param name="value"></param>
+        void Raise<#= eventName #>Received(<#= messageTypeName #> value);
+
+<#
+    }
+#>
+
+		#endregion
+
+	}
+
+}

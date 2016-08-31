@@ -41,24 +41,6 @@ namespace PoGo.ApiClient.Rpc
         /// 
         /// </summary>
         /// <returns></returns>
-        public bool QueueSettingsRequest()
-        {
-            var message = new DownloadSettingsMessage
-            {
-                Hash = DownloadSettingsHash
-            };
-
-            return Client.QueueRequest(RequestType.DownloadSettings, message);
-
-            //robertmclaws to do: Handle SettingsChanged event and push the new value.
-            //DownloadSettingsHash = response?.Hash ?? "";
-           // return response;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public bool QueueDownloadItemTemplatesRequest()
         {
             return Client.QueueRequest(RequestType.DownloadItemTemplates, new DownloadItemTemplatesMessage());
@@ -72,7 +54,7 @@ namespace PoGo.ApiClient.Rpc
         /// <param name="deviceModel"></param>
         /// <param name="locale"></param>
         /// <param name="platform"></param>
-        public bool QueueRemoteConfigVersionRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
+        public bool QueueDownloadRemoteConfigVersionRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
         {
             var message = new DownloadRemoteConfigVersionMessage
             {
@@ -89,13 +71,31 @@ namespace PoGo.ApiClient.Rpc
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        public bool QueueDownloadSettingsRequest()
+        {
+            var message = new DownloadSettingsMessage
+            {
+                Hash = DownloadSettingsHash
+            };
+
+            return Client.QueueRequest(RequestType.DownloadSettings, message);
+
+            //robertmclaws to do: Handle SettingsChanged event and push the new value.
+            //DownloadSettingsHash = response?.Hash ?? "";
+            // return response;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="appVersion"></param>
         /// <param name="deviceManufacturer"></param>
         /// <param name="deviceModel"></param>
         /// <param name="locale"></param>
         /// <param name="platform"></param>
         /// <returns></returns>
-        public bool QueueAssetDigestRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
+        public bool QueueGetAssetDigestRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
         {
             var message = new GetAssetDigestMessage
             {
@@ -114,7 +114,7 @@ namespace PoGo.ApiClient.Rpc
         /// </summary>
         /// <param name="assetIds"></param>
         /// <returns></returns>
-        public bool QueueDownloadUrlsRequest (IEnumerable<string> assetIds)
+        public bool QueueGetDownloadUrlsRequest (IEnumerable<string> assetIds)
         {
             var message = new GetDownloadUrlsMessage
             {

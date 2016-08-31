@@ -112,6 +112,7 @@
     <Compile Include="EvolutionService.cs" />
     <Compile Include="GameServiceBase.cs" />
     <Compile Include="HatcheryService.cs" />
+    <Compile Include="Interfaces\IGameService.cs" />
     <Compile Include="LocationService.cs" />
     <Compile Include="Extensions\ObservableCollectionPlus.cs" />
     <Compile Include="PlayerService.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Player\Achievements\BronzeAttribute.cs" />
     <Compile Include="Player\Achievements\GoldAttribute.cs" />
     <Compile Include="Player\Achievements\SilverAttribute.cs" />
+    <Compile Include="Player\LevelUpAwards.cs" />
     <Compile Include="PokedexService.cs" />
     <Compile Include="PokestopService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
