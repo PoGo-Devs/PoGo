@@ -78,7 +78,7 @@ namespace PoGo.ApiClient
 		var messageTypeName = Path.GetFileNameWithoutExtension(file);
 		var eventName = Path.GetFileNameWithoutExtension(file).Replace("Response", "").Replace("Get", "").Replace("Set", "").Replace("tings", "Settings");
 #>
-					case "<#= messageTypeName #>":
+					case nameof(<#= messageTypeName #>):
 						Raise<#= eventName #>Received(message as <#= messageTypeName #>);
 						break;
 <#

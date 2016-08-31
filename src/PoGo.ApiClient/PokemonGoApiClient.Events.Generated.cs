@@ -703,172 +703,172 @@ namespace PoGo.ApiClient
             {
 				switch (message.GetType().Name)
 				{
-					case "AddFortModifierResponse":
+					case nameof(AddFortModifierResponse):
 						RaiseAddFortModifierReceived(message as AddFortModifierResponse);
 						break;
-					case "AttackGymResponse":
+					case nameof(AttackGymResponse):
 						RaiseAttackGymReceived(message as AttackGymResponse);
 						break;
-					case "CatchPokemonResponse":
+					case nameof(CatchPokemonResponse):
 						RaiseCatchPokemonReceived(message as CatchPokemonResponse);
 						break;
-					case "CheckAwardedBadgesResponse":
+					case nameof(CheckAwardedBadgesResponse):
 						RaiseCheckAwardedBadgesReceived(message as CheckAwardedBadgesResponse);
 						break;
-					case "CheckChallengeResponse":
+					case nameof(CheckChallengeResponse):
 						RaiseCheckChallengeReceived(message as CheckChallengeResponse);
 						break;
-					case "CheckCodenameAvailableResponse":
+					case nameof(CheckCodenameAvailableResponse):
 						RaiseCheckCodenameAvailableReceived(message as CheckCodenameAvailableResponse);
 						break;
-					case "ClaimCodenameResponse":
+					case nameof(ClaimCodenameResponse):
 						RaiseClaimCodenameReceived(message as ClaimCodenameResponse);
 						break;
-					case "CollectDailyBonusResponse":
+					case nameof(CollectDailyBonusResponse):
 						RaiseCollectDailyBonusReceived(message as CollectDailyBonusResponse);
 						break;
-					case "CollectDailyDefenderBonusResponse":
+					case nameof(CollectDailyDefenderBonusResponse):
 						RaiseCollectDailyDefenderBonusReceived(message as CollectDailyDefenderBonusResponse);
 						break;
-					case "DiskEncounterResponse":
+					case nameof(DiskEncounterResponse):
 						RaiseDiskEncounterReceived(message as DiskEncounterResponse);
 						break;
-					case "DownloadItemTemplatesResponse":
+					case nameof(DownloadItemTemplatesResponse):
 						RaiseDownloadItemTemplatesReceived(message as DownloadItemTemplatesResponse);
 						break;
-					case "DownloadRemoteConfigVersionResponse":
+					case nameof(DownloadRemoteConfigVersionResponse):
 						RaiseDownloadRemoteConfigVersionReceived(message as DownloadRemoteConfigVersionResponse);
 						break;
-					case "DownloadSettingsResponse":
+					case nameof(DownloadSettingsResponse):
 						RaiseDownloadSettingsReceived(message as DownloadSettingsResponse);
 						break;
-					case "EchoResponse":
+					case nameof(EchoResponse):
 						RaiseEchoReceived(message as EchoResponse);
 						break;
-					case "EncounterResponse":
+					case nameof(EncounterResponse):
 						RaiseEncounterReceived(message as EncounterResponse);
 						break;
-					case "EncounterTutorialCompleteResponse":
+					case nameof(EncounterTutorialCompleteResponse):
 						RaiseEncounterTutorialCompleteReceived(message as EncounterTutorialCompleteResponse);
 						break;
-					case "EquipBadgeResponse":
+					case nameof(EquipBadgeResponse):
 						RaiseEquipBadgeReceived(message as EquipBadgeResponse);
 						break;
-					case "EvolvePokemonResponse":
+					case nameof(EvolvePokemonResponse):
 						RaiseEvolvePokemonReceived(message as EvolvePokemonResponse);
 						break;
-					case "FortDeployPokemonResponse":
+					case nameof(FortDeployPokemonResponse):
 						RaiseFortDeployPokemonReceived(message as FortDeployPokemonResponse);
 						break;
-					case "FortDetailsResponse":
+					case nameof(FortDetailsResponse):
 						RaiseFortDetailsReceived(message as FortDetailsResponse);
 						break;
-					case "FortRecallPokemonResponse":
+					case nameof(FortRecallPokemonResponse):
 						RaiseFortRecallPokemonReceived(message as FortRecallPokemonResponse);
 						break;
-					case "FortSearchResponse":
+					case nameof(FortSearchResponse):
 						RaiseFortSearchReceived(message as FortSearchResponse);
 						break;
-					case "GetAssetDigestResponse":
+					case nameof(GetAssetDigestResponse):
 						RaiseAssetDigestReceived(message as GetAssetDigestResponse);
 						break;
-					case "GetBuddyWalkedResponse":
+					case nameof(GetBuddyWalkedResponse):
 						RaiseBuddyWalkedReceived(message as GetBuddyWalkedResponse);
 						break;
-					case "GetDownloadUrlsResponse":
+					case nameof(GetDownloadUrlsResponse):
 						RaiseDownloadUrlsReceived(message as GetDownloadUrlsResponse);
 						break;
-					case "GetGymDetailsResponse":
+					case nameof(GetGymDetailsResponse):
 						RaiseGymDetailsReceived(message as GetGymDetailsResponse);
 						break;
-					case "GetHatchedEggsResponse":
+					case nameof(GetHatchedEggsResponse):
 						RaiseHatchedEggsReceived(message as GetHatchedEggsResponse);
 						break;
-					case "GetIncensePokemonResponse":
+					case nameof(GetIncensePokemonResponse):
 						RaiseIncensePokemonReceived(message as GetIncensePokemonResponse);
 						break;
-					case "GetInventoryResponse":
+					case nameof(GetInventoryResponse):
 						RaiseInventoryReceived(message as GetInventoryResponse);
 						break;
-					case "GetMapObjectsResponse":
+					case nameof(GetMapObjectsResponse):
 						RaiseMapObjectsReceived(message as GetMapObjectsResponse);
 						break;
-					case "GetPlayerProfileResponse":
+					case nameof(GetPlayerProfileResponse):
 						RaisePlayerProfileReceived(message as GetPlayerProfileResponse);
 						break;
-					case "GetPlayerResponse":
+					case nameof(GetPlayerResponse):
 						RaisePlayerReceived(message as GetPlayerResponse);
 						break;
-					case "GetSuggestedCodenamesResponse":
+					case nameof(GetSuggestedCodenamesResponse):
 						RaiseSuggestedCodenamesReceived(message as GetSuggestedCodenamesResponse);
 						break;
-					case "IncenseEncounterResponse":
+					case nameof(IncenseEncounterResponse):
 						RaiseIncenseEncounterReceived(message as IncenseEncounterResponse);
 						break;
-					case "LevelUpRewardsResponse":
+					case nameof(LevelUpRewardsResponse):
 						RaiseLevelUpRewardsReceived(message as LevelUpRewardsResponse);
 						break;
-					case "MarkTutorialCompleteResponse":
+					case nameof(MarkTutorialCompleteResponse):
 						RaiseMarkTutorialCompleteReceived(message as MarkTutorialCompleteResponse);
 						break;
-					case "NicknamePokemonResponse":
+					case nameof(NicknamePokemonResponse):
 						RaiseNicknamePokemonReceived(message as NicknamePokemonResponse);
 						break;
-					case "PlayerUpdateResponse":
+					case nameof(PlayerUpdateResponse):
 						RaisePlayerUpdateReceived(message as PlayerUpdateResponse);
 						break;
-					case "RecycleInventoryItemResponse":
+					case nameof(RecycleInventoryItemResponse):
 						RaiseRecycleInventoryItemReceived(message as RecycleInventoryItemResponse);
 						break;
-					case "ReleasePokemonResponse":
+					case nameof(ReleasePokemonResponse):
 						RaiseReleasePokemonReceived(message as ReleasePokemonResponse);
 						break;
-					case "SetAvatarResponse":
+					case nameof(SetAvatarResponse):
 						RaiseAvatarReceived(message as SetAvatarResponse);
 						break;
-					case "SetBuddyPokemonResponse":
+					case nameof(SetBuddyPokemonResponse):
 						RaiseBuddyPokemonReceived(message as SetBuddyPokemonResponse);
 						break;
-					case "SetContactSettingsResponse":
+					case nameof(SetContactSettingsResponse):
 						RaiseContactSettingsReceived(message as SetContactSettingsResponse);
 						break;
-					case "SetFavoritePokemonResponse":
+					case nameof(SetFavoritePokemonResponse):
 						RaiseFavoritePokemonReceived(message as SetFavoritePokemonResponse);
 						break;
-					case "SetPlayerTeamResponse":
+					case nameof(SetPlayerTeamResponse):
 						RaisePlayerTeamReceived(message as SetPlayerTeamResponse);
 						break;
-					case "SfidaActionLogResponse":
+					case nameof(SfidaActionLogResponse):
 						RaiseSfidaActionLogReceived(message as SfidaActionLogResponse);
 						break;
-					case "StartGymBattleResponse":
+					case nameof(StartGymBattleResponse):
 						RaiseStartGymBattleReceived(message as StartGymBattleResponse);
 						break;
-					case "UpgradePokemonResponse":
+					case nameof(UpgradePokemonResponse):
 						RaiseUpgradePokemonReceived(message as UpgradePokemonResponse);
 						break;
-					case "UseIncenseResponse":
+					case nameof(UseIncenseResponse):
 						RaiseUseIncenseReceived(message as UseIncenseResponse);
 						break;
-					case "UseItemCaptureResponse":
+					case nameof(UseItemCaptureResponse):
 						RaiseUseItemCaptureReceived(message as UseItemCaptureResponse);
 						break;
-					case "UseItemEggIncubatorResponse":
+					case nameof(UseItemEggIncubatorResponse):
 						RaiseUseItemEggIncubatorReceived(message as UseItemEggIncubatorResponse);
 						break;
-					case "UseItemGymResponse":
+					case nameof(UseItemGymResponse):
 						RaiseUseItemGymReceived(message as UseItemGymResponse);
 						break;
-					case "UseItemPotionResponse":
+					case nameof(UseItemPotionResponse):
 						RaiseUseItemPotionReceived(message as UseItemPotionResponse);
 						break;
-					case "UseItemReviveResponse":
+					case nameof(UseItemReviveResponse):
 						RaiseUseItemReviveReceived(message as UseItemReviveResponse);
 						break;
-					case "UseItemXpBoostResponse":
+					case nameof(UseItemXpBoostResponse):
 						RaiseUseItemXpBoostReceived(message as UseItemXpBoostResponse);
 						break;
-					case "VerifyChallengeResponse":
+					case nameof(VerifyChallengeResponse):
 						RaiseVerifyChallengeReceived(message as VerifyChallengeResponse);
 						break;
 					default:
