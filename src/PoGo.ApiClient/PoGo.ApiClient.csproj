@@ -113,6 +113,11 @@
     <Compile Include="Enums\StatusCodes.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="Authentication\PoGoCredentials.cs" />
+    <Compile Include="PokemonGoApiClient.Events.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PokemonGoApiClient.Events.tt</DependentUpon>
+    </Compile>
     <Compile Include="ResponseMapping\RequestEnvelope.cs" />
     <Compile Include="ResponseMapping\ResponseMessageMapper.cs" />
     <Compile Include="RetryPolicy\RetryPolicy.cs" />
@@ -403,7 +408,15 @@
     <Compile Include="Authentication\AuthenticatedUser.cs" />
     <EmbeddedResource Include="Properties\PoGo.ApiClient.rd.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="PokemonGoApiClient.Events.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PokemonGoApiClient.Events.Generated.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

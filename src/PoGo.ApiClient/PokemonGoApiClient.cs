@@ -38,6 +38,9 @@ namespace PoGo.ApiClient
         /// </summary>
         internal RequestBuilder RequestBuilder => new RequestBuilder(AuthenticatedUser, CurrentPosition, DeviceInfo);
 
+        /// <summary>
+        /// 
+        /// </summary>
         private static readonly HttpClientHandler Handler = new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
@@ -79,7 +82,7 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public IAuthenticationProvider CurrentProvider { get; }
+        public IAuthenticationProvider CurrentProvider { get; private set; }
 
         /// <summary>
         /// 
@@ -145,19 +148,8 @@ namespace PoGo.ApiClient
         /// <param name="authenticatedUser"></param>
         public PokemonGoApiClient(IApiSettings settings, IDeviceInfo deviceInfo, AuthenticatedUser authenticatedUser = null)
         {
-            switch (settings.AuthenticationProvider)
-            {
-                case AuthenticationProviderTypes.Google:
-                    CurrentProvider = new GoogleAuthenticationProvider(settings.Credentials.Username, settings.Credentials.Password);
-                    break;
-                case AuthenticationProviderTypes.PokemonTrainerClub:
-                    CurrentProvider = new PtcAuthenticationProvider(settings.Credentials.Username, settings.Credentials.Password);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(settings.AuthenticationProvider), "Unknown AuthType");
-            }
-
             ApiSettings = settings;
+            SetAuthenticationProvider();
             AuthenticatedUser = authenticatedUser;
 
             CancellationTokenSource = new CancellationTokenSource();
@@ -189,10 +181,21 @@ namespace PoGo.ApiClient
                 AuthenticatedUser = await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
             }
 
-            // @robertmclaws: We're going to bypass the queue here 
+            // @robertmclaws: We're going to bypass the queue here.
             var envelope = BuildRequestEnvelope(RequestType.GetPlayer, new GetPlayerMessage());
             var result = await PostProtoPayload(ApiUrl, envelope);
             await ProcessMessages(result);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <returns></returns>
+        public async Task AuthenticateAsync(PoGoCredentials credentials)
+        {
+            ApiSettings.Credentials = credentials;
+            await AuthenticateAsync();
         }
 
         /// <summary>
@@ -217,6 +220,24 @@ namespace PoGo.ApiClient
             var envelope = BuildRequestEnvelope(requestType, message);
             return RequestQueue.TryAdd(envelope);
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SetAuthenticationProvider()
+        {
+            switch (ApiSettings.Credentials.AuthenticationProvider)
+            {
+                case AuthenticationProviderTypes.Google:
+                    CurrentProvider = new GoogleAuthenticationProvider(ApiSettings.Credentials.Username, ApiSettings.Credentials.Password);
+                    break;
+                case AuthenticationProviderTypes.PokemonTrainerClub:
+                    CurrentProvider = new PtcAuthenticationProvider(ApiSettings.Credentials.Username, ApiSettings.Credentials.Password);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ApiSettings.Credentials.AuthenticationProvider), "Unknown AuthType");
+            }
         }
 
         /// <summary>
