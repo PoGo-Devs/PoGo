@@ -184,7 +184,7 @@ namespace PoGo.ApiClient
             // @robertmclaws: We're going to bypass the queue here.
             var envelope = BuildRequestEnvelope(RequestType.GetPlayer, new GetPlayerMessage());
             var result = await PostProtoPayload(ApiUrl, envelope);
-            await ProcessMessages(result);
+            ProcessMessages(result);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace PoGo.ApiClient
 
                      var response = await PostProtoPayload(ApiUrl, workItem);
                      if (response == null) continue;
-                     await ProcessMessages(response);
+                     ProcessMessages(response);
                  }
              }, TaskCreationOptions.LongRunning);
         }
@@ -294,12 +294,10 @@ namespace PoGo.ApiClient
             }
             else
             {
-                var getHatchedEggsMessage = new GetHatchedEggsMessage();
                 var getInventoryMessage = new GetInventoryMessage
                 {
                     LastTimestampMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 };
-                var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
                 var downloadSettingsMessage = new DownloadSettingsMessage
                 {
                     Hash = Download.DownloadSettingsHash
@@ -314,20 +312,29 @@ namespace PoGo.ApiClient
                     new Request
                     {
                         RequestType = RequestType.GetHatchedEggs,
-                        RequestMessage = getHatchedEggsMessage.ToByteString()
-                    }, new Request
+                        RequestMessage = new GetHatchedEggsMessage().ToByteString()
+                    },
+                    new Request
                     {
                         RequestType = RequestType.GetInventory,
                         RequestMessage = getInventoryMessage.ToByteString()
-                    }, new Request
+                    },
+                    new Request
                     {
                         RequestType = RequestType.CheckAwardedBadges,
-                        RequestMessage = checkAwardedBadgesMessage.ToByteString()
-                    }, new Request
+                        RequestMessage = new CheckAwardedBadgesMessage().ToByteString()
+                    },
+                    new Request
                     {
                         RequestType = RequestType.DownloadSettings,
                         RequestMessage = downloadSettingsMessage.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.CheckChallenge,
+                        RequestMessage = new CheckChallengeMessage().ToByteString()
                     }
+
                 );
             }
             envelope.ExpectedResponseTypes = new List<Type>(ResponseMessageMapper.GetExpectedResponseTypes(envelope.Requests));
