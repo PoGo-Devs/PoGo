@@ -25,12 +25,9 @@ namespace PoGo.ApiClient.Interfaces
         /// 
         /// </summary>
         /// <param name="appVersion"></param>
-        /// <param name="deviceManufacturer"></param>
-        /// <param name="deviceModel"></param>
         /// <param name="locale"></param>
-        /// <param name="platform"></param>
         /// <returns></returns>
-        bool QueueDownloadRemoteConfigVersionRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform);
+        bool QueueDownloadRemoteConfigVersionRequest(uint appVersion, string locale);
 
         /// <summary>
         /// 
@@ -42,12 +39,9 @@ namespace PoGo.ApiClient.Interfaces
         /// 
         /// </summary>
         /// <param name="appVersion"></param>
-        /// <param name="deviceManufacturer"></param>
-        /// <param name="deviceModel"></param>
         /// <param name="locale"></param>
-        /// <param name="platform"></param>
         /// <returns></returns>
-        bool QueueGetAssetDigestRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform);
+        bool QueueGetAssetDigestRequest(uint appVersion, string locale);
 
 
         /// <summary>

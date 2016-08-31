@@ -50,19 +50,17 @@ namespace PoGo.ApiClient.Rpc
         /// 
         /// </summary>
         /// <param name="appVersion"></param>
-        /// <param name="deviceManufacturer"></param>
-        /// <param name="deviceModel"></param>
         /// <param name="locale"></param>
-        /// <param name="platform"></param>
-        public bool QueueDownloadRemoteConfigVersionRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
+        public bool QueueDownloadRemoteConfigVersionRequest(uint appVersion, string locale)
         {
+            
             var message = new DownloadRemoteConfigVersionMessage
             {
                 AppVersion = appVersion,
-                DeviceManufacturer = deviceManufacturer,
-                DeviceModel = deviceModel,
+                DeviceManufacturer = Client.DeviceInfo.HardwareManufacturer,
+                DeviceModel = Client.DeviceInfo.HardwareModel,
                 Locale = locale,
-                Platform = platform
+                Platform = Client.DeviceInfo.Platform
             };
 
             return Client.QueueRequest(RequestType.DownloadRemoteConfigVersion, message);
@@ -90,20 +88,17 @@ namespace PoGo.ApiClient.Rpc
         /// 
         /// </summary>
         /// <param name="appVersion"></param>
-        /// <param name="deviceManufacturer"></param>
-        /// <param name="deviceModel"></param>
         /// <param name="locale"></param>
-        /// <param name="platform"></param>
         /// <returns></returns>
-        public bool QueueGetAssetDigestRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
+        public bool QueueGetAssetDigestRequest(uint appVersion, string locale)
         {
             var message = new GetAssetDigestMessage
             {
                 AppVersion = appVersion,
-                DeviceManufacturer = deviceManufacturer,
-                DeviceModel = deviceModel,
+                DeviceManufacturer = Client.DeviceInfo.HardwareManufacturer,
+                DeviceModel = Client.DeviceInfo.HardwareModel,
                 Locale = locale,
-                Platform = platform
+                Platform = Client.DeviceInfo.Platform
             };
 
             return Client.QueueRequest(RequestType.GetAssetDigest, message);

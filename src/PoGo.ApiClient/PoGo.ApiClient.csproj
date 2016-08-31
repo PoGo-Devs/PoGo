@@ -113,6 +113,10 @@
     <Compile Include="Enums\StatusCodes.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="Authentication\PoGoCredentials.cs" />
+    <Compile Include="Interfaces\DeviceInfo\IActivityStatus.cs" />
+    <Compile Include="Interfaces\DeviceInfo\ILocationFix.cs" />
+    <Compile Include="Interfaces\DeviceInfo\ISensorInfo.cs" />
+    <Compile Include="Interfaces\DeviceInfo\IGpsSatellitesInfo.cs" />
     <Compile Include="Interfaces\IPokemonGoApiClient.Events.Generated.cs">
       <DependentUpon>IPokemonGoApiClient.Events.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -142,7 +146,7 @@
     <Compile Include="Exceptions\LoginFailedException.cs" />
     <Compile Include="Exceptions\PTCOfflineException.cs" />
     <Compile Include="Helpers\Crypt.cs" />
-    <Compile Include="Interfaces\IDeviceInfos.cs" />
+    <Compile Include="Interfaces\DeviceInfo\IDeviceInfo.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Helpers\RequestBuilder.cs" />
     <Compile Include="Helpers\S2Helper.cs" />
@@ -151,7 +155,7 @@
     <Compile Include="Helpers\xxHash\ArrayData.cs" />
     <Compile Include="Helpers\xxHash\UnifiedData.cs" />
     <Compile Include="Helpers\xxHash\xxHash.cs" />
-    <Compile Include="Interfaces\IApiSettings.cs" />
+    <Compile Include="Interfaces\Subclients\IApiSettings.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
@@ -401,13 +405,13 @@
     <Compile Include="Subclients\DownloadClient.cs" />
     <Compile Include="Subclients\EncounterClient.cs" />
     <Compile Include="Subclients\FortClient.cs" />
-    <Compile Include="Interfaces\IEncounterClient.cs" />
-    <Compile Include="Interfaces\IFortClient.cs" />
-    <Compile Include="Interfaces\IInventoryClient.cs" />
-    <Compile Include="Interfaces\IMapClient.cs" />
-    <Compile Include="Interfaces\IDownloadClient.cs" />
+    <Compile Include="Interfaces\Subclients\IEncounterClient.cs" />
+    <Compile Include="Interfaces\Subclients\IFortClient.cs" />
+    <Compile Include="Interfaces\Subclients\IInventoryClient.cs" />
+    <Compile Include="Interfaces\Subclients\IMapClient.cs" />
+    <Compile Include="Interfaces\Subclients\IDownloadClient.cs" />
     <Compile Include="Subclients\InventoryClient.cs" />
-    <Compile Include="Interfaces\IPlayerClient.cs" />
+    <Compile Include="Interfaces\Subclients\IPlayerClient.cs" />
     <Compile Include="Subclients\MapClient.cs" />
     <Compile Include="Subclients\PlayerClient.cs" />
     <Compile Include="Authentication\AuthenticatedUser.cs" />

@@ -83,7 +83,7 @@ namespace PoGo.ApiClient.Helpers
                 },
                 DeviceInfo = new Signature.Types.DeviceInfo
                 {
-                    DeviceId = _deviceInfo.DeviceID,
+                    DeviceId = _deviceInfo.DeviceId,
                     AndroidBoardName = _deviceInfo.AndroidBoardName,
                     AndroidBootloader = _deviceInfo.AndroidBootloader,
                     DeviceBrand = _deviceInfo.DeviceBrand,
@@ -111,12 +111,12 @@ namespace PoGo.ApiClient.Helpers
             };
 
 
-            if(_deviceInfo.GpsSattelitesInfo.Length > 0)
+            if(_deviceInfo.GpsSatellitesInfo.Length > 0)
             {
                 sig.GpsInfo = new Signature.Types.AndroidGpsInfo();
                 //sig.GpsInfo.TimeToFix //currently not filled
 
-                _deviceInfo.GpsSattelitesInfo.ToList().ForEach(sat =>
+                _deviceInfo.GpsSatellitesInfo.ToList().ForEach(sat =>
                 {
                     sig.GpsInfo.Azimuth.Add(sat.Azimuth);
                     sig.GpsInfo.Elevation.Add(sat.Elevation);
