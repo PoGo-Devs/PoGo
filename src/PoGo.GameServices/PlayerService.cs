@@ -85,7 +85,7 @@ namespace PoGo.GameServices
         /// <summary>
         /// 
         /// </summary>
-        public void RegisterClientEvents()
+        public override void RegisterClientEvents()
         {
             ApiClient.CheckCodenameAvailableReceived += CheckCodenameAvailableReceived;
             ApiClient.ClaimCodenameReceived += ClaimCodenameReceived;
@@ -107,7 +107,7 @@ namespace PoGo.GameServices
         /// <summary>
         /// 
         /// </summary>
-        public void UnregisterClientEvents()
+        public override void UnregisterClientEvents()
         {
             ApiClient.CheckCodenameAvailableReceived -= CheckCodenameAvailableReceived;
             ApiClient.ClaimCodenameReceived -= ClaimCodenameReceived;
