@@ -176,6 +176,7 @@ namespace PoGo.ApiClient
         /// <returns></returns>
         public async Task AuthenticateAsync()
         {
+            CancellationTokenSource.Cancel();
             if (AuthenticatedUser == null || AuthenticatedUser.IsExpired)
             {
                 AuthenticatedUser = await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
@@ -421,6 +422,8 @@ namespace PoGo.ApiClient
             // robertmclaws: We're gonna keep going, so let's be pro-active about token failures, instead of reactive.
             if (AuthenticatedUser == null || AuthenticatedUser.IsExpired)
             {
+                // @robertmclaws: Calling "Authenticate" cancels all current requests and fires off a complex login routine.
+                //                More than likely, we just want to refresh the tokens.
                 await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
             }
 
@@ -442,7 +445,7 @@ namespace PoGo.ApiClient
                         Logger.Write("Received a new AuthTicket from the Api!");
                         AuthenticatedUser.AuthTicket = response.AuthTicket;
                         // robertmclaws to do: See if we need to clone the AccessToken so we don't have a threading violation.
-                        RaiseAccessTokenUpdated(AuthenticatedUser);
+                        RaiseAuthenticatedUserUpdated(AuthenticatedUser);
                     }
                     return response;
 
