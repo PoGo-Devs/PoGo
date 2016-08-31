@@ -113,6 +113,8 @@
     <Compile Include="Enums\StatusCodes.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="Authentication\PoGoCredentials.cs" />
+    <Compile Include="ResponseMapping\RequestEnvelope.cs" />
+    <Compile Include="ResponseMapping\ResponseMessageMapper.cs" />
     <Compile Include="RetryPolicy\RetryPolicy.cs" />
     <Compile Include="RetryPolicy\RetryPolicyManager.cs" />
     <Compile Include="Helpers\TypeSwitch\TypeSwitch.cs" />
@@ -239,7 +241,7 @@
     <Compile Include="Proto\Networking\Requests\Messages\AttackGymMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CatchPokemonMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CheckAwardedBadgesMessage.cs" />
-    <Compile Include="Proto\Networking\Requests\Messages\CheckChallenge.cs" />
+    <Compile Include="Proto\Networking\Requests\Messages\CheckChallengeMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CheckCodenameAvailableMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\ClaimCodenameMessage.cs" />
     <Compile Include="Proto\Networking\Requests\Messages\CollectDailyBonusMessage.cs" />

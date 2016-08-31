@@ -13,14 +13,24 @@
         Unknown = 0,
 
         /// <summary>
-        /// 
+        /// Valid response with no ApiUrl
         /// </summary>
-        Success = 1,
+        ValidResponse = 1,
 
         /// <summary>
-        /// 
+        /// the response envelope has api_url set and this response is valid
+        /// </summary>
+        ValidResponseWithUrl = 2,
+
+        /// <summary>
+        /// bad request
         /// </summary>
         AccessDenied = 3,
+
+        /// <summary>
+        /// Using unimplemented request or corrupt request
+        /// </summary>
+        InvalidRequest = 51,
 
         /// <summary>
         /// 
@@ -28,9 +38,14 @@
         ServerOverloaded = 52,
 
         /// <summary>
-        /// 
+        /// A new rpc endpoint is available and you should redirect to there
         /// </summary>
         Redirect = 53,
+
+        /// <summary>
+        /// Occurs when you send blank authinfo, or sending nonsense timings (ie LocationFix.timestampSnapshot == Signature.timestampSinceStart)
+        /// </summary>
+        InvalidSession = 100,
 
         /// <summary>
         /// 

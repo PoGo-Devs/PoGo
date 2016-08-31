@@ -8,7 +8,6 @@ using PoGo.ApiClient.Rpc;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
-using POGOProtos.Networking.Responses;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -192,7 +191,7 @@ namespace PoGo.ApiClient
 
             // @robertmclaws: We're going to bypass the queue here 
             var envelope = BuildRequestEnvelope(RequestType.GetPlayer, new GetPlayerMessage());
-            var result = await PostProtoPayload(ApiUrl, envelope, typeof(GetPlayerResponse), typeof(CheckChallengeResponse));
+            var result = await PostProtoPayload(ApiUrl, envelope);
             await ProcessMessages(result);
         }
 
@@ -237,7 +236,7 @@ namespace PoGo.ApiClient
                          continue;
                      }
 
-                     var response = await PostProtoPayload(ApiUrl, workItem, null);
+                     var response = await PostProtoPayload(ApiUrl, workItem);
                      if (response == null) continue;
                      await ProcessMessages(response);
                  }
@@ -256,9 +255,10 @@ namespace PoGo.ApiClient
         /// <returns></returns>
         internal RequestEnvelope BuildRequestEnvelope(RequestType requestType, IMessage message)
         {
+            RequestEnvelope envelope = null;
             if (_singleRequests.Contains(requestType))
             {
-                return RequestBuilder.GetRequestEnvelope(
+                envelope =  RequestBuilder.GetRequestEnvelope(
                     new Request
                     {
                         RequestType = requestType,
@@ -284,7 +284,7 @@ namespace PoGo.ApiClient
                     Hash = Download.DownloadSettingsHash
                 };
 
-                return RequestBuilder.GetRequestEnvelope(
+                envelope =  RequestBuilder.GetRequestEnvelope(
                     new Request
                     {
                         RequestType = requestType,
@@ -309,6 +309,8 @@ namespace PoGo.ApiClient
                     }
                 );
             }
+            envelope.ExpectedResponseTypes = new List<Type>(ResponseMessageMapper.GetExpectedResponseTypes(envelope.Requests));
+            return envelope;
         }
 
         /// <summary>
@@ -316,16 +318,15 @@ namespace PoGo.ApiClient
         /// </summary>
         /// <param name="url"></param>
         /// <param name="requestEnvelope"></param>
-        /// <param name="responseTypes"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        internal async Task<IMessage[]> PostProtoPayload(string url, RequestEnvelope requestEnvelope, params Type[] responseTypes)
+        internal async Task<IMessage[]> PostProtoPayload(string url, RequestEnvelope requestEnvelope)
         {
             // robertmclaws: Start by preparing the results array based on the types we're expecting to be returned.
-            var result = new IMessage[responseTypes.Length];
-            for (var i = 0; i < responseTypes.Length; i++)
+            var result = new IMessage[requestEnvelope.ExpectedResponseTypes.Count - 1];
+            for (var i = 0; i < requestEnvelope.ExpectedResponseTypes.Count - 1; i++)
             {
-                result[i] = Activator.CreateInstance(responseTypes[i]) as IMessage;
+                result[i] = Activator.CreateInstance(requestEnvelope.ExpectedResponseTypes[i]) as IMessage;
                 if (result[i] == null)
                 {
                     throw new ArgumentException($"ResponseType {i} is not an IMessage");
@@ -346,7 +347,7 @@ namespace PoGo.ApiClient
             }
 
             // robertmclaws: Now marry up the results from the service whith the type instances we already created.
-            for (var i = 0; i < responseTypes.Length; i++)
+            for (var i = 0; i < requestEnvelope.ExpectedResponseTypes.Count - 1; i++)
             {
                 var item = response.Returns[i];
                 result[i].MergeFrom(item);
@@ -407,7 +408,7 @@ namespace PoGo.ApiClient
 
             switch ((StatusCodes)response.StatusCode)
             {
-                case StatusCodes.Success:
+                case StatusCodes.ValidResponse:
                     if (response.AuthTicket != null)
                     {
                         Logger.Write("Received a new AuthTicket from the Api!");
