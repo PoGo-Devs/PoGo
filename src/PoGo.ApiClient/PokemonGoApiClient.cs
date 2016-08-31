@@ -176,7 +176,7 @@ namespace PoGo.ApiClient
         /// <returns></returns>
         public async Task AuthenticateAsync()
         {
-            CancellationTokenSource.Cancel();
+            CancelPendingRequests();
             if (AuthenticatedUser == null || AuthenticatedUser.IsExpired)
             {
                 AuthenticatedUser = await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
