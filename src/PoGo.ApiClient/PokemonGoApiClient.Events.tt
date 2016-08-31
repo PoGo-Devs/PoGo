@@ -1,0 +1,101 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".Generated.cs" #>
+using Google.Protobuf;
+using POGOProtos.Networking.Responses;
+using System;
+
+namespace PoGo.ApiClient
+{
+    public partial class PokemonGoApiClient
+    {
+
+        #region Events
+
+<#
+	var currentDirectory = Path.GetDirectoryName(Host.TemplateFile);
+	var messagesDirectory = currentDirectory + "\\Proto\\Networking\\Responses\\";
+	var responseFiles = Directory.EnumerateFiles(messagesDirectory);
+	foreach (var file in responseFiles)
+    {
+		var messageTypeName = Path.GetFileNameWithoutExtension(file);
+		var eventName = Path.GetFileNameWithoutExtension(file).Replace("Response", "").Replace("Get", "").Replace("Set", "").Replace("tings", "Settings");
+#>
+		///<summary>
+		/// Fires every time a <see cref="<#= messageTypeName #>" /> is received from the API.
+		/// </summary>
+		public event EventHandler<<#= messageTypeName #>> <#= eventName #>Received;
+
+<#
+    }
+#>
+
+		#endregion
+
+		#region Event Raisers
+
+<#
+	foreach (var file in responseFiles)
+    {
+		var messageTypeName = Path.GetFileNameWithoutExtension(file);
+		var eventName = Path.GetFileNameWithoutExtension(file).Replace("Response", "").Replace("Get", "").Replace("Set", "").Replace("tings", "Settings");
+#>
+
+        /// <summary>
+        /// Provides a safe way to invoke the <see cref="<#= eventName #>Received" /> event.
+        /// </summary>
+        /// <param name="value"></param>
+        public void Raise<#= eventName #>Received(<#= messageTypeName #> value) => <#= eventName #>Received?.Invoke(this, value);
+
+<#
+    }
+#>
+
+		#endregion
+
+		#region Private Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="messages"></param>
+        /// <returns></returns>
+        internal bool ProcessMessages(IMessage[] messages)
+        {
+			var wasSuccessful = true;
+            foreach (var message in messages)
+            {
+				switch (message.GetType().Name)
+				{
+<#
+	foreach (var file in responseFiles)
+    {
+		var messageTypeName = Path.GetFileNameWithoutExtension(file);
+		var eventName = Path.GetFileNameWithoutExtension(file).Replace("Response", "").Replace("Get", "").Replace("Set", "").Replace("tings", "Settings");
+#>
+					case "<#= messageTypeName #>":
+						Raise<#= eventName #>Received(message as <#= messageTypeName #>);
+						break;
+<#
+    }
+#>
+					default:
+						// @robertmclaws: We got a payload we didn't understand, and couldn't process.
+						wasSuccessful = false;
+						break;
+				}
+            }
+
+            return wasSuccessful;
+        }
+
+		#endregion
+
+	}
+
+}

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0-*",
-  "testRunner": "mstest",
+  //"testRunner": "mstest",
 
   "dependencies": {
     "MSTest.TestAdapter": "1.0.3-preview",

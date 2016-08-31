@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PoGo.ApiClient;
-using PoGo.ApiClient.Login;
+using PoGo.ApiClient.Authentication;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -27,7 +27,7 @@ namespace PoGo.Tests.ApiClient
                 // robertmclaws: Should we be setting every UserAgent property like the other requests?
                 httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(Constants.LoginUserAgent);
 
-                var ptcLogin = new PtcLogin("testuser", "testpass");
+                var ptcLogin = new PtcAuthenticationProvider("testuser", "testpass");
                 var loginData = await ptcLogin.GetLoginParameters(httpClient).ConfigureAwait(false);
                 Assert.IsNotNull(loginData);
                 Assert.IsTrue(string.IsNullOrWhiteSpace(loginData.Lt));

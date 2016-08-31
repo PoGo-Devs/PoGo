@@ -1,16 +1,19 @@
 ﻿using Google.Protobuf;
+using PoGo.ApiClient.Authentication;
 using PoGo.ApiClient.Enums;
+using PoGo.ApiClient.Exceptions;
 using PoGo.ApiClient.Helpers;
 using PoGo.ApiClient.Interfaces;
 using PoGo.ApiClient.Rpc;
-using PoGo.ApiClient.Session;
-using POGOProtos.Inventory;
 using POGOProtos.Networking.Envelopes;
 using POGOProtos.Networking.Requests;
 using POGOProtos.Networking.Requests.Messages;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,15 +23,10 @@ namespace PoGo.ApiClient
     /// <summary>
     /// 
     /// </summary>
-    public class PokemonGoApiClient : IPokemonGoApiClient
+    public partial class PokemonGoApiClient : HttpClient, IPokemonGoApiClient
     {
 
         #region Private Members
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal readonly PokemonHttpClient PokemonHttpClient = new PokemonHttpClient();
 
         /// <summary>
         /// 
@@ -38,14 +36,23 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthToken, AuthType, CurrentLatitude, CurrentLongitude, CurrentAccuracy, DeviceInfo, AuthTicket);
+        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthenticatedUser, CurrentPosition, DeviceInfo);
 
         /// <summary>
         /// 
         /// </summary>
-        private readonly List<RequestType> _wrappableRequests = new List<RequestType>
+        private static readonly HttpClientHandler Handler = new HttpClientHandler
         {
-            RequestType.GetMapObjects,
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            AllowAutoRedirect = false
+        };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private readonly List<RequestType> _singleRequests = new List<RequestType>
+        {
+            RequestType.GetPlayer,
         };
 
         #endregion
@@ -55,17 +62,7 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public string AuthToken => AccessToken?.Token;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public AuthType AuthType => Settings.AuthType;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IApiFailureStrategy ApiFailure { get; }
+        public IApiSettings ApiSettings { get; }
 
         /// <summary>
         /// 
@@ -75,33 +72,17 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public AuthTicket AuthTicket => AccessToken?.AuthTicket;
+        public AuthenticatedUser AuthenticatedUser { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public AccessToken AccessToken { get; set; }
+        public GeoCoordinate CurrentPosition { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public double CurrentLatitude { get; internal set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double CurrentLongitude { get; internal set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double CurrentAltitude { get; internal set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public double CurrentAccuracy { get; internal set; }
-
+        public IAuthenticationProvider CurrentProvider { get; private set; }
 
         /// <summary>
         /// 
@@ -111,69 +92,37 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public IDownload Download { get; }
+        public IDownloadClient Download { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IEncounter Encounter { get; }
+        public IEncounterClient Encounter { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IFort Fort { get; }
+        public IFortClient Fort { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IInventory Inventory { get; }
+        public IInventoryClient Inventory { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Rpc.LoginClient Login { get; }
+        public IMapClient Map { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public IMap Map { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Misc Misc { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IPlayer Player { get; }
+        public IPlayerClient Player { get; }
 
         /// <summary>
         /// 
         /// </summary>
         internal BlockingCollection<RequestEnvelope> RequestQueue { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ISettings Settings { get; }
-
-        #endregion
-
-        #region Events
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>These might not stay here, we'll see how the pattern plays out.</remarks>
-        public event EventHandler<InventoryDelta> InventoryReceived;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <remarks>These might not stay here, we'll see how the pattern plays out.</remarks>
-        void RaiseInventoryReceived(InventoryDelta value) => InventoryReceived?.Invoke(this, value);  
 
         #endregion
 
@@ -182,35 +131,73 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="apiFailureStrategy"></param>
-        /// <param name="deviceInfo"></param>
-        /// <param name="accessToken"></param>
-        public PokemonGoApiClient(ISettings settings, IApiFailureStrategy apiFailureStrategy, IDeviceInfo deviceInfo, AccessToken accessToken = null)
+        public PokemonGoApiClient() : base(Handler)
         {
-            Settings = settings;
-            ApiFailure = apiFailureStrategy;
-            AccessToken = accessToken;
+            DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Constants.HttpClientUserAgent);
+            DefaultRequestHeaders.ExpectContinue = false;
+            DefaultRequestHeaders.TryAddWithoutValidation("Connection", Constants.HttpClientConnection);
+            DefaultRequestHeaders.TryAddWithoutValidation("Accept", Constants.HttpClientAccept);
+            DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", Constants.HttpClientContentType);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="deviceInfo"></param>
+        /// <param name="authenticatedUser"></param>
+        public PokemonGoApiClient(IApiSettings settings, IDeviceInfo deviceInfo, AuthenticatedUser authenticatedUser = null)
+        {
+            ApiSettings = settings;
+            SetAuthenticationProvider();
+            AuthenticatedUser = authenticatedUser;
 
             CancellationTokenSource = new CancellationTokenSource();
             RequestQueue = new BlockingCollection<RequestEnvelope>();
 
-            Login = new Rpc.LoginClient(this);
             Player = new PlayerClient(this);
             Download = new DownloadClient(this);
             Inventory = new InventoryClient(this);
             Map = new MapClient(this);
             Fort = new FortClient(this);
             Encounter = new EncounterClient(this);
-            Misc = new Misc(this);
             DeviceInfo = deviceInfo;
 
-            Player.SetCoordinates(Settings.DefaultLatitude, Settings.DefaultLongitude, Settings.DefaultAltitude);
+            Player.SetCoordinates(ApiSettings.DefaultPosition.Latitude, ApiSettings.DefaultPosition.Longitude, ApiSettings.DefaultPosition.Accuracy);
         }
 
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task AuthenticateAsync()
+        {
+            CancelPendingRequests();
+            if (AuthenticatedUser == null || AuthenticatedUser.IsExpired)
+            {
+                AuthenticatedUser = await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
+            }
+
+            // @robertmclaws: We're going to bypass the queue here.
+            var envelope = BuildRequestEnvelope(RequestType.GetPlayer, new GetPlayerMessage());
+            var result = await PostProtoPayload(ApiUrl, envelope);
+            ProcessMessages(result);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <returns></returns>
+        public async Task AuthenticateAsync(PoGoCredentials credentials)
+        {
+            ApiSettings.Credentials = credentials;
+            await AuthenticateAsync();
+        }
 
         /// <summary>
         /// Triggers any currently-executing requests to cancel ASAP. This will also have the effect of clearing the <see cref="RequestQueue"/>.
@@ -226,25 +213,32 @@ namespace PoGo.ApiClient
         /// <param name="message"></param>
         /// <param name="requestType"></param>
         /// <returns></returns>
-        public bool QueueRequest(IMessage message, RequestType requestType)
+        /// <remarks>
+        /// robertmclaws: Every request will have a minimum of two payloads. So no single-payload results anymore.
+        /// </remarks>
+        public bool QueueRequest(RequestType requestType, IMessage message)
         {
-            RequestEnvelope envelope = null;
-            if (_wrappableRequests.Contains(requestType))
-            {
-                envelope = BuildBatchRequestEnvelope(message, requestType);
-            }
-            else
-            {
-                var request = new Request
-                {
-                    RequestType = requestType,
-                    RequestMessage = message.ToByteString()
-                };
-                envelope = RequestBuilder.GetRequestEnvelope(request);
-
-            }
+            var envelope = BuildRequestEnvelope(requestType, message);
             return RequestQueue.TryAdd(envelope);
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SetAuthenticationProvider()
+        {
+            switch (ApiSettings.Credentials.AuthenticationProvider)
+            {
+                case AuthenticationProviderTypes.Google:
+                    CurrentProvider = new GoogleAuthenticationProvider(ApiSettings.Credentials.Username, ApiSettings.Credentials.Password);
+                    break;
+                case AuthenticationProviderTypes.PokemonTrainerClub:
+                    CurrentProvider = new PtcAuthenticationProvider(ApiSettings.Credentials.Username, ApiSettings.Credentials.Password);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ApiSettings.Credentials.AuthenticationProvider), "Unknown AuthType");
+            }
         }
 
         /// <summary>
@@ -253,13 +247,20 @@ namespace PoGo.ApiClient
         /// <returns></returns>
         public Task StartProcessingRequests()
         {
-             return Task.Factory.StartNew(() =>
+             return Task.Factory.StartNew(async () =>
              {
                  foreach (var workItem in RequestQueue.GetConsumingEnumerable())
                  {
-                     if (CancellationTokenSource.IsCancellationRequested) continue;
-                     //TODO: RWM: We'll do the real work here. Below is just a placeholder.
-                     Task.Delay(1).Wait();
+                     // robertmclaws: The line below should collapse the queue quickly.
+                     if (CancellationTokenSource.IsCancellationRequested)
+                     {
+                         Logger.Write("A queued request was cancelled before it was processed.");
+                         continue;
+                     }
+
+                     var response = await PostProtoPayload(ApiUrl, workItem);
+                     if (response == null) continue;
+                     ProcessMessages(response);
                  }
              }, TaskCreationOptions.LongRunning);
         }
@@ -274,60 +275,218 @@ namespace PoGo.ApiClient
         /// <param name="message"></param>
         /// <param name="requestType"></param>
         /// <returns></returns>
-        private RequestEnvelope BuildBatchRequestEnvelope(IMessage message, RequestType requestType)
+        internal RequestEnvelope BuildRequestEnvelope(RequestType requestType, IMessage message)
         {
-
-            var getHatchedEggsMessage = new GetHatchedEggsMessage();
-            var getInventoryMessage = new GetInventoryMessage
+            RequestEnvelope envelope = null;
+            if (_singleRequests.Contains(requestType))
             {
-                LastTimestampMs = DateTime.UtcNow.ToUnixTime()
-            };
-            var checkAwardedBadgesMessage = new CheckAwardedBadgesMessage();
-            var downloadSettingsMessage = new DownloadSettingsMessage
+                envelope =  RequestBuilder.GetRequestEnvelope(
+                    new Request
+                    {
+                        RequestType = requestType,
+                        RequestMessage = message.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.CheckChallenge,
+                        RequestMessage = new CheckChallengeMessage().ToByteString()
+                    }
+                );
+            }
+            else
             {
-                Hash = "05daf51635c82611d1aac95c0b051d3ec088a930"
-            };
+                var getInventoryMessage = new GetInventoryMessage
+                {
+                    LastTimestampMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                };
+                var downloadSettingsMessage = new DownloadSettingsMessage
+                {
+                    Hash = Download.DownloadSettingsHash
+                };
 
-            return RequestBuilder.GetRequestEnvelope(
-                new Request
-                {
-                    RequestType = requestType,
-                    RequestMessage = message.ToByteString()
-                },
-                new Request
-                {
-                    RequestType = RequestType.GetHatchedEggs,
-                    RequestMessage = getHatchedEggsMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.GetInventory,
-                    RequestMessage = getInventoryMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.CheckAwardedBadges,
-                    RequestMessage = checkAwardedBadgesMessage.ToByteString()
-                }, new Request
-                {
-                    RequestType = RequestType.DownloadSettings,
-                    RequestMessage = downloadSettingsMessage.ToByteString()
-                });
+                envelope =  RequestBuilder.GetRequestEnvelope(
+                    new Request
+                    {
+                        RequestType = requestType,
+                        RequestMessage = message.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.GetHatchedEggs,
+                        RequestMessage = new GetHatchedEggsMessage().ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.GetInventory,
+                        RequestMessage = getInventoryMessage.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.CheckAwardedBadges,
+                        RequestMessage = new CheckAwardedBadgesMessage().ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.DownloadSettings,
+                        RequestMessage = downloadSettingsMessage.ToByteString()
+                    },
+                    new Request
+                    {
+                        RequestType = RequestType.CheckChallenge,
+                        RequestMessage = new CheckChallengeMessage().ToByteString()
+                    }
 
+                );
+            }
+            envelope.ExpectedResponseTypes = new List<Type>(ResponseMessageMapper.GetExpectedResponseTypes(envelope.Requests));
+            return envelope;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="response"></param>
+        /// <param name="url"></param>
+        /// <param name="requestEnvelope"></param>
         /// <returns></returns>
-        private async Task<bool> ProcessResponse(ResponseEnvelope response)
+        /// <remarks></remarks>
+        internal async Task<IMessage[]> PostProtoPayload(string url, RequestEnvelope requestEnvelope)
         {
-            // Per @wallycz, on code 502, wait 11 seconds before sending the request again.
-            if (response.StatusCode == 502)
+            // robertmclaws: Start by preparing the results array based on the types we're expecting to be returned.
+            var result = new IMessage[requestEnvelope.ExpectedResponseTypes.Count - 1];
+            for (var i = 0; i < requestEnvelope.ExpectedResponseTypes.Count - 1; i++)
             {
-                await Task.Delay(11000);
-                return false;
+                result[i] = Activator.CreateInstance(requestEnvelope.ExpectedResponseTypes[i]) as IMessage;
+                if (result[i] == null)
+                {
+                    throw new ArgumentException($"ResponseType {i} is not an IMessage");
+                }
             }
-            return false;
+
+            // robertmclaws: We're not using the strategy pattern here anymore. Specific requests will be retried as needed.
+            //               For example, there's no need to retry a map request when another will come along in 5 seconds.
+            //               Since the function we're calling is now recursive, let's make sure we only encode the payload once.
+            var byteArrayContent = new ByteArrayContent(requestEnvelope.ToByteString().ToByteArray());
+            var retryPolicy = RetryPolicyManager.GetRetryPolicy(requestEnvelope.Requests[0].RequestType);
+            var response = await PostProto(url, byteArrayContent, retryPolicy, CancellationTokenSource.Token);
+
+            if (response == null || response.Returns.Count == 0)
+            {
+                // robertmclaws: We didn't get anything back after several attempts. Let's bounce.
+                return null;
+            }
+
+            // robertmclaws: Now marry up the results from the service whith the type instances we already created.
+            for (var i = 0; i < requestEnvelope.ExpectedResponseTypes.Count - 1; i++)
+            {
+                var item = response.Returns[i];
+                result[i].MergeFrom(item);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="payload"></param>
+        /// <param name="retryPolicy"></param>
+        /// <param name="token"></param>
+        /// <param name="attemptCount"></param>
+        /// <param name="redirectCount"></param>
+        /// <returns></returns>
+        internal async Task<ResponseEnvelope> PostProto(string url, ByteArrayContent payload, RetryPolicy retryPolicy, CancellationToken token,
+            int attemptCount = 0, int redirectCount = 0)
+        {
+
+            // robertmclaws: If someone wants us to be done, we're done.
+            if (token.IsCancellationRequested)
+            {
+                Logger.Write("The request was cancelled. (PostProto cancellation check)");
+                return null;
+            }
+            
+            attemptCount++;
+
+            // robertmclaws: If we've exceeded the maximum number of attempts, we're done.
+            if (attemptCount > retryPolicy.MaxFailureAttempts)
+            {
+                Logger.Write("The request exceeded the number of retries allowed and has been cancelled.");
+                return null;
+            }
+            if (redirectCount > retryPolicy.MaxRedirectAttempts)
+            {
+                Logger.Write("The request exceeded the number of redirect attempts allowed and has been cancelled.");
+                return null;
+            }
+
+            // robertmclaws: We're gonna keep going, so let's be pro-active about token failures, instead of reactive.
+            if (AuthenticatedUser == null || AuthenticatedUser.IsExpired)
+            {
+                // @robertmclaws: Calling "Authenticate" cancels all current requests and fires off a complex login routine.
+                //                More than likely, we just want to refresh the tokens.
+                await CurrentProvider.GetAuthenticatedUser().ConfigureAwait(false);
+            }
+
+            var result = await PostAsync(url, payload, token);
+
+            var response = new ResponseEnvelope();
+            var responseData = await result.Content.ReadAsByteArrayAsync();
+
+            using (var codedStream = new CodedInputStream(responseData))
+            {
+                response.MergeFrom(codedStream);
+            }
+
+            switch ((StatusCodes)response.StatusCode)
+            {
+                case StatusCodes.ValidResponse:
+                    if (response.AuthTicket != null)
+                    {
+                        Logger.Write("Received a new AuthTicket from the Api!");
+                        AuthenticatedUser.AuthTicket = response.AuthTicket;
+                        // robertmclaws to do: See if we need to clone the AccessToken so we don't have a threading violation.
+                        RaiseAuthenticatedUserUpdated(AuthenticatedUser);
+                    }
+                    return response;
+
+                case StatusCodes.AccessDenied:
+                    Logger.Write("Account has been banned. Our condolences for your loss.");
+                    CancelCurrentRequests();
+                    //RequestQueue.CompleteAdding();
+                    // robertmclaws to do: Allow you to stop adding events to the queue, and re-initialize the queue if needed.
+                    throw new AccountLockedException();
+
+                case StatusCodes.Redirect:
+                    if (!Regex.IsMatch(response.ApiUrl, "pgorelease\\.nianticlabs\\.com\\/plfe\\/\\d+"))
+                    {
+                        throw new Exception($"Received an incorrect API url '{response.ApiUrl}', status code was '{response.StatusCode}'.");
+                    }
+                    ApiUrl = $"https://{response.ApiUrl}/rpc";
+                    Logger.Write($"Received an updated API url = {ApiUrl}");
+                    // robertmclaws to do: Check to see if redirects should count against the RetryPolicy.
+                    await Task.Delay(retryPolicy.DelayInSeconds * 1000);
+                    redirectCount++;
+                    return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
+
+                case StatusCodes.InvalidToken:
+                    Logger.Write("Received StatusCode 102, reauthenticating.");
+                    AuthenticatedUser?.Expire();
+                    // robertmclaws: trigger a retry here. We'll automatically try to log in again on the next request.
+                    await Task.Delay(retryPolicy.DelayInSeconds * 1000);
+                    return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
+
+                case StatusCodes.ServerOverloaded:
+                    // Per @wallycz, on code 52, wait 11 seconds before sending the request again.
+                    Logger.Write("Server says to slow the hell down. Try again in 11 sec.");
+                    await Task.Delay(11000);
+                    return await PostProto(response.ApiUrl, payload, retryPolicy, token, attemptCount, redirectCount);
+
+                default:
+                    Logger.Write($"Unknown status code: {response.StatusCode}");
+                    break;
+            }
+
+            return response;
         }
 
         #endregion

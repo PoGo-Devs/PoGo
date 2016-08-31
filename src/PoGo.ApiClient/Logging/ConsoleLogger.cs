@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PoGo.ApiClient.Interfaces;
+using System;
 using System.Diagnostics;
 
 namespace PoGo.ApiClient.Logging
@@ -30,7 +31,7 @@ namespace PoGo.ApiClient.Logging
             if (level > _maxLogLevel)
                 return;
 
-            Debug.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss")}] {message}");
+            Debug.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss")}]: {message}");
         }
     }
 }
