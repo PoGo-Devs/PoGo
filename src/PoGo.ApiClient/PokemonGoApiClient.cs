@@ -479,21 +479,6 @@ namespace PoGo.ApiClient
             return response;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="messages"></param>
-        /// <returns></returns>
-        internal async Task<bool> ProcessMessages(IMessage[] messages)
-        {
-            foreach (var inner in messages)
-            {
-
-            }
-
-            return false;
-        }
-
         #endregion
 
     }
