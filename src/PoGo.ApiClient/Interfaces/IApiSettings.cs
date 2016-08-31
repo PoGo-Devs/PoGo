@@ -1,5 +1,4 @@
 ﻿using PoGo.ApiClient.Authentication;
-using PoGo.ApiClient.Enums;
 
 namespace PoGo.ApiClient.Interfaces
 {
@@ -11,13 +10,8 @@ namespace PoGo.ApiClient.Interfaces
     {
 
         /// <summary>
-        /// 
-        /// </summary>
-        AuthenticationProviderTypes AuthenticationProvider { get; set; }
-
-        /// <summary>
         /// The <see cref="PoGoCredentials"/> objects that stores the username and password to be used 
-        /// against the current <see cref="AuthenticationProvider"/>.
+        /// against the given <see cref="IAuthenticationProvider"/>.
         /// </summary>
         PoGoCredentials Credentials { get; set; }
 
