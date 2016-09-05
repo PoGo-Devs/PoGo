@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PoGo.Windows.Models
+namespace PoGo.GameServices.Models
 {
     public class AchievementValueAttribute : System.Attribute
     {

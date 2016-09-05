@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="PoGo.Tests.Windows.App"
+    x:Class="PoGo.Tests.WindowsUniversal.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:PoGo.Tests.Windows"
+    xmlns:local="using:PoGo.Tests.WindowsUniversal"
     RequestedTheme="Light">
 
 </Application>

@@ -68,7 +68,9 @@ namespace PoGo.ApiClient.Authentication
             //Todo: captcha/2fa implementation
 
             if (!response.ContainsKey("Auth"))
+            {
                 throw new GoogleOfflineException();
+            }
 
             var oauthResponse = await client.PerformOAuth(response["Token"], Constants.GoogleOAuthService, Constants.GoogleOAuthAndroidId, 
                 Constants.GoogleOAuthApp, Constants.GoogleOAuthClientSig);

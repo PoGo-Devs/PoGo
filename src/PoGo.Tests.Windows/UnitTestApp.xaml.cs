@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace PoGo.Tests.Windows
+namespace PoGo.Tests.WindowsUniversal
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

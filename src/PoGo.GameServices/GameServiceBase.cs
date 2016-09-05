@@ -38,7 +38,21 @@ namespace PoGo.GameServices
         /// <summary>
         /// 
         /// </summary>
+        public virtual void RegisterClientEvents()
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void ResetState()
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual void UnregisterClientEvents()
         {
         }
 

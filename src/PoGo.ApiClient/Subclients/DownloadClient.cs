@@ -41,7 +41,36 @@ namespace PoGo.ApiClient.Rpc
         /// 
         /// </summary>
         /// <returns></returns>
-        public bool QueueSettingsRequest()
+        public bool QueueDownloadItemTemplatesRequest()
+        {
+            return Client.QueueRequest(RequestType.DownloadItemTemplates, new DownloadItemTemplatesMessage());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appVersion"></param>
+        /// <param name="locale"></param>
+        public bool QueueDownloadRemoteConfigVersionRequest(uint appVersion, string locale)
+        {
+            
+            var message = new DownloadRemoteConfigVersionMessage
+            {
+                AppVersion = appVersion,
+                DeviceManufacturer = Client.DeviceInfo.HardwareManufacturer,
+                DeviceModel = Client.DeviceInfo.HardwareModel,
+                Locale = locale,
+                Platform = Client.DeviceInfo.Platform
+            };
+
+            return Client.QueueRequest(RequestType.DownloadRemoteConfigVersion, message);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool QueueDownloadSettingsRequest()
         {
             var message = new DownloadSettingsMessage
             {
@@ -52,58 +81,24 @@ namespace PoGo.ApiClient.Rpc
 
             //robertmclaws to do: Handle SettingsChanged event and push the new value.
             //DownloadSettingsHash = response?.Hash ?? "";
-           // return response;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool QueueDownloadItemTemplatesRequest()
-        {
-            return Client.QueueRequest(RequestType.DownloadItemTemplates, new DownloadItemTemplatesMessage());
+            // return response;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="appVersion"></param>
-        /// <param name="deviceManufacturer"></param>
-        /// <param name="deviceModel"></param>
         /// <param name="locale"></param>
-        /// <param name="platform"></param>
-        public bool QueueRemoteConfigVersionRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
-        {
-            var message = new DownloadRemoteConfigVersionMessage
-            {
-                AppVersion = appVersion,
-                DeviceManufacturer = deviceManufacturer,
-                DeviceModel = deviceModel,
-                Locale = locale,
-                Platform = platform
-            };
-
-            return Client.QueueRequest(RequestType.DownloadRemoteConfigVersion, message);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="appVersion"></param>
-        /// <param name="deviceManufacturer"></param>
-        /// <param name="deviceModel"></param>
-        /// <param name="locale"></param>
-        /// <param name="platform"></param>
         /// <returns></returns>
-        public bool QueueAssetDigestRequest(uint appVersion, string deviceManufacturer, string deviceModel, string locale, Platform platform)
+        public bool QueueGetAssetDigestRequest(uint appVersion, string locale)
         {
             var message = new GetAssetDigestMessage
             {
                 AppVersion = appVersion,
-                DeviceManufacturer = deviceManufacturer,
-                DeviceModel = deviceModel,
+                DeviceManufacturer = Client.DeviceInfo.HardwareManufacturer,
+                DeviceModel = Client.DeviceInfo.HardwareModel,
                 Locale = locale,
-                Platform = platform
+                Platform = Client.DeviceInfo.Platform
             };
 
             return Client.QueueRequest(RequestType.GetAssetDigest, message);
@@ -114,7 +109,7 @@ namespace PoGo.ApiClient.Rpc
         /// </summary>
         /// <param name="assetIds"></param>
         /// <returns></returns>
-        public bool QueueDownloadUrlsRequest (IEnumerable<string> assetIds)
+        public bool QueueGetDownloadUrlsRequest (IEnumerable<string> assetIds)
         {
             var message = new GetDownloadUrlsMessage
             {

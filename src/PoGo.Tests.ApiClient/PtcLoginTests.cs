@@ -17,26 +17,16 @@ namespace PoGo.Tests.ApiClient
         [TestMethod]
         public async Task PtcLogin_GetLoginParameters()
         {
-            var httpHandler = new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip,
-                AllowAutoRedirect = false
-            };
-            using (var httpClient = new HttpClient(httpHandler))
-            {
-                // robertmclaws: Should we be setting every UserAgent property like the other requests?
-                httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(Constants.LoginUserAgent);
 
-                var ptcLogin = new PtcAuthenticationProvider("testuser", "testpass");
-                var loginData = await ptcLogin.GetLoginParameters(httpClient).ConfigureAwait(false);
-                Assert.IsNotNull(loginData);
-                Assert.IsTrue(string.IsNullOrWhiteSpace(loginData.Lt));
-                Assert.IsTrue(string.IsNullOrWhiteSpace(loginData.Execution));
+            var ptcLogin = new PtcAuthenticationProvider("testuser", "testpass");
+            var loginData = await ptcLogin.GetLoginParameters().ConfigureAwait(false);
+            Assert.IsNotNull(loginData);
+            Assert.IsTrue(string.IsNullOrWhiteSpace(loginData.Lt));
+            Assert.IsTrue(string.IsNullOrWhiteSpace(loginData.Execution));
 
-                //loginData.Should().NotBeNull();
-                //loginData.Lt.Should().NotBeNullOrWhiteSpace();
-                //loginData.Execution.Should().NotBeNullOrWhiteSpace();
-            }
+            //loginData.Should().NotBeNull();
+            //loginData.Lt.Should().NotBeNullOrWhiteSpace();
+            //loginData.Execution.Should().NotBeNullOrWhiteSpace();
 
         }
 

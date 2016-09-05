@@ -6,7 +6,7 @@ namespace PoGo.ApiClient.Interfaces
     /// <summary>
     /// 
     /// </summary>
-    public interface IPokemonGoApiClient
+    public partial interface IPokemonGoApiClient
     {
 
         /// <summary>

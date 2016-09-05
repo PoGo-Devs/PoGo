@@ -1,8 +1,8 @@
-using PoGo.Windows.ViewModels;
+using PoGo.WindowsUniversal.ViewModels;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace PoGo.Windows.Views
+namespace PoGo.WindowsUniversal.Views
 {
     public sealed partial class MainPage : Page
     {

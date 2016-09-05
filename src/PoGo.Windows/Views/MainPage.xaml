@@ -1,4 +1,4 @@
-<Page x:Class="PoGo.Windows.Views.MainPage"
+<Page x:Class="PoGo.WindowsUniversal.Views.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:Behaviors="using:Template10.Behaviors"
@@ -6,15 +6,15 @@
       xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
       xmlns:controls="using:Template10.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="using:PoGo.Windows.Views"
-      xmlns:app="Pogo.Windows"
-      xmlns:converters="using:PoGo.Windows.Converters"
+      xmlns:local="using:PoGo.WindowsUniversal.Views"
+      xmlns:app="PoGo.WindowsUniversal"
+      xmlns:converters="using:PoGo.WindowsUniversal.Converters"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:vm="using:PoGo.Windows.ViewModels" mc:Ignorable="d">
+      xmlns:vm="using:PoGo.WindowsUniversal.ViewModels" mc:Ignorable="d">
 
     <!--<Page.DataContext>
         <converters:AutofacDataProvider
-            DataTypeName="Pogo.Windows.ViewModels.MainViewModel"
+            DataTypeName="PoGo.WindowsUniversal.ViewModels.MainViewModel"
             AutofacContainer="{Binding}"
             x:Name="ViewModel" />
     </Page.DataContext>-->

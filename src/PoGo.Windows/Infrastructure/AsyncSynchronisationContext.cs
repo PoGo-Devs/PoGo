@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace PoGo.Windows.Infrastructure
+namespace PoGo.WindowsUniversal.Infrastructure
 {
     public class AsyncSynchronizationContext : SynchronizationContext
     {

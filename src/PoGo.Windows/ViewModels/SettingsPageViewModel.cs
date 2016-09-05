@@ -4,7 +4,7 @@ using Template10.Mvvm;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 
-namespace PoGo.Windows.ViewModels
+namespace PoGo.WindowsUniversal.ViewModels
 {
     public class SettingsPageViewModel : ViewModelBase
     {
