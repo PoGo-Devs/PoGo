@@ -3,7 +3,7 @@ using Template10.Common;
 using Template10.Utils;
 using Windows.UI.Xaml;
 
-namespace PoGo.Windows.Services.SettingsServices
+namespace PoGo.WindowsUniversal.Services.SettingsServices
 {
     public class SettingsService
     {

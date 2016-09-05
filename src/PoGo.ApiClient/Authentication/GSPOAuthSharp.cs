@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
@@ -28,6 +29,20 @@ namespace DankMemes.GPSOAuthSharp
         private readonly string _email;
         private readonly string _password;
 
+        private static HttpClient HttpClient;
+
+        static GPSOAuthClient()
+        {
+            HttpClient = new HttpClient(
+                new HttpClientHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip,
+                    AllowAutoRedirect = false
+                }
+            );
+            HttpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(_userAgent);
+        }
+
         public GPSOAuthClient(string email, string password)
         {
             _email = email;
@@ -43,23 +58,19 @@ namespace DankMemes.GPSOAuthSharp
                 nvc.Add(new KeyValuePair<string, string>(kvp.Key, kvp.Value));
             }
 
-            using (var client = new HttpClient())
+            string result;
+            try
             {
-                client.DefaultRequestHeaders.Add("User-Agent", _userAgent);
-                string result;
-                try
-                {
-                    var response = await client.PostAsync(_authUrl, new FormUrlEncodedContent(nvc));
+                var response = await HttpClient.PostAsync(_authUrl, new FormUrlEncodedContent(nvc));
 
-                    result = await response.Content.ReadAsStringAsync();
-                }
-                catch (Exception e)
-                {
-                    result = e.Message;
-                }
-
-                return GoogleKeyUtils.ParseAuthResponse(result);
+                result = await response.Content.ReadAsStringAsync();
             }
+            catch (Exception e)
+            {
+                result = e.Message;
+            }
+
+            return GoogleKeyUtils.ParseAuthResponse(result);
         }
 
         // perform_master_login
@@ -138,9 +149,9 @@ namespace DankMemes.GPSOAuthSharp
         // Python version returns a string, but we use byte[] to get the same results
         public static byte[] KeyToStruct(RsaParameters key)
         {
-            byte[] modLength = {0x00, 0x00, 0x00, 0x80};
+            byte[] modLength = { 0x00, 0x00, 0x00, 0x80 };
             var mod = key.Modulus;
-            byte[] expLength = {0x00, 0x00, 0x00, 0x03};
+            byte[] expLength = { 0x00, 0x00, 0x00, 0x03 };
             var exponent = key.Exponent;
             return DataTypeUtils.CombineBytes(modLength, mod, expLength, exponent);
         }
@@ -149,7 +160,7 @@ namespace DankMemes.GPSOAuthSharp
         public static Dictionary<string, string> ParseAuthResponse(string text)
         {
             var responseData = new Dictionary<string, string>();
-            foreach (var line in text.Split(new[] {"\n", "\r\n"}, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var line in text.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
             {
                 var parts = line.Split('=');
                 responseData.Add(parts[0], parts[1]);
@@ -164,7 +175,7 @@ namespace DankMemes.GPSOAuthSharp
             var keyBlob = CryptographicBuffer.DecodeFromBase64String(_b64KeyBlob);
             var publicKey = rsa.ImportPublicKey(keyBlob, CryptographicPublicKeyBlobType.Capi1PublicKey);
 
-            byte[] prefix = {0x00};
+            byte[] prefix = { 0x00 };
             var hashAlgorithm = HashAlgorithmProvider.OpenAlgorithm(HashAlgorithmNames.Sha1);
             var hash = hashAlgorithm.HashData(KeyToStruct(key).AsBuffer()).ToArray().Take(4).ToArray();
 

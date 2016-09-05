@@ -14,7 +14,7 @@
     <Resource Language="x-generate" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="PoGo.Windows.App">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="PoGo.WindowsUniversal.App">
       <uap:VisualElements DisplayName="PoGo" Square150x150Logo="Assets\LiveTiles\Normal\Square150x150Logo.png" Square44x44Logo="Assets\LiveTiles\Normal\Square44x44Logo.png" Description="Sample" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\LiveTiles\Normal\Wide310x150Logo.png" Square310x310Logo="Assets\LiveTiles\Normal\Square310x310Logo.png" Square71x71Logo="Assets\LiveTiles\Normal\Square71x71Logo.png">
           <uap:ShowNameOnTiles>

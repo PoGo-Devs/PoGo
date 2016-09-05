@@ -7,8 +7,8 @@
     <ProjectGuid>{CCA08DF3-4AB6-4B08-B572-3DE448193CC5}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PoGo.Windows</RootNamespace>
-    <AssemblyName>PoGo.Windows</AssemblyName>
+    <RootNamespace>PoGo.WindowsUniversal</RootNamespace>
+    <AssemblyName>PoGo.WindowsUniversal</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
@@ -626,6 +626,7 @@
     <Folder Include="Converters\" />
     <Folder Include="Localization\" />
     <Folder Include="Models\Achievements\" />
+    <Folder Include="Signature\" />
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="WindowsMobile, Version=10.0.14393.0">

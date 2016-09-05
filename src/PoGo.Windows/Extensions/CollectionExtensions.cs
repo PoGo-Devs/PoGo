@@ -1,4 +1,4 @@
-﻿using PoGo.Windows.Interfaces;
+﻿using PoGo.WindowsUniversal.Interfaces;
 using System.Linq;
 using Template10.Utils;
 

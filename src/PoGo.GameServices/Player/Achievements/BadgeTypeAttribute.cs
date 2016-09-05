@@ -1,7 +1,7 @@
 ﻿using System;
 using POGOProtos.Enums;
 
-namespace PoGo.Windows.Models
+namespace PoGo.GameServices.Models
 {
     public class BadgeTypeAttribute : Attribute
     {

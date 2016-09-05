@@ -10,7 +10,7 @@ using Template10.Services.NavigationService;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml.Navigation;
 
-namespace PoGo.Windows.ViewModels
+namespace PoGo.WindowsUniversal.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {

@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DF00BDAE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGo.ApiClient", "PoGo.ApiClient\PoGo.ApiClient.csproj", "{7B5AE648-F692-4168-A557-AAA60EEE945F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGo.Windows", "PoGo.Windows\PoGo.Windows.csproj", "{CCA08DF3-4AB6-4B08-B572-3DE448193CC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGo.WindowsUniversal", "PoGo.Windows\PoGo.WindowsUniversal.csproj", "{CCA08DF3-4AB6-4B08-B572-3DE448193CC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGo.Tests.Windows", "PoGo.Tests.Windows\PoGo.Tests.Windows.csproj", "{6DEC6268-ACE6-4192-8C12-63A2E651E9AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGo.Tests.WindowsUniversal", "PoGo.Tests.Windows\PoGo.Tests.WindowsUniversal.csproj", "{6DEC6268-ACE6-4192-8C12-63A2E651E9AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoGo.GameServices", "PoGo.GameServices\PoGo.GameServices.csproj", "{F150CC2E-70D8-4A6C-9884-A4BBBCE0983D}"
 EndProject

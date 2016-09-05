@@ -2,9 +2,9 @@ using Autofac;
 using PoGo.ApiClient;
 using PoGo.ApiClient.Interfaces;
 using PoGo.GameServices;
-using PoGo.Windows.Services.SettingsServices;
-using PoGo.Windows.ViewModels;
-using PoGo.Windows.Views;
+using PoGo.WindowsUniversal.Services.SettingsServices;
+using PoGo.WindowsUniversal.ViewModels;
+using PoGo.WindowsUniversal.Views;
 using System;
 using System.Threading.Tasks;
 using Template10.Services.NavigationService;
@@ -12,7 +12,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
-namespace PoGo.Windows
+namespace PoGo.WindowsUniversal
 {
     /// Documentation on APIs used in this page:
     /// https://github.com/Windows-XAML/Template10/wiki

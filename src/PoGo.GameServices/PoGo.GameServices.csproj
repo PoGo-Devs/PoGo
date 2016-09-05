@@ -132,7 +132,10 @@
     <Compile Include="Signature\Android\AndroidLocationFix.cs" />
     <Compile Include="Signature\Android\AndroidSensorInfo.cs" />
     <Compile Include="Signature\DeviceInfoManager.cs" />
+    <Compile Include="Signature\iOS\iOSActivityStatus.cs" />
     <Compile Include="Signature\iOS\iOSDeviceInfo.cs" />
+    <Compile Include="Signature\iOS\iOSLocationFix.cs" />
+    <Compile Include="Signature\iOS\iOSSensorInfo.cs" />
     <EmbeddedResource Include="Properties\PoGo.GameEngines.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +147,11 @@
   <ItemGroup>
     <Folder Include="Location\" />
     <Folder Include="Pokedex\" />
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
+      <Name>Windows Mobile Extensions for the UWP</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

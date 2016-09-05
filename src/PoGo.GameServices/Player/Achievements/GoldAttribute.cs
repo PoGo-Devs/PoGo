@@ -1,4 +1,4 @@
-﻿namespace PoGo.Windows.Models
+﻿namespace PoGo.GameServices.Models
 {
     public class GoldAttribute : AchievementValueAttribute
     {

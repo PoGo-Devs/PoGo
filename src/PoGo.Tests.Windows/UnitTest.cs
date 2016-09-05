@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
-namespace PoGo.Tests.Windows
+namespace PoGo.Tests.WindowsUniversal
 {
     [TestClass]
     public class UnitTest1

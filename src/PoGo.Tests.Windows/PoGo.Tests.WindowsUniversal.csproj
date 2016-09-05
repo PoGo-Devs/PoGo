@@ -117,9 +117,9 @@
     <Content Include="Properties\UnitTestApp.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PoGo.Windows\PoGo.Windows.csproj">
+    <ProjectReference Include="..\PoGo.Windows\PoGo.WindowsUniversal.csproj">
       <Project>{cca08df3-4ab6-4b08-b572-3de448193cc5}</Project>
-      <Name>PoGo.Windows</Name>
+      <Name>PoGo.WindowsUniversal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

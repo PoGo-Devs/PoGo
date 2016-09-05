@@ -2,7 +2,7 @@
 using System.Reflection;
 using Windows.UI.Xaml;
 
-namespace PoGo.Windows.Converters
+namespace PoGo.WindowsUniversal.Converters
 {
 
     /// <summary>

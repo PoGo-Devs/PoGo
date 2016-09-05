@@ -1,4 +1,4 @@
-namespace PoGo.Windows.Interfaces
+namespace PoGo.WindowsUniversal.Interfaces
 {
 
     /// <summary>

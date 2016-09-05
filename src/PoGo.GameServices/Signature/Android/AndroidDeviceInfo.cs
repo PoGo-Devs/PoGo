@@ -1,6 +1,5 @@
 ﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Enums;
-using System;
 using System.Collections.Generic;
 
 namespace PoGo.GameServices.Signature.Android
@@ -121,7 +120,15 @@ namespace PoGo.GameServices.Signature.Android
 
         public void CollectLocationData()
         {
-            throw new NotImplementedException();
+            //ILocationFix loc = AndroidLocationFix.CollectData();
+
+            //if (loc != null)
+            //{
+            //    lock (gpsLocationFixesLock)
+            //    {
+            //        locationFixes.Add(loc);
+            //    }
+            //}
         }
     }
 }

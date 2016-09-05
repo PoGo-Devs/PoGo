@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PoGo.Windows")]
+[assembly: AssemblyTitle("PoGo.WindowsUniversal")]
 [assembly: AssemblyDescription("http://aka.ms/template10")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PoGo.Windows")]
+[assembly: AssemblyProduct("PoGo.WindowsUniversal")]
 [assembly: AssemblyCopyright("Copyright © 2016")]
-[assembly: AssemblyTrademark("PoGo.Windows")]
+[assembly: AssemblyTrademark("PoGo.WindowsUniversal")]
 [assembly: AssemblyCulture("")]
 
 // Version information for an assembly consists of the following four values:
