@@ -1,9 +1,9 @@
 {
   "version": "1.0.0-*",
-  "testRunner": "mstest",
+  //"testRunner": "mstest",
 
   "dependencies": {
-    "FluentAssertions": "4.13.0",
+    "FluentAssertions": "4.14.0",
     "MSTest.TestAdapter": "1.0.3-preview",
     "MSTest.TestFramework": "1.0.1-preview",
     "System.Net.Http": "4.1.0"
