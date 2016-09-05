@@ -7,7 +7,7 @@ using Template10.Mvvm;
 
 namespace PoGo.GameServices
 {
-    public class SettingsService : BindableBase
+    public class UserSettingsService : BindableBase
     {
     }
 }

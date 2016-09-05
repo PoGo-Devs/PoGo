@@ -1,6 +1,9 @@
 ﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Data;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
+using System;
 
 namespace PoGo.GameServices
 {
@@ -14,6 +17,8 @@ namespace PoGo.GameServices
         #region Private Members
 
         private ObservableCollectionPlus<PokemonData> _catchablePokemon = default(ObservableCollectionPlus<PokemonData>);
+        private Geoposition _currentPosition = null;
+        private Geolocator _geolocator = null;
         private ObservableCollectionPlus<PokemonData> _nearbyPokemon = default(ObservableCollectionPlus<PokemonData>);
         private ObservableCollectionPlus<PokemonData> _nearbyPokestops = default(ObservableCollectionPlus<PokemonData>);
 
@@ -22,7 +27,8 @@ namespace PoGo.GameServices
         #region Properties
 
         /// <summary>
-        /// 
+        /// An <see cref="ObservableCollectionPlus{PokemonData}"/> containing all of the Pokemon that are close enough
+        /// to the user to be caught from the <see cref="CurrentPosition"/>. Observable.
         /// </summary>
         public ObservableCollectionPlus<PokemonData> CatchablePokemon
         {
@@ -31,7 +37,17 @@ namespace PoGo.GameServices
         }
 
         /// <summary>
-        /// 
+        /// The most recently-reported position reported by the Geolocator. Observable.
+        /// </summary>
+        public Geoposition CurrentPosition
+        {
+            get { return _currentPosition; }
+            private set { Set(ref _currentPosition, value); }
+        }
+
+        /// <summary>
+        /// An <see cref="ObservableCollectionPlus{PokemonData}"/> containing all of the Pokemon that are within "radar"
+        /// range of the <see cref="CurrentPosition"/>. Observable.
         /// </summary>
         public ObservableCollectionPlus<PokemonData> NearbyPokemon
         {
@@ -40,7 +56,8 @@ namespace PoGo.GameServices
         }
 
         /// <summary>
-        /// 
+        /// An <see cref="ObservableCollectionPlus{PokemonData}"/> containing all of the Pokestops close enough to the
+        /// <see cref="CurrentPosition"/> to be visible. Observable.
         /// </summary>
         public ObservableCollectionPlus<PokemonData> NearbyPokestops
         {
@@ -62,11 +79,31 @@ namespace PoGo.GameServices
             CatchablePokemon = new ObservableCollectionPlus<PokemonData>();
             NearbyPokemon = new ObservableCollectionPlus<PokemonData>();
             NearbyPokestops = new ObservableCollectionPlus<PokemonData>();
+            _geolocator = new Geolocator
+            {
+                DesiredAccuracy = PositionAccuracy.High,
+                DesiredAccuracyInMeters = 5,
+                ReportInterval = 1000,
+                MovementThreshold = 5
+            };
+            // @robertmclaws to do: Should we break this out into a separate function so it can be unregistered?
+            _geolocator.PositionChanged += async (Geolocator sender, PositionChangedEventArgs args) => 
+            {
+                CurrentPosition = await sender.GetGeopositionAsync();
+            };
         }
 
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Starts updating the <see cref="CurrentPosition"/> at the <see cref="Geolocator.ReportInterval"/>.
+        /// </summary>
+        public async Task BeginReportingPositionAsync()
+        {
+            CurrentPosition = CurrentPosition ?? await _geolocator.GetGeopositionAsync();
+        }
 
         /// <summary>
         /// 
@@ -76,6 +113,16 @@ namespace PoGo.GameServices
             CatchablePokemon.Clear();
             NearbyPokemon.Clear();
             NearbyPokestops.Clear();
+            // @robertmclaws: Should we re-initialize the Geolocator here?
+        }
+
+        /// <summary>
+        /// Updates the MovementThreshold for the <see cref="Geolocator"/>.
+        /// </summary>
+        /// <param name="newMovementThreshold"></param>
+        public void UpdateMovementThreshold(float newMovementThreshold)
+        {
+            _geolocator.MovementThreshold = newMovementThreshold;
         }
 
         #endregion

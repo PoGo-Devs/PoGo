@@ -144,7 +144,7 @@ namespace PoGo.ApiClient.Authentication
         /// <summary>
         /// Retrieves an OAuth 2.0 token for a given Authentication ticket.
         /// </summary>
-        /// <param name="authTicket">The Authentication Ticket to use for this request. Obtained by calling <see cref="GetAuthenticationTicket(HttpClient, PtcAuthenticationParameters)"/>.</param>
+        /// <param name="authTicket">The Authentication Ticket to use for this request. Obtained by calling <see cref="GetAuthenticationTicket(PtcAuthenticationParameters)"/>.</param>
         /// <returns></returns>
         internal async Task<AuthenticatedUser> GetOAuthToken(string authTicket)
         {

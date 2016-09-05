@@ -36,7 +36,10 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthenticatedUser, CurrentPosition, DeviceInfo);
+        /// <remarks>
+        /// We're getting a new RequestBuilder every time we call this property.
+        /// </remarks>
+        internal RequestBuilder RequestBuilder => new RequestBuilder(AuthenticatedUser, CurrentPosition, DeviceProfile, StartTime);
 
         /// <summary>
         /// 
@@ -87,7 +90,7 @@ namespace PoGo.ApiClient
         /// <summary>
         /// 
         /// </summary>
-        public IDeviceInfo DeviceInfo { get; }
+        public IDeviceProfile DeviceProfile { get; }
 
         /// <summary>
         /// 
@@ -124,6 +127,11 @@ namespace PoGo.ApiClient
         /// </summary>
         internal BlockingCollection<RequestEnvelope> RequestQueue { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTimeOffset StartTime { get; }
+
         #endregion
 
         #region Constructors
@@ -144,14 +152,11 @@ namespace PoGo.ApiClient
         /// 
         /// </summary>
         /// <param name="settings"></param>
-        /// <param name="deviceInfo"></param>
+        /// <param name="deviceProfile"></param>
         /// <param name="authenticatedUser"></param>
-        public PokemonGoApiClient(IApiSettings settings, IDeviceInfo deviceInfo, AuthenticatedUser authenticatedUser = null)
+        public PokemonGoApiClient(IApiSettings settings, IDeviceProfile deviceProfile, AuthenticatedUser authenticatedUser = null) : this()
         {
-            ApiSettings = settings;
-            SetAuthenticationProvider();
-            AuthenticatedUser = authenticatedUser;
-
+            StartTime = DateTimeOffset.UtcNow;
             CancellationTokenSource = new CancellationTokenSource();
             RequestQueue = new BlockingCollection<RequestEnvelope>();
 
@@ -161,8 +166,12 @@ namespace PoGo.ApiClient
             Map = new MapClient(this);
             Fort = new FortClient(this);
             Encounter = new EncounterClient(this);
-            DeviceInfo = deviceInfo;
 
+            ApiSettings = settings;
+            DeviceProfile = deviceProfile;
+
+            SetAuthenticationProvider();
+            AuthenticatedUser = authenticatedUser;
             Player.SetCoordinates(ApiSettings.DefaultPosition.Latitude, ApiSettings.DefaultPosition.Longitude, ApiSettings.DefaultPosition.Accuracy);
         }
 
@@ -183,7 +192,18 @@ namespace PoGo.ApiClient
             }
 
             // @robertmclaws: We're going to bypass the queue here.
-            var envelope = BuildRequestEnvelope(RequestType.GetPlayer, new GetPlayerMessage());
+            var envelope = RequestBuilder.GetInitialRequestEnvelope(
+                new Request
+                {
+                    RequestType = RequestType.GetPlayer,
+                    RequestMessage = new GetPlayerMessage().ToByteString()
+                },
+                new Request
+                {
+                    RequestType = RequestType.CheckChallenge,
+                    RequestMessage = new CheckChallengeMessage().ToByteString()
+                }
+            );
             var result = await PostProtoPayload(ApiUrl, envelope);
             ProcessMessages(result);
             // @robertmclaws: Not sure if this is right, but should allow the queue to start filling back up.

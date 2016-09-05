@@ -57,10 +57,10 @@ namespace PoGo.ApiClient.Rpc
             var message = new DownloadRemoteConfigVersionMessage
             {
                 AppVersion = appVersion,
-                DeviceManufacturer = Client.DeviceInfo.HardwareManufacturer,
-                DeviceModel = Client.DeviceInfo.HardwareModel,
+                DeviceManufacturer = Client.DeviceProfile.HardwareManufacturer,
+                DeviceModel = Client.DeviceProfile.HardwareModel,
                 Locale = locale,
-                Platform = Client.DeviceInfo.Platform
+                Platform = Client.DeviceProfile.Platform
             };
 
             return Client.QueueRequest(RequestType.DownloadRemoteConfigVersion, message);
@@ -95,10 +95,10 @@ namespace PoGo.ApiClient.Rpc
             var message = new GetAssetDigestMessage
             {
                 AppVersion = appVersion,
-                DeviceManufacturer = Client.DeviceInfo.HardwareManufacturer,
-                DeviceModel = Client.DeviceInfo.HardwareModel,
+                DeviceManufacturer = Client.DeviceProfile.HardwareManufacturer,
+                DeviceModel = Client.DeviceProfile.HardwareModel,
                 Locale = locale,
-                Platform = Client.DeviceInfo.Platform
+                Platform = Client.DeviceProfile.Platform
             };
 
             return Client.QueueRequest(RequestType.GetAssetDigest, message);

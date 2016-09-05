@@ -1,14 +1,14 @@
 ﻿using PoGo.ApiClient.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using POGOProtos.Enums;
+using System;
 
 namespace PoGo.GameServices.Signature.iPhone
 {
-    class iOSDeviceInfo : IDeviceInfo
+
+    /// <summary>
+    /// 
+    /// </summary>
+    class iOSDeviceProfile : IDeviceProfile
     {
         public IActivityStatus ActivityStatus
         {
@@ -88,10 +88,6 @@ namespace PoGo.GameServices.Signature.iPhone
                 throw new NotImplementedException();
             }
         }
-
-        public long TimeSnapshot => DeviceInfoManager.RelativeTimeFromStart;
-
-        public int Version => 3300;
 
         public void CollectLocationData()
         {

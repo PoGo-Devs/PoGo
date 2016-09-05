@@ -57,14 +57,14 @@ namespace PoGo.GameServices.Signature.Android
 
         #region Public Methods
 
-        public static ILocationFix CollectData()
+        public static ILocationFix CollectData(LocationService locationService)
         {
-            if (GameClient.Geoposition.Coordinate == null)
+            if (locationService.CurrentPosition.Coordinate == null)
                 return null; //Nothing to collect
 
             var loc = new AndroidLocationFix();
             //Collect provider
-            switch (GameClient.Geoposition.Coordinate.PositionSource)
+            switch (locationService.CurrentPosition.Coordinate.PositionSource)
             {
                 case Windows.Devices.Geolocation.PositionSource.WiFi:
                 case Windows.Devices.Geolocation.PositionSource.Cellular:
@@ -80,9 +80,9 @@ namespace PoGo.GameServices.Signature.Android
 
             //Collect coordinates
 
-            loc.Latitude = (float)GameClient.Geoposition.Coordinate.Point.Position.Latitude;
-            loc.Longitude = (float)GameClient.Geoposition.Coordinate.Point.Position.Longitude;
-            loc.Altitude = (float)GameClient.Geoposition.Coordinate.Point.Position.Altitude;
+            loc.Latitude = (float)locationService.CurrentPosition.Coordinate.Point.Position.Latitude;
+            loc.Longitude = (float)locationService.CurrentPosition.Coordinate.Point.Position.Longitude;
+            loc.Altitude = (float)locationService.CurrentPosition.Coordinate.Point.Position.Altitude;
 
             // TODO: why 3? need more info.
             loc.Floor = 3;
@@ -90,10 +90,11 @@ namespace PoGo.GameServices.Signature.Android
             // TODO: why 1? need more info.
             loc.LocationType = 1;
 
-            loc.TimeSnapshot = DeviceInfoManager.RelativeTimeFromStart;
+            // @robertmclaws to do: Wire this in the calling method, not here.
+            //loc.TimeSnapshot = DeviceProfileService.RelativeTimeFromStart;
 
-            loc.HorizontalAccuracy = (float?)GameClient.Geoposition.Coordinate?.SatelliteData.HorizontalDilutionOfPrecision ?? (float)Math.Floor((float)_random.NextGaussian(1.0, 1.0)); //better would be exp distribution
-            loc.VerticalAccuracy = (float?)GameClient.Geoposition.Coordinate?.SatelliteData.VerticalDilutionOfPrecision ?? (float)Math.Floor((float)_random.NextGaussian(1.0, 1.0)); //better would be exp distribution
+            loc.HorizontalAccuracy = (float?)locationService.CurrentPosition.Coordinate?.SatelliteData.HorizontalDilutionOfPrecision ?? (float)Math.Floor((float)_random.NextGaussian(1.0, 1.0)); //better would be exp distribution
+            loc.VerticalAccuracy = (float?)locationService.CurrentPosition.Coordinate?.SatelliteData.VerticalDilutionOfPrecision ?? (float)Math.Floor((float)_random.NextGaussian(1.0, 1.0)); //better would be exp distribution
 
             return loc;
         }
