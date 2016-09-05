@@ -108,9 +108,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationService.cs" />
+    <Compile Include="Configuration\RuntimeConfig.cs" />
+    <Compile Include="Configuration\VersionDetails.cs" />
     <Compile Include="EncounterService.cs" />
     <Compile Include="EvolutionService.cs" />
     <Compile Include="Extensions\RandomExtensions.cs" />
+    <Compile Include="Extensions\VersionExtensions.cs" />
     <Compile Include="GameServiceBase.cs" />
     <Compile Include="HatcheryService.cs" />
     <Compile Include="Interfaces\IGameService.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Player\Achievements\GoldAttribute.cs" />
     <Compile Include="Player\Achievements\SilverAttribute.cs" />
     <Compile Include="Player\LevelUpAwards.cs" />
+    <Compile Include="ConfigurationService.cs" />
     <Compile Include="PokedexService.cs" />
     <Compile Include="PokestopService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
