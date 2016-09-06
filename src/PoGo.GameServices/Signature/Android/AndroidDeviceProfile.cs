@@ -4,7 +4,11 @@ using System.Collections.Generic;
 
 namespace PoGo.GameServices.Signature.Android
 {
-    public class AndroidDeviceInfo : IDeviceInfo
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AndroidDeviceProfile : IDeviceProfile
     {
 
         #region Private Members
@@ -104,15 +108,11 @@ namespace PoGo.GameServices.Signature.Android
 
         public ISensorInfo Sensors => sensors;
 
-        public long TimeSnapshot => DeviceInfoManager.RelativeTimeFromStart;
-
-        public int Version => 3300;
-
         #endregion
 
         #region Constructors
 
-        public AndroidDeviceInfo()
+        public AndroidDeviceProfile()
         {
         }
 

@@ -38,7 +38,7 @@ namespace PoGo.ApiClient.Interfaces
         /// <summary>
         /// 
         /// </summary>
-        IDeviceInfo DeviceInfo { get; }
+        IDeviceProfile DeviceProfile { get; }
 
         /// <summary>
         /// 

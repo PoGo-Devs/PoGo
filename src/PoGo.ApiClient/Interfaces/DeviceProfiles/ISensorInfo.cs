@@ -6,7 +6,6 @@ namespace PoGo.ApiClient.Interfaces
     public interface ISensorInfo
     {
 
-        long TimeSnapshot { get; }
         ulong AccelerometerAxes { get; }
         double AccelRawX { get; }
         double AccelRawY { get; }

@@ -4,7 +4,7 @@ using System;
 namespace PoGo.ApiClient.Interfaces
 {
 
-    public interface IDeviceInfo
+    public interface IDeviceProfile
     {
         string DeviceId { get; }
 		string AndroidBoardName { get; }
@@ -19,7 +19,6 @@ namespace PoGo.ApiClient.Interfaces
         string FirmwareTags { get; }
         string FirmwareType { get; }
         string FirmwareFingerprint { get; }
-        long TimeSnapshot { get; }
         ILocationFix[] LocationFixes { get; }
         IGpsSatellitesInfo[] GpsSatellitesInfo { get; }
         ISensorInfo Sensors { get; }
@@ -27,7 +26,6 @@ namespace PoGo.ApiClient.Interfaces
 
         void CollectLocationData();
         Platform Platform { get; }
-        int Version { get; }
 
     }
 

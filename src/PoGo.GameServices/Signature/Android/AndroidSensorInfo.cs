@@ -113,12 +113,6 @@ namespace PoGo.GameServices.Signature.Android
             }
         }
 
-        public long TimeSnapshot
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
+
 }

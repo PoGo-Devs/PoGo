@@ -113,10 +113,10 @@
     <Compile Include="Enums\StatusCodes.cs" />
     <Compile Include="Exceptions\AccountLockedException.cs" />
     <Compile Include="Authentication\PoGoCredentials.cs" />
-    <Compile Include="Interfaces\DeviceInfo\IActivityStatus.cs" />
-    <Compile Include="Interfaces\DeviceInfo\ILocationFix.cs" />
-    <Compile Include="Interfaces\DeviceInfo\ISensorInfo.cs" />
-    <Compile Include="Interfaces\DeviceInfo\IGpsSatellitesInfo.cs" />
+    <Compile Include="Interfaces\DeviceProfiles\IActivityStatus.cs" />
+    <Compile Include="Interfaces\DeviceProfiles\ILocationFix.cs" />
+    <Compile Include="Interfaces\DeviceProfiles\ISensorInfo.cs" />
+    <Compile Include="Interfaces\DeviceProfiles\IGpsSatellitesInfo.cs" />
     <Compile Include="Interfaces\IPokemonGoApiClient.Events.Generated.cs">
       <DependentUpon>IPokemonGoApiClient.Events.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -146,7 +146,7 @@
     <Compile Include="Exceptions\LoginFailedException.cs" />
     <Compile Include="Exceptions\PTCOfflineException.cs" />
     <Compile Include="Helpers\Crypt.cs" />
-    <Compile Include="Interfaces\DeviceInfo\IDeviceInfo.cs" />
+    <Compile Include="Interfaces\DeviceProfiles\IDeviceProfile.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Helpers\RequestBuilder.cs" />
     <Compile Include="Helpers\S2Helper.cs" />

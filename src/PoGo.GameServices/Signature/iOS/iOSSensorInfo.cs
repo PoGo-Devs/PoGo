@@ -53,8 +53,6 @@ namespace PoGo.GameServices.Signature.iOS
 
         public double MagnetometerZ => magnetometer?.GetCurrentReading()?.MagneticFieldZ ?? random.NextGaussian(0.0, 0.1);
 
-        public long TimeSnapshot => DeviceInfoManager.RelativeTimeFromStart;
-
         #endregion
 
     }
