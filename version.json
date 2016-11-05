@@ -1,8 +1,8 @@
 {
  "minimum_version": "1.0.50",
- "unknown25": 7363665268261374000,
- "seed1": 1634035250,
- "version_number": 3500,
+ "unknown25": -8408506833887075802,
+ "seed1": 0,
+ "version_number": 4300,
  "latest_release": {
    "version": "1.0.29",
    "setup_file": "https://github.com/ST-Apps/PoGo-UWP/releases/download/v1.1.0-RC2/PokemonGo-UWP_1.0.29.0_{arch}.appxbundle",
