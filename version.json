@@ -5,7 +5,7 @@
  "version_number": 4300,
  "latest_release": {
    "version": "1.0.51",
-   "setup_file": "https://github.com/ST-Apps/PoGo-UWP/releases/download/v1.1.0-RC3/PokemonGo-UWP_1.0.51.0_{arch}.appxbundle",
+   "setup_file": "https://github.com/ST-Apps/PoGo-UWP/releases/download/v1.1.0-RC4/PokemonGo-UWP_1.0.51.0_{arch}.appxbundle",
    "dependencies": [
    ]
  }
