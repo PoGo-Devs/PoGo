@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace POGOProtos.Networking.Envelopes
 {
-    public sealed partial class RequestEnvelope
+    public class ExtendedRequestEnvelope : RequestEnvelope
     {
 
         /// <summary>

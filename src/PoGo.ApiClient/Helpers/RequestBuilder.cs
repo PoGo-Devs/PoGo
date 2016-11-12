@@ -152,14 +152,14 @@ namespace PoGo.ApiClient.Helpers
                 LocationHash1 = Utils.GenerateLocation1(authSeed, requestEnvelope.Latitude, requestEnvelope.Longitude, requestEnvelope.Accuracy),
                 LocationHash2 = Utils.GenerateLocation2(requestEnvelope.Latitude, requestEnvelope.Longitude, requestEnvelope.Accuracy),
                 SessionHash = ByteString.CopyFrom(_sessionHash),
-                Unknown25 = 7363665268261373700L,
+                Unknown25 = DeviceProfile.VersionData.VersionHash,
                 Timestamp = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 TimestampSinceStart = GetRelativeTimeFromStart(),
                 SensorInfo = new Signature.Types.SensorInfo
                 {
-                    AccelNormalizedX = normAccel.X,
-                    AccelNormalizedY = normAccel.Y,
-                    AccelNormalizedZ = normAccel.Z,
+                    LinearAccelerationX = normAccel.X,
+                    LinearAccelerationY = normAccel.Y,
+                    LinearAccelerationZ = normAccel.Z,
                     AccelRawX = -DeviceProfile.Sensors.AccelRawX,
                     AccelRawY = -DeviceProfile.Sensors.AccelRawY,
                     AccelRawZ = -DeviceProfile.Sensors.AccelRawZ,

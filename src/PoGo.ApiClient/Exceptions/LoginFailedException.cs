@@ -1,25 +1,38 @@
 ﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace PoGo.ApiClient.Exceptions
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class LoginFailedException : Exception
     {
+        #region Properties
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string LoginResponse { get; }
+
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
         public LoginFailedException()
         {
         }
 
-        public LoginFailedException(HttpResponseMessage loginResponse)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loginResponse"></param>
+        public LoginFailedException(string loginResponse)
         {
             LoginResponse = loginResponse;
         }
 
-        public HttpResponseMessage LoginResponse { get; }
-
-        public async Task<string> GetLoginResponseContentAsString()
-        {
-            return await LoginResponse.Content.ReadAsStringAsync();
-        }
     }
+
 }

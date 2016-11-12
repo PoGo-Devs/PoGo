@@ -129,14 +129,31 @@ namespace PoGo.ApiClient.Authentication
             }
 
             var responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var response = JsonConvert.DeserializeObject<PtcAuthenticationTicketResponse>(responseContent);
+            PtcAuthenticationTicketResponse response = null;
+
+            // @robertmclaws: Let's try to catch situations we haven't thought of yet.
+            try
+            {
+                response = JsonConvert.DeserializeObject<PtcAuthenticationTicketResponse>(responseContent);
+            }
+            catch (Exception ex)
+            {
+                Logger.Write(ex.Message);
+                throw new LoginFailedException("We encountered a response from the PTC login servers thet we didn't anticipate. Please take a screenshot and open a ticket."
+                    + Environment.NewLine + responseContent.Replace("/n", ""));
+            }
+
+            if (!string.IsNullOrWhiteSpace(response.ErrorCode) && response.ErrorCode.EndsWith("activation_required"))
+            {
+                throw new LoginFailedException($"Your two-day grace period has expired, and your PTC account must now be activated." + Environment.NewLine + $"Please visit {response.Redirect}.");
+            }
 
             var loginFailedWords = new string[] { "incorrect", "disabled" };
 
             var loginFailed = loginFailedWords.Any(failedWord => response.Errors.Any(error => error.Contains(failedWord)));
             if (loginFailed)
             {
-                throw new LoginFailedException(responseMessage);
+                throw new LoginFailedException(response.Errors[0]);
             }
             throw new Exception($"Pokemon Trainer Club responded with the following error(s): '{string.Join(", ", response.Errors)}'");
         }

@@ -1,9 +1,9 @@
 ﻿using PoGo.ApiClient.Interfaces;
 using POGOProtos.Data;
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
-using System;
 
 namespace PoGo.GameServices
 {
